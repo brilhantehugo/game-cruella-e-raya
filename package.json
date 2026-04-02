@@ -1,0 +1,21 @@
+{
+  "name": "game-cruella-e-raya",
+  "version": "0.1.0",
+  "description": "A 2D platformer game with Raya and Cruella",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "phaser": "^3.87.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "vite": "^5.4.0",
+    "vitest": "^1.6.0",
+    "@types/node": "^20.14.0"
+  }
+}
