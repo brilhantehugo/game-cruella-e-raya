@@ -1,9 +1,233 @@
 import Phaser from 'phaser'
-import { KEYS } from '../constants'
+import { KEYS, TILE_SIZE, GAME_HEIGHT, PHYSICS } from '../constants'
+import { gameState } from '../GameState'
+import { Player } from '../entities/Player'
+import { Enemy } from '../entities/Enemy'
+import { GatoMalencarado } from '../entities/enemies/GatoMalencarado'
+import { PomboAgitado } from '../entities/enemies/PomboAgitado'
+import { RatoDeCalcada } from '../entities/enemies/RatoDeCalcada'
+import { DonoNervoso } from '../entities/enemies/DonoNervoso'
+import { SeuBigodes } from '../entities/enemies/SeuBigodes'
+import { Bone } from '../items/Bone'
+import { GoldenBone } from '../items/GoldenBone'
+import { PowerUp } from '../items/PowerUp'
+import { Accessory } from '../items/Accessory'
+import { LevelData } from '../levels/LevelData'
+import { WORLD1_LEVELS } from '../levels/World1'
 
 export class GameScene extends Phaser.Scene {
+  private player!: Player
+  private groundLayer!: Phaser.Physics.Arcade.StaticGroup
+  private platformLayer!: Phaser.Physics.Arcade.StaticGroup
+  private enemyGroup!: Phaser.Physics.Arcade.Group
+  private itemGroup!: Phaser.Physics.Arcade.StaticGroup
+  private escKey!: Phaser.Input.Keyboard.Key
+  private currentLevel!: LevelData
+
   constructor() { super(KEYS.GAME) }
+
+  init(data: { fromStart?: boolean } = {}): void {
+    if (data.fromStart) {
+      gameState.resetForCheckpoint()
+      gameState.checkpointReached = false
+    }
+  }
+
   create(): void {
-    this.add.text(400, 225, 'GameScene — em construção', { fontSize: '24px', color: '#ffffff' }).setOrigin(0.5)
+    this.currentLevel = WORLD1_LEVELS[gameState.currentLevel] ?? WORLD1_LEVELS['1-1']
+    this.cameras.main.setBackgroundColor(this.currentLevel.bgColor)
+    this._buildTilemap()
+    this._spawnPlayer()
+    this._spawnEnemies()
+    this._spawnItems()
+    this._setupCollisions()
+    this._setupCamera()
+    this.escKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.ESC)
+    this.scene.launch(KEYS.UI)
+  }
+
+  private _buildTilemap(): void {
+    this.groundLayer   = this.physics.add.staticGroup()
+    this.platformLayer = this.physics.add.staticGroup()
+    this.itemGroup     = this.physics.add.staticGroup()
+
+    const tiles = this.currentLevel.tiles
+    const cols  = this.currentLevel.tileWidthCols
+
+    for (let row = 0; row < tiles.length; row++) {
+      for (let col = 0; col < cols; col++) {
+        const val = tiles[row][col]
+        if (val === 0) continue
+        const px = col * TILE_SIZE + TILE_SIZE / 2
+        const py = row * TILE_SIZE + TILE_SIZE / 2
+        if (val === 2) {
+          this.platformLayer.add(this.physics.add.staticImage(px, py, KEYS.TILE_PLATFORM))
+        } else {
+          this.groundLayer.add(this.physics.add.staticImage(px, py, KEYS.TILE_GROUND))
+        }
+      }
+    }
+
+    // Checkpoint (hidrante)
+    const cp = this.physics.add.staticImage(this.currentLevel.checkpointX, this.currentLevel.checkpointY, KEYS.HYDRANT)
+    cp.setData('type', 'checkpoint')
+    this.itemGroup.add(cp)
+
+    // Saída
+    const exit = this.physics.add.staticImage(this.currentLevel.exitX, this.currentLevel.exitY, KEYS.EXIT_GATE)
+    exit.setData('type', 'exit')
+    this.itemGroup.add(exit)
+  }
+
+  private _spawnPlayer(): void {
+    const spawnX = gameState.checkpointReached ? gameState.checkpointX : this.currentLevel.spawnX
+    const spawnY = gameState.checkpointReached ? gameState.checkpointY - 32 : this.currentLevel.spawnY
+    this.player = new Player(this, spawnX, spawnY)
+  }
+
+  private _spawnEnemies(): void {
+    this.enemyGroup = this.physics.add.group()
+    this.currentLevel.enemies.forEach(spawn => {
+      let enemy: Enemy | undefined
+      switch (spawn.type) {
+        case 'gato':  enemy = new GatoMalencarado(this, spawn.x, spawn.y); break
+        case 'pombo': enemy = new PomboAgitado(this, spawn.x, spawn.y);    break
+        case 'rato':  enemy = new RatoDeCalcada(this, spawn.x, spawn.y);   break
+        case 'dono':  enemy = new DonoNervoso(this, spawn.x, spawn.y);     break
+      }
+      if (!enemy) return
+      this.enemyGroup.add(enemy)
+      enemy.on('died', () => { gameState.addScore(50) })
+    })
+
+    if (this.currentLevel.isBossLevel) {
+      const boss = new SeuBigodes(this, 480, 360)
+      this.enemyGroup.add(boss)
+      boss.on('died', () => {
+        gameState.addScore(1000)
+        gameState.collarOfGold = true
+        this._levelComplete()
+      })
+    }
+  }
+
+  private _spawnItems(): void {
+    const accessoryTypes = ['laco', 'coleira', 'chapeu', 'bandana']
+    this.currentLevel.items.forEach(spawn => {
+      let item: Phaser.Physics.Arcade.Image
+      if (spawn.type === 'bone') {
+        item = new Bone(this, spawn.x, spawn.y)
+      } else if (accessoryTypes.includes(spawn.type)) {
+        item = new Accessory(this, spawn.x, spawn.y, spawn.type as any)
+      } else {
+        item = new PowerUp(this, spawn.x, spawn.y, spawn.type)
+      }
+      this.itemGroup.add(item)
+    })
+    this.currentLevel.goldenBones.forEach((pos, i) => {
+      this.itemGroup.add(new GoldenBone(this, pos.x, pos.y, i))
+    })
+  }
+
+  private _setupCollisions(): void {
+    const playerSprites = [this.player.raya, this.player.cruella]
+
+    this.physics.add.collider(this.player.raya,   this.groundLayer,   () => this.player.setGrounded(true, true))
+    this.physics.add.collider(this.player.cruella, this.groundLayer,   () => this.player.setGrounded(false, true))
+    this.physics.add.collider(this.player.raya,   this.platformLayer, () => this.player.setGrounded(true, true))
+    this.physics.add.collider(this.player.cruella, this.platformLayer, () => this.player.setGrounded(false, true))
+    this.physics.add.collider(this.enemyGroup, this.groundLayer)
+    this.physics.add.collider(this.enemyGroup, this.platformLayer)
+
+    playerSprites.forEach(sprite => {
+      this.physics.add.overlap(sprite, this.enemyGroup, (_s, enemy) => {
+        const e = enemy as Enemy
+        if (gameState.hasPowerUp('churrasco', this.time.now)) {
+          e.takeDamage(999)
+          return
+        }
+        this.player.takeDamage()
+        if (gameState.isDead()) this._gameOver()
+      })
+
+      this.physics.add.overlap(sprite, this.itemGroup, (_s, item) => {
+        const go = item as Phaser.Physics.Arcade.Image
+        const t  = go.getData('type') as string
+        if (!t) return
+        this._handleItemCollect(t, go)
+      })
+    })
+
+    this.player.cruella.on('bark', (bx: number, by: number) => {
+      (this.enemyGroup.getChildren() as Enemy[]).forEach(e => {
+        if (Phaser.Math.Distance.Between(bx, by, e.x, e.y) <= PHYSICS.BARK_RADIUS) e.stun(2000)
+      })
+    })
+  }
+
+  private _handleItemCollect(type: string, item: Phaser.Physics.Arcade.Image): void {
+    const now = this.time.now
+    switch (type) {
+      case 'checkpoint':
+        if (!gameState.checkpointReached) gameState.setCheckpoint(item.x, item.y)
+        return // don't destroy
+      case 'exit':
+        this._levelComplete()
+        return
+      case 'bone':
+        gameState.addScore(10)
+        break
+      case 'golden_bone':
+        gameState.collectGoldenBone(gameState.currentLevel, (item as GoldenBone).boneIndex)
+        gameState.addScore(500)
+        break
+      case 'pizza':
+        gameState.restoreHeart()
+        break
+      case 'laco': case 'coleira': case 'chapeu': case 'bandana':
+        gameState.equipAccessory(type as any)
+        break
+      default:
+        gameState.applyPowerUp(type, now)
+    }
+    item.destroy()
+  }
+
+  private _setupCamera(): void {
+    const mapWidth = this.currentLevel.tileWidthCols * TILE_SIZE
+    this.cameras.main.setBounds(0, 0, mapWidth, GAME_HEIGHT)
+    this.cameras.main.startFollow(this.player.active, true, 0.1, 0.1)
+  }
+
+  private _levelComplete(): void {
+    this.scene.stop(KEYS.UI)
+    if (this.currentLevel.nextLevel) {
+      gameState.currentLevel = this.currentLevel.nextLevel
+      gameState.checkpointReached = false
+    }
+    this.scene.start(KEYS.LEVEL_COMPLETE, {
+      score: gameState.score,
+      bones: Object.values(gameState.goldenBones).flat().filter(Boolean).length,
+    })
+  }
+
+  private _gameOver(): void {
+    this.scene.stop(KEYS.UI)
+    this.scene.start(KEYS.GAME_OVER)
+  }
+
+  update(time: number, delta: number): void {
+    if (Phaser.Input.Keyboard.JustDown(this.escKey)) {
+      this.scene.pause()
+      this.scene.launch(KEYS.PAUSE)
+      return
+    }
+    const enemies = this.enemyGroup.getChildren() as Enemy[]
+    this.player.update(enemies)
+    this.cameras.main.startFollow(this.player.active, true, 0.1, 0.1)
+    enemies.forEach(e => {
+      e.update(time, delta)
+      if (e instanceof DonoNervoso) e.setTarget(this.player.x)
+    })
   }
 }
