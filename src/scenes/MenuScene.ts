@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { KEYS, GAME_WIDTH, GAME_HEIGHT } from '../constants'
+import { KEYS, GAME_WIDTH } from '../constants'
 import { gameState } from '../GameState'
 
 export class MenuScene extends Phaser.Scene {
@@ -64,5 +64,10 @@ export class MenuScene extends Phaser.Scene {
     kb.on('keydown-G', () => { this.scene.start(KEYS.GALLERY) })
     playBtn.on('pointerdown', startGame)
     galBtn.on('pointerdown', () => { this.scene.start(KEYS.GALLERY) })
+
+    this.events.once('shutdown', () => {
+      kb.off('keydown-ENTER', startGame)
+      kb.off('keydown-G')
+    })
   }
 }
