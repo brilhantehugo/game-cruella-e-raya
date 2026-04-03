@@ -26,10 +26,6 @@ export class GameScene extends Phaser.Scene {
 
   constructor() { super(KEYS.GAME) }
 
-  init(): void {
-    // reset is now caller's responsibility (GameOverScene calls gameState.resetAtCheckpoint/resetLevel)
-  }
-
   create(): void {
     this.currentLevel = WORLD1_LEVELS[gameState.currentLevel] ?? WORLD1_LEVELS['1-1']
     this.cameras.main.setBackgroundColor(this.currentLevel.bgColor)

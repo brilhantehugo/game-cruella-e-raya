@@ -114,12 +114,6 @@ export class GameState {
     this.checkpointY = 0
   }
 
-  resetForCheckpoint(): void {
-    this.equippedAccessory = null
-    this.activePowerUp = null
-    this.swapBlockedUntil = 0
-  }
-
   resetAtCheckpoint(): void {
     this.hearts = 3
     this.equippedAccessory = null
