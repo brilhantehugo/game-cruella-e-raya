@@ -246,10 +246,84 @@ Adicionar `KEYS.INTRO_CRAWL = 'IntroCrawlScene'` e `KEYS.HOW_TO_PLAY = 'HowToPla
 | `src/scenes/HowToPlayScene.ts` | Criar | Tela de instruções |
 | `src/scenes/IntroCrawlScene.ts` | Criar | Intro estilo Star Wars |
 | `src/scenes/MenuScene.ts` | Modificar | Botões H e fluxo para IntroCrawlScene |
+| `src/scenes/GameOverScene.ts` | Modificar | Correção do restart — chamar resetAtCheckpoint/resetLevel |
+| `src/scenes/GameScene.ts` | Modificar | Remover lógica de fromStart do init() |
 | `src/main.ts` | Modificar | Registrar 2 novas cenas |
 | `src/constants.ts` | Modificar | Adicionar KEYS.INTRO_CRAWL e KEYS.HOW_TO_PLAY |
+| `src/GameState.ts` | Modificar | Adicionar resetAtCheckpoint() e resetLevel() |
+| `tests/GameState.test.ts` | Modificar | Testes para os 2 novos métodos |
 
-**Não alterados:** `GameState.ts`, testes, `GameScene.ts`, `UIScene.ts`, todos os inimigos (exceto texturas), `Player.ts`, `World1.ts`.
+**Não alterados:** `UIScene.ts`, todos os inimigos (exceto texturas), `Player.ts`, `World1.ts`.
+
+---
+
+## 6. Correção do Fluxo de Restart (Game Over)
+
+### Bugs identificados
+
+**Bug 1 — ENTER não restaura corações:**
+`GameOverScene` chama `this.scene.start(KEYS.GAME)` sem passar dados. `GameScene.init()` não reseta nada. O jogador reentra com 0 corações e morre imediatamente de novo.
+
+**Bug 2 — R não restaura corações:**
+`R` passa `{ fromStart: true }`, que chama `gameState.resetForCheckpoint()`. Esse método tem `// Keep hearts` — mantém 0 corações. Mesmo bug.
+
+**Bug 3 — `resetForCheckpoint()` não serve para morte:**
+Foi projetado para "manter progresso ao chegar num checkpoint vivo", não para "ressuscitar após game over". Precisa ser separado em dois comportamentos distintos.
+
+### Correções em `GameState.ts`
+
+Adicionar método `resetAtCheckpoint()` — para usar quando o jogador morre e reinicia do checkpoint:
+```typescript
+resetAtCheckpoint(): void {
+  this.hearts = 3                // restaura vida
+  this.equippedAccessory = null
+  this.activePowerUp = null
+  this.swapBlockedUntil = 0
+  this.lastHitAt = 0
+  // mantém: score, goldenBones, collarOfGold, checkpointReached, checkpointX/Y, currentLevel
+}
+```
+
+Adicionar método `resetLevel()` — para usar quando o jogador reinicia a fase do zero:
+```typescript
+resetLevel(): void {
+  this.hearts = 3
+  this.equippedAccessory = null
+  this.activePowerUp = null
+  this.swapBlockedUntil = 0
+  this.lastHitAt = 0
+  this.checkpointReached = false
+  this.checkpointX = 0
+  this.checkpointY = 0
+  // mantém: score, goldenBones, collarOfGold, currentLevel
+}
+```
+
+### Correções em `GameOverScene.ts`
+
+```typescript
+// ENTER — volta ao checkpoint
+kb.once('keydown-ENTER', () => {
+  gameState.resetAtCheckpoint()
+  this.scene.start(KEYS.GAME)
+})
+
+// R — recomeça a fase do início
+kb.once('keydown-R', () => {
+  gameState.resetLevel()
+  this.scene.start(KEYS.GAME)
+})
+```
+
+### Correções em `GameScene.init()`
+
+Remover o parâmetro `fromStart` — o reset agora é responsabilidade de quem chama `scene.start(KEYS.GAME)`, não do `init()`. O `init()` fica vazio ou só loga para debug.
+
+### Testes unitários em `GameState.test.ts`
+
+Adicionar testes para `resetAtCheckpoint()` e `resetLevel()`:
+- `resetAtCheckpoint()` deve restaurar corações para 3, limpar power-ups, manter score/checkpoint/goldenBones
+- `resetLevel()` deve restaurar corações, limpar checkpoint, manter score/goldenBones
 
 ---
 
@@ -263,4 +337,6 @@ Adicionar `KEYS.INTRO_CRAWL = 'IntroCrawlScene'` e `KEYS.HOW_TO_PLAY = 'HowToPla
 | Correção do movimento travando | 2 |
 | Tela "Como Jogar" | 4 |
 | Intro narrativa estilo Star Wars | 5 |
-| Sem quebrar testes existentes | — (GameState não muda) |
+| Restart do checkpoint funciona (corações restaurados) | 6 |
+| Restart da fase funciona (checkpoint limpo, corações restaurados) | 6 |
+| Testes unitários para resetAtCheckpoint e resetLevel | 6 |
