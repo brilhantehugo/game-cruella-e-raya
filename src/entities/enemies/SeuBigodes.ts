@@ -1,11 +1,12 @@
 import Phaser from 'phaser'
-import { KEYS, GAME_HEIGHT } from '../../constants'
+import { KEYS } from '../../constants'
 import { Enemy } from '../Enemy'
 import { GatoMalencarado } from './GatoMalencarado'
 
 type BossPhase = 1 | 2 | 3
 
 export class SeuBigodes extends Enemy {
+  private readonly MAX_HP = 12
   private phase: BossPhase = 1
   private actionTimer: number = 0
   private jumpCooldown: number = 0
@@ -31,10 +32,10 @@ export class SeuBigodes extends Enemy {
   }
 
   private _checkPhaseTransition(): void {
-    const maxHp = 12
-    const hpPct = this.hp / maxHp
+    const hpPct = this.hp / this.MAX_HP
     if (hpPct <= 0.25 && this.phase < 3) {
       this.phase = 3
+      this.speed = 100
       this._spawnMinions()
       this.setTint(0xff4444)
     } else if (hpPct <= 0.5 && this.phase < 2) {
@@ -77,7 +78,6 @@ export class SeuBigodes extends Enemy {
 
   /** Fase 3: mais rápido + mantém fase 2 + gerencia minions */
   private _phase3(time: number): void {
-    this.speed = 100
     this._phase2(time)
     // Remove minions mortos da lista
     this.minions = this.minions.filter(m => m.active)
@@ -85,13 +85,18 @@ export class SeuBigodes extends Enemy {
 
   private _throwDebris(): void {
     if (!this.scene || !this.active) return
-    // Projétil simples (retângulo cinza com física)
-    const debris = this.scene.add.rectangle(this.x, this.y - 20, 14, 14, 0x888888)
-    this.scene.physics.add.existing(debris)
-    const body = debris.body as Phaser.Physics.Arcade.Body
     const dir = Math.random() < 0.5 ? -1 : 1
-    body.setVelocity(dir * 180, -400)
-    this.scene.time.delayedCall(2500, () => { if (debris.active) debris.destroy() })
+    const debris = this.scene.add.rectangle(this.x, this.y - 20, 14, 14, 0x888888)
+    // Arc simulation using tween — purely visual, no physics body needed
+    this.scene.tweens.add({
+      targets: debris,
+      x: debris.x + dir * 200,
+      y: debris.y + 180,
+      alpha: 0,
+      duration: 900,
+      ease: 'Quad.easeIn',
+      onComplete: () => { if (debris.active) debris.destroy() }
+    })
   }
 
   private _spawnMinions(): void {
@@ -102,10 +107,6 @@ export class SeuBigodes extends Enemy {
       // GameScene ouvirá este evento e adicionará ao enemyGroup
       this.emit('spawnMinion', gato)
     }
-  }
-
-  takeDamage(amount: number = 1): void {
-    super.takeDamage(amount)
   }
 
   protected onDeath(): void {

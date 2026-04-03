@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { KEYS, TILE_SIZE, GAME_HEIGHT, PHYSICS } from '../constants'
+import { KEYS, TILE_SIZE, GAME_HEIGHT, PHYSICS, SCORING } from '../constants'
 import { gameState } from '../GameState'
 import { Player } from '../entities/Player'
 import { Enemy } from '../entities/Enemy'
@@ -110,7 +110,7 @@ export class GameScene extends Phaser.Scene {
       })
       boss.on('spawnMinion', (minion: Enemy) => {
         this.enemyGroup.add(minion)
-        minion.on('died', () => { gameState.addScore(50) })
+        minion.on('died', () => { gameState.addScore(SCORING.ENEMY_KILL) })
       })
     }
   }
