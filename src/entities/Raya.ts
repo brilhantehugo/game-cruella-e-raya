@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import { KEYS, PHYSICS } from '../constants'
+import { gameState } from '../GameState'
 
 export class Raya extends Phaser.Physics.Arcade.Sprite {
   private jumpsLeft: number = 2
@@ -58,7 +59,10 @@ export class Raya extends Phaser.Physics.Arcade.Sprite {
     }
 
     if (Phaser.Input.Keyboard.JustDown(this.cursors.space) && this.jumpsLeft > 0) {
-      this.setVelocityY(PHYSICS.JUMP_VELOCITY)
+      const jumpVel = gameState.hasPowerUp('pipoca', this.scene.time.now)
+        ? PHYSICS.JUMP_VELOCITY * 1.45
+        : PHYSICS.JUMP_VELOCITY
+      this.setVelocityY(jumpVel)
       this.jumpsLeft--
     }
 

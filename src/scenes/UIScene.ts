@@ -14,6 +14,7 @@ export class UIScene extends Phaser.Scene {
   constructor() { super({ key: KEYS.UI, active: false }) }
 
   create(): void {
+    this.heartImages = []
     this.add.rectangle(GAME_WIDTH / 2, 22, GAME_WIDTH, 44, 0x000000, 0.45).setScrollFactor(0)
     for (let i = 0; i < 3; i++) {
       this.heartImages.push(this.add.image(20 + i * 30, 22, KEYS.HEART).setScrollFactor(0).setScale(1.1))

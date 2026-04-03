@@ -139,8 +139,18 @@ export class GameScene extends Phaser.Scene {
     this.physics.add.collider(this.enemyGroup, this.platformLayer)
 
     playerSprites.forEach(sprite => {
-      this.physics.add.overlap(sprite, this.enemyGroup, (_s, enemy) => {
+      this.physics.add.overlap(sprite, this.enemyGroup, (ps, enemy) => {
         const e = enemy as Enemy
+        const pBody = (ps as Phaser.Physics.Arcade.Sprite).body as Phaser.Physics.Arcade.Body
+        const eBody = e.body as Phaser.Physics.Arcade.Body
+
+        // Stomp: player falling and centre above enemy centre
+        if (pBody.velocity.y > 50 && pBody.bottom <= eBody.top + 12) {
+          e.takeDamage(999)
+          pBody.setVelocityY(-380)
+          return
+        }
+
         if (gameState.hasPowerUp('churrasco', this.time.now)) {
           e.takeDamage(999)
           return

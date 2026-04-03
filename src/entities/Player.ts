@@ -42,7 +42,8 @@ export class Player {
 
   update(enemies: Enemy[]): void {
     const now = this.scene.time.now
-    const speedBonus = gameState.collarOfGold ? PHYSICS.COLLAR_GOLD_SPEED_BONUS : 0
+    const speedBonus = (gameState.collarOfGold ? PHYSICS.COLLAR_GOLD_SPEED_BONUS : 0)
+                     + (gameState.hasPowerUp('petisco', now) ? 90 : 0)
 
     if (Phaser.Input.Keyboard.JustDown(this.tabKey)) {
       if (gameState.swap(now)) {
