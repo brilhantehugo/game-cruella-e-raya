@@ -108,6 +108,10 @@ export class GameScene extends Phaser.Scene {
         gameState.collarOfGold = true
         this._levelComplete()
       })
+      boss.on('spawnMinion', (minion: Enemy) => {
+        this.enemyGroup.add(minion)
+        minion.on('died', () => { gameState.addScore(50) })
+      })
     }
   }
 
