@@ -26,11 +26,8 @@ export class GameScene extends Phaser.Scene {
 
   constructor() { super(KEYS.GAME) }
 
-  init(data: { fromStart?: boolean } = {}): void {
-    if (data.fromStart) {
-      gameState.resetForCheckpoint()
-      gameState.checkpointReached = false
-    }
+  init(): void {
+    // reset is now caller's responsibility (GameOverScene calls gameState.resetAtCheckpoint/resetLevel)
   }
 
   create(): void {
