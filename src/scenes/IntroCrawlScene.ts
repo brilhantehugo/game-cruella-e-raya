@@ -35,6 +35,8 @@ const CRAWL_TEXT = [
 ]
 
 export class IntroCrawlScene extends Phaser.Scene {
+  private _started = false
+
   constructor() { super(KEYS.INTRO_CRAWL) }
 
   create(): void {
@@ -76,6 +78,8 @@ export class IntroCrawlScene extends Phaser.Scene {
   }
 
   private _start(): void {
+    if (this._started) return
+    this._started = true
     this.tweens.killAll()
     this.scene.start(KEYS.GAME)
   }

@@ -63,18 +63,21 @@ export class MenuScene extends Phaser.Scene {
       this.scene.start(KEYS.INTRO_CRAWL)
     }
 
+    const goGallery = () => { this.scene.start(KEYS.GALLERY) }
+    const goHowToPlay = () => { this.scene.start(KEYS.HOW_TO_PLAY) }
+
     const kb = this.input.keyboard!
     kb.on('keydown-ENTER', startGame)
-    kb.on('keydown-G', () => { this.scene.start(KEYS.GALLERY) })
-    kb.on('keydown-H', () => { this.scene.start(KEYS.HOW_TO_PLAY) })
+    kb.on('keydown-G', goGallery)
+    kb.on('keydown-H', goHowToPlay)
     playBtn.on('pointerdown', startGame)
-    galBtn.on('pointerdown', () => { this.scene.start(KEYS.GALLERY) })
-    howBtn.on('pointerdown', () => { this.scene.start(KEYS.HOW_TO_PLAY) })
+    galBtn.on('pointerdown', goGallery)
+    howBtn.on('pointerdown', goHowToPlay)
 
     this.events.once('shutdown', () => {
       kb.off('keydown-ENTER', startGame)
-      kb.off('keydown-G')
-      kb.off('keydown-H')
+      kb.off('keydown-G', goGallery)
+      kb.off('keydown-H', goHowToPlay)
     })
   }
 }
