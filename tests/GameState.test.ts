@@ -106,4 +106,60 @@ describe('GameState', () => {
     expect(state.checkpointX).toBe(400)
     expect(state.checkpointY).toBe(300)
   })
+
+  describe('resetAtCheckpoint', () => {
+    it('restaura corações para 3, limpa power-ups e acessório', () => {
+      state.hearts = 0
+      state.equippedAccessory = 'laco'
+      state.activePowerUp = { type: 'petisco', expiresAt: 99999 }
+      state.swapBlockedUntil = 5000
+      state.lastHitAt = 1000
+      state.resetAtCheckpoint()
+      expect(state.hearts).toBe(3)
+      expect(state.equippedAccessory).toBeNull()
+      expect(state.activePowerUp).toBeNull()
+      expect(state.swapBlockedUntil).toBe(0)
+      expect(state.lastHitAt).toBe(0)
+    })
+
+    it('mantém score, goldenBones e checkpoint', () => {
+      state.score = 999
+      state.goldenBones = { '1-1': [true, false, true] }
+      state.setCheckpoint(400, 300)
+      state.hearts = 0
+      state.resetAtCheckpoint()
+      expect(state.score).toBe(999)
+      expect(state.goldenBones['1-1']).toEqual([true, false, true])
+      expect(state.checkpointReached).toBe(true)
+      expect(state.checkpointX).toBe(400)
+      expect(state.checkpointY).toBe(300)
+    })
+  })
+
+  describe('resetLevel', () => {
+    it('restaura corações, limpa checkpoint e power-ups', () => {
+      state.hearts = 0
+      state.equippedAccessory = 'bandana'
+      state.activePowerUp = { type: 'pipoca', expiresAt: 99999 }
+      state.setCheckpoint(200, 100)
+      state.resetLevel()
+      expect(state.hearts).toBe(3)
+      expect(state.equippedAccessory).toBeNull()
+      expect(state.activePowerUp).toBeNull()
+      expect(state.checkpointReached).toBe(false)
+      expect(state.checkpointX).toBe(0)
+      expect(state.checkpointY).toBe(0)
+    })
+
+    it('mantém score e goldenBones mas limpa checkpoint', () => {
+      state.score = 500
+      state.goldenBones = { '1-1': [true, true, false] }
+      state.setCheckpoint(400, 300)
+      state.hearts = 0
+      state.resetLevel()
+      expect(state.score).toBe(500)
+      expect(state.goldenBones['1-1']).toEqual([true, true, false])
+      expect(state.checkpointReached).toBe(false)
+    })
+  })
 })

@@ -7,6 +7,8 @@ import { GameOverScene } from './scenes/GameOverScene'
 import { LevelCompleteScene } from './scenes/LevelCompleteScene'
 import { PauseScene } from './scenes/PauseScene'
 import { GalleryScene } from './scenes/GalleryScene'
+import { HowToPlayScene } from './scenes/HowToPlayScene'
+import { IntroCrawlScene } from './scenes/IntroCrawlScene'
 import { GAME_WIDTH, GAME_HEIGHT, PHYSICS } from './constants'
 
 const config: Phaser.Types.Core.GameConfig = {
@@ -30,6 +32,8 @@ const config: Phaser.Types.Core.GameConfig = {
     LevelCompleteScene,
     PauseScene,
     GalleryScene,
+    HowToPlayScene,
+    IntroCrawlScene,
   ],
 }
 

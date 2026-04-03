@@ -114,10 +114,25 @@ export class GameState {
     this.checkpointY = 0
   }
 
-  resetForCheckpoint(): void {
+  resetAtCheckpoint(): void {
+    this.hearts = 3
     this.equippedAccessory = null
     this.activePowerUp = null
     this.swapBlockedUntil = 0
+    this.lastHitAt = 0
+    // keeps: score, goldenBones, collarOfGold, checkpointReached, checkpointX/Y, currentLevel
+  }
+
+  resetLevel(): void {
+    this.hearts = 3
+    this.equippedAccessory = null
+    this.activePowerUp = null
+    this.swapBlockedUntil = 0
+    this.lastHitAt = 0
+    this.checkpointReached = false
+    this.checkpointX = 0
+    this.checkpointY = 0
+    // keeps: score, goldenBones, collarOfGold, currentLevel
   }
 }
 

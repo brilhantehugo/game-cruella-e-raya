@@ -48,6 +48,10 @@ export class MenuScene extends Phaser.Scene {
       fontSize: '18px', color: '#88ccff'
     }).setOrigin(0.5).setInteractive()
 
+    const howBtn = this.add.text(GAME_WIDTH / 2, 370, '[ H — COMO JOGAR ]', {
+      fontSize: '18px', color: '#88ffaa'
+    }).setOrigin(0.5).setInteractive()
+
     // Dica de controles
     this.add.text(GAME_WIDTH / 2, 415, '← → Mover   ESPAÇO Pular   SHIFT Habilidade   TAB Trocar cachorra', {
       fontSize: '11px', color: '#555555'
@@ -56,18 +60,24 @@ export class MenuScene extends Phaser.Scene {
     const startGame = () => {
       gameState.reset()
       gameState.currentLevel = '1-1'
-      this.scene.start(KEYS.GAME)
+      this.scene.start(KEYS.INTRO_CRAWL)
     }
+
+    const goGallery = () => { this.scene.start(KEYS.GALLERY) }
+    const goHowToPlay = () => { this.scene.start(KEYS.HOW_TO_PLAY) }
 
     const kb = this.input.keyboard!
     kb.on('keydown-ENTER', startGame)
-    kb.on('keydown-G', () => { this.scene.start(KEYS.GALLERY) })
+    kb.on('keydown-G', goGallery)
+    kb.on('keydown-H', goHowToPlay)
     playBtn.on('pointerdown', startGame)
-    galBtn.on('pointerdown', () => { this.scene.start(KEYS.GALLERY) })
+    galBtn.on('pointerdown', goGallery)
+    howBtn.on('pointerdown', goHowToPlay)
 
     this.events.once('shutdown', () => {
       kb.off('keydown-ENTER', startGame)
-      kb.off('keydown-G')
+      kb.off('keydown-G', goGallery)
+      kb.off('keydown-H', goHowToPlay)
     })
   }
 }

@@ -3,7 +3,6 @@ import { KEYS, PHYSICS } from '../constants'
 import { Enemy } from './Enemy'
 
 export class Cruella extends Phaser.Physics.Arcade.Sprite {
-  private onGround: boolean = false
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys
   private shiftKey!: Phaser.Input.Keyboard.Key
   private barkCooldown: boolean = false
@@ -13,33 +12,54 @@ export class Cruella extends Phaser.Physics.Arcade.Sprite {
     scene.add.existing(this)
     scene.physics.add.existing(this)
     this.setCollideWorldBounds(true)
+    this.setScale(2)
+    // Smaller body prevents tile-seam stuttering
+    this.setBodySize(18, 22)
+    this.setOffset(5, 3)
     this.cursors = scene.input.keyboard!.createCursorKeys()
     this.shiftKey = scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT)
-  }
 
-  setOnGround(value: boolean): void {
-    this.onGround = value
+    if (!scene.anims.exists('cruella-idle')) {
+      scene.anims.create({ key: 'cruella-idle', frames: scene.anims.generateFrameNumbers(KEYS.CRUELLA, { frames: [0] }), frameRate: 1, repeat: -1 })
+      scene.anims.create({ key: 'cruella-walk', frames: scene.anims.generateFrameNumbers(KEYS.CRUELLA, { frames: [1, 2, 3, 4] }), frameRate: 8, repeat: -1 })
+      scene.anims.create({ key: 'cruella-jump', frames: scene.anims.generateFrameNumbers(KEYS.CRUELLA, { frames: [5] }), frameRate: 1, repeat: -1 })
+    }
+    this.play('cruella-idle')
   }
 
   update(speedBonus: number = 0): void {
+    const body = this.body as Phaser.Physics.Arcade.Body
+    const onGround = body.blocked.down
     const speed = PHYSICS.CRUELLA_SPEED + speedBonus
+    let moving = false
 
     if (this.cursors.left.isDown) {
       this.setVelocityX(-speed)
       this.setFlipX(true)
+      moving = true
     } else if (this.cursors.right.isDown) {
       this.setVelocityX(speed)
       this.setFlipX(false)
+      moving = true
     } else {
       this.setVelocityX(0)
     }
 
-    if (Phaser.Input.Keyboard.JustDown(this.cursors.space) && this.onGround) {
+    if (Phaser.Input.Keyboard.JustDown(this.cursors.space) && onGround) {
       this.setVelocityY(PHYSICS.JUMP_VELOCITY)
     }
 
     if (Phaser.Input.Keyboard.JustDown(this.shiftKey) && !this.barkCooldown) {
       this.bark()
+    }
+
+    // Animation
+    if (!onGround) {
+      this.play('cruella-jump', true)
+    } else if (moving) {
+      this.play('cruella-walk', true)
+    } else {
+      this.play('cruella-idle', true)
     }
   }
 
