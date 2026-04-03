@@ -129,10 +129,10 @@ export class GameScene extends Phaser.Scene {
   private _setupCollisions(): void {
     const playerSprites = [this.player.raya, this.player.cruella]
 
-    this.physics.add.collider(this.player.raya,   this.groundLayer,   () => this.player.setGrounded(true, true))
-    this.physics.add.collider(this.player.cruella, this.groundLayer,   () => this.player.setGrounded(false, true))
-    this.physics.add.collider(this.player.raya,   this.platformLayer, () => this.player.setGrounded(true, true))
-    this.physics.add.collider(this.player.cruella, this.platformLayer, () => this.player.setGrounded(false, true))
+    this.physics.add.collider(this.player.raya,   this.groundLayer)
+    this.physics.add.collider(this.player.cruella, this.groundLayer)
+    this.physics.add.collider(this.player.raya,   this.platformLayer)
+    this.physics.add.collider(this.player.cruella, this.platformLayer)
     this.physics.add.collider(this.enemyGroup, this.groundLayer)
     this.physics.add.collider(this.enemyGroup, this.platformLayer)
 

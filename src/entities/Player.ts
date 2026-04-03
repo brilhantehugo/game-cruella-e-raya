@@ -76,11 +76,6 @@ export class Player {
     this.scene.cameras.main.flash(80, 255, 255, 255)
   }
 
-  setGrounded(isRaya: boolean, value: boolean): void {
-    if (isRaya) this.raya.setOnGround(value)
-    else this.cruella.setOnGround(value)
-  }
-
   takeDamage(): void {
     const now = this.scene.time.now
     const heartLost = gameState.takeDamage(now)
