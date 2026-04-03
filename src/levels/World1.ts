@@ -15,7 +15,7 @@ export const LEVEL_1_1: LevelData = {
     platformRow(35, 4), platformRow(48, 5), emptyRow(),
     platformRow(60, 6), emptyRow(), emptyRow(), groundRow(),
   ],
-  spawnX: 64, spawnY: 400, exitX: 2496, exitY: 370,
+  spawnX: 64, spawnY: 300, exitX: 2496, exitY: 370,
   checkpointX: 1280, checkpointY: 380,
   enemies: [
     { type: 'gato',  x: 320,  y: 390 }, { type: 'pombo', x: 640,  y: 200 },
@@ -43,7 +43,7 @@ export const LEVEL_1_2: LevelData = {
     platformRow(38, 6), platformRow(52, 4), emptyRow(),
     platformRow(65, 5), emptyRow(), emptyRow(), groundRow(),
   ],
-  spawnX: 64, spawnY: 400, exitX: 2496, exitY: 370,
+  spawnX: 64, spawnY: 300, exitX: 2496, exitY: 370,
   checkpointX: 1200, checkpointY: 380,
   enemies: [
     { type: 'gato',  x: 400,  y: 390 }, { type: 'rato',  x: 700,  y: 390 },
@@ -70,7 +70,7 @@ export const LEVEL_1_3: LevelData = {
     platformRow(55, 6), platformRow(65, 4), emptyRow(),
     emptyRow(), emptyRow(), emptyRow(), groundRow(),
   ],
-  spawnX: 64, spawnY: 400, exitX: 2496, exitY: 370,
+  spawnX: 64, spawnY: 300, exitX: 2496, exitY: 370,
   checkpointX: 1150, checkpointY: 380,
   enemies: [
     { type: 'rato',  x: 300,  y: 390 }, { type: 'gato',  x: 600,  y: 390 },
@@ -102,7 +102,7 @@ export const LEVEL_1_BOSS: LevelData = {
     Array(30).fill(0), Array(30).fill(0), Array(30).fill(0),
     Array(30).fill(1),
   ],
-  spawnX: 64, spawnY: 400, exitX: 896, exitY: 370,
+  spawnX: 64, spawnY: 300, exitX: 896, exitY: 370,
   checkpointX: 480, checkpointY: 380,
   enemies: [], items: [], goldenBones: [],
   nextLevel: null, isBossLevel: true,

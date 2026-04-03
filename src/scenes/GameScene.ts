@@ -23,10 +23,12 @@ export class GameScene extends Phaser.Scene {
   private itemGroup!: Phaser.Physics.Arcade.StaticGroup
   private escKey!: Phaser.Input.Keyboard.Key
   private currentLevel!: LevelData
+  private _gameOverPending = false
 
   constructor() { super(KEYS.GAME) }
 
   create(): void {
+    this._gameOverPending = false
     this.currentLevel = WORLD1_LEVELS[gameState.currentLevel] ?? WORLD1_LEVELS['1-1']
     this.cameras.main.setBackgroundColor(this.currentLevel.bgColor)
     this._buildTilemap()
@@ -192,6 +194,7 @@ export class GameScene extends Phaser.Scene {
 
   private _setupCamera(): void {
     const mapWidth = this.currentLevel.tileWidthCols * TILE_SIZE
+    this.physics.world.setBounds(0, 0, mapWidth, GAME_HEIGHT)
     this.cameras.main.setBounds(0, 0, mapWidth, GAME_HEIGHT)
     this.cameras.main.startFollow(this.player.active, true, 0.1, 0.1)
   }
@@ -209,6 +212,8 @@ export class GameScene extends Phaser.Scene {
   }
 
   private _gameOver(): void {
+    if (this._gameOverPending) return
+    this._gameOverPending = true
     this.scene.stop(KEYS.UI)
     this.scene.start(KEYS.GAME_OVER)
   }

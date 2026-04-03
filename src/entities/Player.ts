@@ -17,11 +17,16 @@ export class Player {
     this.cruella = new Cruella(scene, x, y)
     this.tabKey = scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.TAB)
 
-    this.cruella.setAlpha(0.35)
-    this.cruella.setActive(false)
-    ;(this.cruella.body as Phaser.Physics.Arcade.Body).setEnable(false)
-
-    gameState.activeDog = 'raya'
+    if (gameState.activeDog === 'cruella') {
+      this.raya.setAlpha(0.35)
+      this.raya.setActive(false)
+      ;(this.raya.body as Phaser.Physics.Arcade.Body).setEnable(false)
+    } else {
+      gameState.activeDog = 'raya'
+      this.cruella.setAlpha(0.35)
+      this.cruella.setActive(false)
+      ;(this.cruella.body as Phaser.Physics.Arcade.Body).setEnable(false)
+    }
   }
 
   get active(): Raya | Cruella {

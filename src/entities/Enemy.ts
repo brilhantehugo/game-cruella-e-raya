@@ -16,6 +16,7 @@ export abstract class Enemy extends Phaser.Physics.Arcade.Sprite {
   ) {
     super(scene, x, y, texture)
     scene.add.existing(this)
+    this.setScale(2)
     scene.physics.add.existing(this)
     this.hp = hp
     this.speed = speed
