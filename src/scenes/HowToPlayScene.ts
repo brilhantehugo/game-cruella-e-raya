@@ -60,12 +60,21 @@ export class HowToPlayScene extends Phaser.Scene {
     gap(12)
     rule()
 
-    this.add.text(cx, GAME_HEIGHT - 22, 'BACKSPACE — voltar', {
-      fontSize: '13px', color: '#888888'
-    }).setOrigin(0.5)
+    const backBtn = this.add.text(cx, GAME_HEIGHT - 22, '[ ESC / BACKSPACE — VOLTAR ]', {
+      fontSize: '14px', color: '#ffffff', fontStyle: 'bold'
+    }).setOrigin(0.5).setInteractive()
 
-    this.input.keyboard!.once('keydown-BACKSPACE', () => {
-      this.scene.start(KEYS.MENU)
+    this.tweens.add({ targets: backBtn, alpha: 0.4, duration: 700, yoyo: true, repeat: -1 })
+
+    const goBack = () => { this.scene.start(KEYS.MENU) }
+    const kb = this.input.keyboard!
+    kb.on('keydown-BACKSPACE', goBack)
+    kb.on('keydown-ESC', goBack)
+    backBtn.on('pointerdown', goBack)
+
+    this.events.once('shutdown', () => {
+      kb.off('keydown-BACKSPACE', goBack)
+      kb.off('keydown-ESC', goBack)
     })
   }
 }

@@ -46,6 +46,7 @@ export const KEYS = {
   GALLERY: 'GalleryScene',
   HOW_TO_PLAY: 'HowToPlayScene',
   INTRO_CRAWL: 'IntroCrawlScene',
+  CHARACTER_SELECT: 'CharacterSelectScene',
 } as const
 
 export const PHYSICS = {

@@ -81,6 +81,6 @@ export class IntroCrawlScene extends Phaser.Scene {
     if (this._started) return
     this._started = true
     this.tweens.killAll()
-    this.scene.start(KEYS.GAME)
+    this.scene.start(KEYS.CHARACTER_SELECT)
   }
 }

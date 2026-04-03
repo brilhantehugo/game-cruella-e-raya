@@ -8,8 +8,12 @@ export class MenuScene extends Phaser.Scene {
   create(): void {
     this.cameras.main.setBackgroundColor('#1a1a2e')
 
+    // Sprites dos personagens nos lados
+    this.add.sprite(72, 270, KEYS.RAYA,   0).setScale(4).setFlipX(false)
+    this.add.sprite(728, 270, KEYS.CRUELLA, 0).setScale(4).setFlipX(true)
+
     // Título animado (flutua para cima e para baixo)
-    const title = this.add.text(GAME_WIDTH / 2, 120, 'RAYA & CRUELLA', {
+    const title = this.add.text(GAME_WIDTH / 2, 120, 'CRUELLA & RAYA', {
       fontSize: '52px',
       color: '#ff6b6b',
       fontStyle: 'bold',
