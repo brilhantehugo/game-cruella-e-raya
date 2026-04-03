@@ -44,6 +44,8 @@ export const KEYS = {
   LEVEL_COMPLETE: 'LevelCompleteScene',
   PAUSE: 'PauseScene',
   GALLERY: 'GalleryScene',
+  HOW_TO_PLAY: 'HowToPlayScene',
+  INTRO_CRAWL: 'IntroCrawlScene',
 } as const
 
 export const PHYSICS = {
