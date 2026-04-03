@@ -1,14 +1,68 @@
 import Phaser from 'phaser'
-import { KEYS } from '../constants'
+import { KEYS, GAME_WIDTH, GAME_HEIGHT } from '../constants'
+import { gameState } from '../GameState'
 
 export class MenuScene extends Phaser.Scene {
   constructor() { super(KEYS.MENU) }
+
   create(): void {
-    this.add.text(400, 225, 'RAYA & CRUELLA', { fontSize: '48px', color: '#ffffff' }).setOrigin(0.5)
-    this.add.text(400, 320, 'Pressione ENTER para jogar', { fontSize: '20px', color: '#ffff00' }).setOrigin(0.5)
-    this.input.keyboard!.once('keydown-ENTER', () => {
-      this.scene.start(KEYS.GAME)
-      this.scene.launch(KEYS.UI)
+    this.cameras.main.setBackgroundColor('#1a1a2e')
+
+    // Título animado (flutua para cima e para baixo)
+    const title = this.add.text(GAME_WIDTH / 2, 120, 'RAYA & CRUELLA', {
+      fontSize: '52px',
+      color: '#ff6b6b',
+      fontStyle: 'bold',
+      stroke: '#ffffff',
+      strokeThickness: 4,
+    }).setOrigin(0.5)
+
+    this.tweens.add({
+      targets: title,
+      y: 110,
+      duration: 1200,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut',
     })
+
+    this.add.text(GAME_WIDTH / 2, 185, 'Aventura no Bairro', {
+      fontSize: '20px', color: '#aaaaaa'
+    }).setOrigin(0.5)
+
+    // Botão Jogar (pisca)
+    const playBtn = this.add.text(GAME_WIDTH / 2, 270, '[ ENTER — JOGAR ]', {
+      fontSize: '26px', color: '#ffff00', fontStyle: 'bold'
+    }).setOrigin(0.5).setInteractive()
+
+    this.tweens.add({
+      targets: playBtn,
+      alpha: 0.2,
+      duration: 600,
+      yoyo: true,
+      repeat: -1,
+    })
+
+    // Botão Galeria
+    const galBtn = this.add.text(GAME_WIDTH / 2, 330, '[ G — GALERIA DE OSSOS ]', {
+      fontSize: '18px', color: '#88ccff'
+    }).setOrigin(0.5).setInteractive()
+
+    // Dica de controles
+    this.add.text(GAME_WIDTH / 2, 415, '← → Mover   ESPAÇO Pular   SHIFT Habilidade   TAB Trocar cachorra', {
+      fontSize: '11px', color: '#555555'
+    }).setOrigin(0.5)
+
+    const startGame = () => {
+      gameState.reset()
+      gameState.currentLevel = '1-1'
+      this.scene.start(KEYS.GAME)
+    }
+
+    const kb = this.input.keyboard!
+    kb.on('keydown-ENTER', startGame)
+    kb.on('keydown-G', () => { this.scene.start(KEYS.GALLERY) })
+    playBtn.on('pointerdown', startGame)
+    galBtn.on('pointerdown', () => { this.scene.start(KEYS.GALLERY) })
   }
 }
