@@ -46,8 +46,11 @@ export class GameScene extends Phaser.Scene {
     // Tecla de mute
     this._mKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.M)
 
-    // Para BGM quando a cena encerrar
-    this.events.once('shutdown', () => SoundManager.stopBgm())
+    // Para BGM e destroi sprites de parallax quando a cena encerrar
+    this.events.once('shutdown', () => {
+      SoundManager.stopBgm()
+      this._parallax.destroy()
+    })
 
     this._buildDecorations()
     this._buildTilemap()

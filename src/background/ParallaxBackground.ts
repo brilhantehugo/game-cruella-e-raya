@@ -52,4 +52,9 @@ export class ParallaxBackground {
       sprite.tilePositionX = cameraScrollX * speed
     })
   }
+
+  destroy(): void {
+    this.layers.forEach(({ sprite }) => sprite.destroy())
+    this.layers = []
+  }
 }
