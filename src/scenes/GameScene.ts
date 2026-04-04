@@ -14,6 +14,8 @@ import { PowerUp } from '../items/PowerUp'
 import { Accessory } from '../items/Accessory'
 import { LevelData } from '../levels/LevelData'
 import { WORLD1_LEVELS } from '../levels/World1'
+import { ParallaxBackground } from '../background/ParallaxBackground'
+import { SoundManager } from '../audio/SoundManager'
 
 export class GameScene extends Phaser.Scene {
   private player!: Player
@@ -24,6 +26,8 @@ export class GameScene extends Phaser.Scene {
   private escKey!: Phaser.Input.Keyboard.Key
   private currentLevel!: LevelData
   private _gameOverPending = false
+  private _parallax!: ParallaxBackground
+  private _mKey!: Phaser.Input.Keyboard.Key
 
   constructor() { super(KEYS.GAME) }
 
@@ -31,6 +35,21 @@ export class GameScene extends Phaser.Scene {
     this._gameOverPending = false
     this.currentLevel = WORLD1_LEVELS[gameState.currentLevel] ?? WORLD1_LEVELS['1-1']
     this.cameras.main.setBackgroundColor(this.currentLevel.bgColor)
+
+    // Parallax (antes das decorações para ordem de profundidade correta)
+    this._parallax = new ParallaxBackground(this, this.currentLevel.backgroundTheme)
+
+    // BGM
+    const bgmKey = this.currentLevel.isBossLevel ? KEYS.BGM_BOSS : KEYS.BGM_WORLD1
+    SoundManager.playBgm(bgmKey, this)
+
+    // Tecla de mute
+    this._mKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.M)
+
+    // Para BGM quando a cena encerrar
+    this.events.once('shutdown', () => SoundManager.stopBgm())
+
+    this._buildDecorations()
     this._buildTilemap()
     this._spawnPlayer()
     this._spawnEnemies()
@@ -39,6 +58,12 @@ export class GameScene extends Phaser.Scene {
     this._setupCamera()
     this.escKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.ESC)
     this.scene.launch(KEYS.UI)
+  }
+
+  private _buildDecorations(): void {
+    this.currentLevel.decorations.forEach(d => {
+      this.add.image(d.x, d.y, d.type).setOrigin(0.5, 1).setDepth(-1)
+    })
   }
 
   private _buildTilemap(): void {
@@ -148,6 +173,7 @@ export class GameScene extends Phaser.Scene {
         if (pBody.velocity.y > 50 && pBody.bottom <= eBody.top + 12) {
           e.takeDamage(999)
           pBody.setVelocityY(-380)
+          SoundManager.play('stomp')
           return
         }
 
@@ -156,6 +182,7 @@ export class GameScene extends Phaser.Scene {
           return
         }
         this.player.takeDamage()
+        SoundManager.play('damage')
         if (gameState.isDead()) this._gameOver()
       })
 
@@ -178,17 +205,22 @@ export class GameScene extends Phaser.Scene {
     const now = this.time.now
     switch (type) {
       case 'checkpoint':
-        if (!gameState.checkpointReached) gameState.setCheckpoint(item.x, item.y)
+        if (!gameState.checkpointReached) {
+          gameState.setCheckpoint(item.x, item.y)
+          SoundManager.play('checkpoint')
+        }
         return // don't destroy
       case 'exit':
         this._levelComplete()
         return
       case 'bone':
         gameState.addScore(10)
+        SoundManager.play('collectBone')
         break
       case 'golden_bone':
         gameState.collectGoldenBone(gameState.currentLevel, (item as GoldenBone).boneIndex)
         gameState.addScore(500)
+        SoundManager.play('collectGolden')
         break
       case 'pizza':
         gameState.restoreHeart()
@@ -198,6 +230,7 @@ export class GameScene extends Phaser.Scene {
         break
       default:
         gameState.applyPowerUp(type, now)
+        SoundManager.play('powerUp')
     }
     item.destroy()
   }
@@ -234,6 +267,12 @@ export class GameScene extends Phaser.Scene {
       this.scene.launch(KEYS.PAUSE)
       return
     }
+    // Mute toggle
+    if (Phaser.Input.Keyboard.JustDown(this._mKey)) {
+      SoundManager.setMuted(!gameState.muted)
+    }
+    // Parallax scroll
+    this._parallax.update(this.cameras.main.scrollX)
     const enemies = this.enemyGroup.getChildren() as Enemy[]
     this.player.update(enemies)
     this.cameras.main.startFollow(this.player.active, true, 0.1, 0.1)
