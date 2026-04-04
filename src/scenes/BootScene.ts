@@ -452,6 +452,7 @@ export class BootScene extends Phaser.Scene {
       })
     })
 
-    this.textures.addSpriteSheet(key, canvas, { frameWidth, frameHeight })
+    // Phaser aceita HTMLCanvasElement em runtime, mas os tipos declaram HTMLImageElement
+    this.textures.addSpriteSheet(key, canvas as unknown as HTMLImageElement, { frameWidth, frameHeight })
   }
 }
