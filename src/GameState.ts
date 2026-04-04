@@ -20,6 +20,7 @@ export class GameState {
   checkpointY: number = 0
   currentLevel: string = '1-1'
   goldenBones: Record<string, boolean[]> = {}
+  muted: boolean = false
 
   canSwap(now: number): boolean {
     return now >= this.swapBlockedUntil

@@ -136,6 +136,17 @@ describe('GameState', () => {
     })
   })
 
+  it('muted começa false', () => {
+    expect(state.muted).toBe(false)
+  })
+
+  it('muted pode ser alternado', () => {
+    state.muted = true
+    expect(state.muted).toBe(true)
+    state.muted = false
+    expect(state.muted).toBe(false)
+  })
+
   describe('resetLevel', () => {
     it('restaura corações, limpa checkpoint e power-ups', () => {
       state.hearts = 0
