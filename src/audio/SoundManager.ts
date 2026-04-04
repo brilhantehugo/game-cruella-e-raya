@@ -7,6 +7,10 @@ export type SfxKey =
 
 let _ctx: AudioContext | null = null
 let _currentBgm: Phaser.Sound.BaseSound | null = null
+// Armazena o último BGM para retomar após unmute
+let _lastBgmKey: string | null = null
+let _lastBgmScene: Phaser.Scene | null = null
+let _lastBgmLoop: boolean = true
 
 function getCtx(): AudioContext {
   if (!_ctx) _ctx = new AudioContext()
@@ -60,7 +64,8 @@ function playArpeggio(freqs: number[], noteDurMs: number, gainVal = 0.22): void 
 function playNoise(durationMs: number, gainVal = 0.15): void {
   if (gameState.muted) return
   const c = getCtx()
-  const sampleCount = Math.ceil(c.sampleRate * durationMs / 1000)
+  const dur = durationMs / 1000
+  const sampleCount = Math.ceil(c.sampleRate * dur)
   const buf = c.createBuffer(1, sampleCount, c.sampleRate)
   const data = buf.getChannelData(0)
   for (let i = 0; i < sampleCount; i++) data[i] = Math.random() * 2 - 1
@@ -68,32 +73,38 @@ function playNoise(durationMs: number, gainVal = 0.15): void {
   src.buffer = buf
   const gain = c.createGain()
   gain.gain.setValueAtTime(gainVal, c.currentTime)
-  gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + durationMs / 1000)
+  gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + dur)
   src.connect(gain)
   gain.connect(c.destination)
   src.start()
+  src.stop(c.currentTime + dur)  // libera o nó após o fim do buffer
 }
 
 export const SoundManager = {
   play(key: SfxKey): void {
     switch (key) {
-      case 'jump':          playTone('sine',     350,  600, 120);                     break
-      case 'doubleJump':    playTone('sine',     600,  950, 100);                     break
-      case 'dash':          playTone('sawtooth', 300,  150, 180);                     break
-      case 'bark':          playTone('square',   220,  220,  80, 0.3);               break
-      case 'collectBone':   playTone('sine',     900,  900,  80, 0.2);               break
-      case 'collectGolden': playArpeggio([523, 659, 784], 100);                      break
-      case 'damage':        playTone('square',   180,   80, 250, 0.3);              break
-      case 'stomp':         playNoise(100);                                           break
-      case 'powerUp':       playArpeggio([523, 587, 659, 698, 784], 80);            break
-      case 'swap':          playTone('sine',     500,  750, 120);                    break
-      case 'gameOver':      playArpeggio([440, 330, 220], 200, 0.3);               break
-      case 'levelComplete': playArpeggio([523, 659, 784, 880, 1047], 100);          break
-      case 'checkpoint':    playTone('sine',     440,  880, 200);                    break
+      case 'jump':          playTone('sine',     350,  600, 120);                    break
+      case 'doubleJump':    playTone('sine',     600,  950, 100);                    break
+      case 'dash':          playTone('sawtooth', 300,  150, 180);                    break
+      case 'bark':          playTone('square',   220,  220,  80, 0.3);              break
+      case 'collectBone':   playTone('sine',     900,  900,  80, 0.2);              break
+      case 'collectGolden': playArpeggio([523, 659, 784], 100);                     break
+      case 'damage':        playTone('square',   180,   80, 250, 0.3);             break
+      case 'stomp':         playNoise(100);                                          break
+      case 'powerUp':       playArpeggio([523, 587, 659, 698, 784], 80);           break
+      case 'swap':          playTone('sine',     500,  750, 120);                   break
+      case 'gameOver':      playArpeggio([440, 330, 220], 200, 0.3);              break
+      case 'levelComplete': playArpeggio([523, 659, 784, 880, 1047], 100);         break
+      case 'checkpoint':    playTone('sine',     440,  880, 200);                   break
     }
   },
 
   playBgm(key: string, scene: Phaser.Scene, loop = true): void {
+    // Armazena para retomar após unmute
+    _lastBgmKey = key
+    _lastBgmScene = scene
+    _lastBgmLoop = loop
+
     if (_currentBgm) {
       _currentBgm.stop()
       _currentBgm.destroy()
@@ -110,10 +121,29 @@ export const SoundManager = {
       _currentBgm.destroy()
       _currentBgm = null
     }
+    _lastBgmKey = null
+    _lastBgmScene = null
   },
 
   setMuted(muted: boolean): void {
     gameState.muted = muted
-    if (muted) this.stopBgm()
+    if (muted) {
+      // Para o BGM mas mantém _lastBgm* para retomar depois
+      if (_currentBgm) {
+        _currentBgm.stop()
+        _currentBgm.destroy()
+        _currentBgm = null
+      }
+    } else if (_lastBgmKey && _lastBgmScene) {
+      // Retoma o BGM que estava tocando antes do mute
+      try {
+        _currentBgm = _lastBgmScene.sound.add(_lastBgmKey, { loop: _lastBgmLoop, volume: 0.5 })
+        _currentBgm.play()
+      } catch {
+        // Cena pode ter sido destruída — próxima transição vai retomar o BGM
+        _lastBgmKey = null
+        _lastBgmScene = null
+      }
+    }
   },
 }
