@@ -47,13 +47,36 @@ export const KEYS = {
   HOW_TO_PLAY: 'HowToPlayScene',
   INTRO_CRAWL: 'IntroCrawlScene',
   CHARACTER_SELECT: 'CharacterSelectScene',
+  // decorações de cenário
+  CASA:   'casa',
+  ARVORE: 'arvore',
+  LOJA:   'loja',
+  POSTE:  'poste',
+  // parallax de fundo
+  BG_RUA_1:     'bg_rua_1',
+  BG_RUA_2:     'bg_rua_2',
+  BG_RUA_3:     'bg_rua_3',
+  BG_PRACA_1:   'bg_praca_1',
+  BG_PRACA_2:   'bg_praca_2',
+  BG_PRACA_3:   'bg_praca_3',
+  BG_MERCADO_1: 'bg_mercado_1',
+  BG_MERCADO_2: 'bg_mercado_2',
+  BG_MERCADO_3: 'bg_mercado_3',
+  BG_BOSS_1:    'bg_boss_1',
+  BG_BOSS_2:    'bg_boss_2',
+  BG_BOSS_3:    'bg_boss_3',
+  // áudio BGM
+  BGM_MENU:    'bgm_menu',
+  BGM_WORLD1:  'bgm_world1',
+  BGM_BOSS:    'bgm_boss',
+  BGM_FANFARE: 'bgm_fanfare',
 } as const
 
 export const PHYSICS = {
   GRAVITY: 800,
   RAYA_SPEED: 240,
   CRUELLA_SPEED: 200,
-  JUMP_VELOCITY: -520,
+  JUMP_VELOCITY: -450,
   DASH_VELOCITY: 600,
   DASH_DURATION: 200,
   BARK_RADIUS: 120,
