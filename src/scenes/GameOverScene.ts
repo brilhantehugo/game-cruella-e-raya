@@ -1,10 +1,12 @@
 import Phaser from 'phaser'
 import { KEYS } from '../constants'
 import { gameState } from '../GameState'
+import { SoundManager } from '../audio/SoundManager'
 
 export class GameOverScene extends Phaser.Scene {
   constructor() { super(KEYS.GAME_OVER) }
   create(): void {
+    SoundManager.play('gameOver')
     this.cameras.main.setBackgroundColor('#1a0000')
     this.add.text(400, 160, 'VOLTA PRA CASA!', { fontSize: '40px', color: '#ff4444', fontStyle: 'bold' }).setOrigin(0.5)
 

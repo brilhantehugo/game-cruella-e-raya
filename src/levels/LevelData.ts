@@ -1,4 +1,5 @@
 export type EnemyType = 'gato' | 'pombo' | 'rato' | 'dono'
+export interface DecorationSpawn { type: string; x: number; y: number }
 
 export type ItemType =
   | 'bone' | 'golden_bone'
@@ -10,10 +11,13 @@ export type ItemType =
 export interface EnemySpawn { type: EnemyType; x: number; y: number }
 export interface ItemSpawn  { type: ItemType;  x: number; y: number }
 
+export type BackgroundTheme = 'rua' | 'praca' | 'mercado' | 'boss'
+
 export interface LevelData {
   id: string
   name: string
   bgColor: number
+  backgroundTheme: BackgroundTheme
   tiles: number[][]
   tileWidthCols: number
   spawnX: number
@@ -27,4 +31,5 @@ export interface LevelData {
   goldenBones: Array<{ x: number; y: number }>
   nextLevel: string | null
   isBossLevel?: boolean
+  decorations: DecorationSpawn[]
 }

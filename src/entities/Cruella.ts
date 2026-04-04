@@ -2,6 +2,7 @@ import Phaser from 'phaser'
 import { KEYS, PHYSICS } from '../constants'
 import { gameState } from '../GameState'
 import { Enemy } from './Enemy'
+import { SoundManager } from '../audio/SoundManager'
 
 export class Cruella extends Phaser.Physics.Arcade.Sprite {
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys
@@ -51,6 +52,7 @@ export class Cruella extends Phaser.Physics.Arcade.Sprite {
         ? PHYSICS.JUMP_VELOCITY * 1.45
         : PHYSICS.JUMP_VELOCITY
       this.setVelocityY(jumpVel)
+      SoundManager.play('jump')
     }
 
     if (Phaser.Input.Keyboard.JustDown(this.shiftKey) && !this.barkCooldown) {
@@ -68,6 +70,7 @@ export class Cruella extends Phaser.Physics.Arcade.Sprite {
   }
 
   bark(): void {
+    SoundManager.play('bark')
     this.barkCooldown = true
     this.emit('bark', this.x, this.y)
     this.scene.time.delayedCall(1500, () => { this.barkCooldown = false })

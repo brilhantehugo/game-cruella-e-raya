@@ -5,6 +5,13 @@ import { CompiledSprite, RAYA_SPRITE, CRUELLA_SPRITE, GATO_SPRITE, POMBO_SPRITE,
 export class BootScene extends Phaser.Scene {
   constructor() { super(KEYS.BOOT) }
 
+  preload(): void {
+    this.load.audio(KEYS.BGM_MENU,    'audio/bgm_menu.mp3')
+    this.load.audio(KEYS.BGM_WORLD1,  'audio/bgm_world1.mp3')
+    this.load.audio(KEYS.BGM_BOSS,    'audio/bgm_boss.mp3')
+    this.load.audio(KEYS.BGM_FANFARE, 'audio/bgm_fanfare.mp3')
+  }
+
   create(): void {
     // ── Pixel sprites ──────────────────────────────────────────────────────────
     this._makePixelSprite(KEYS.RAYA,    RAYA_SPRITE)
@@ -15,47 +22,413 @@ export class BootScene extends Phaser.Scene {
     this._makePixelSprite(KEYS.DONO,    DONO_SPRITE)
     this._makePixelSprite(KEYS.BIGODES, BIGODES_SPRITE)
 
-    // ── Geometric tiles and items (unchanged) ──────────────────────────────────
+    // ── Graphics textures ──────────────────────────────────────────────────────
     const g = this.make.graphics({ x: 0, y: 0 })
+    const gen = (key: string, w: number, h: number) => g.generateTexture(key, w, h)
+    const clr = () => g.clear()
 
-    const makeRect = (key: string, w: number, h: number, fill: number, stroke?: number) => {
-      g.clear()
-      g.fillStyle(fill)
-      g.fillRect(0, 0, w, h)
-      if (stroke !== undefined) {
-        g.lineStyle(2, stroke)
-        g.strokeRect(1, 1, w - 2, h - 2)
+    // ── TILES ──────────────────────────────────────────────────────────────────
+    // Ground tile: asphalt + edge
+    clr()
+    g.fillStyle(0x8b5e3c); g.fillRect(0, 0, TILE_SIZE, TILE_SIZE)
+    g.fillStyle(0x7a4e2c); g.fillRect(0, 0, TILE_SIZE, 5)
+    g.fillStyle(0x9a6e4c, 0.4)
+    g.fillRect(4, 10, 24, 2); g.fillRect(8, 18, 20, 2); g.fillRect(2, 26, 28, 2)
+    g.lineStyle(1, 0x5a3a1a); g.strokeRect(0, 0, TILE_SIZE, TILE_SIZE)
+    gen(KEYS.TILE_GROUND, TILE_SIZE, TILE_SIZE)
+
+    // Platform tile: grass on top, dirt underneath
+    clr()
+    g.fillStyle(0x6b7c3a); g.fillRect(0, 0, TILE_SIZE, TILE_SIZE / 2)
+    g.fillStyle(0x88a050); g.fillRect(0, 0, TILE_SIZE, 5)
+    g.fillStyle(0xa8c068); g.fillRect(2, 1, 4, 3); g.fillRect(10, 0, 3, 3); g.fillRect(20, 1, 4, 2)
+    g.lineStyle(1, 0x3a5020); g.strokeRect(0, 0, TILE_SIZE, TILE_SIZE / 2)
+    gen(KEYS.TILE_PLATFORM, TILE_SIZE, TILE_SIZE / 2)
+
+    // ── BONE ──────────────────────────────────────────────────────────────────
+    const drawBone = (key: string, col: number, dark: number, sz: number) => {
+      clr()
+      const k = Math.round(sz * 0.22)
+      const rodY = Math.round((sz - sz * 0.33) / 2)
+      const rodH = Math.round(sz * 0.33)
+      g.fillStyle(dark)
+      g.fillRect(k, rodY + 1, sz - k * 2, rodH)
+      g.fillStyle(col)
+      g.fillRect(k, rodY, sz - k * 2, rodH)
+      for (const [cx, cy] of [[k, k], [sz - k, k], [k, sz - k], [sz - k, sz - k]] as [number,number][]) {
+        g.fillStyle(dark); g.fillCircle(cx + 1, cy + 1, k)
+        g.fillStyle(col);  g.fillCircle(cx, cy, k)
       }
-      g.generateTexture(key, w, h)
+      gen(key, sz, sz)
     }
+    drawBone(KEYS.BONE,        0xf5f0d8, 0xc0b898, 22)
+    drawBone(KEYS.GOLDEN_BONE, 0xffd700, 0xb8900a, 26)
 
-    const makeCircle = (key: string, r: number, fill: number) => {
-      g.clear()
-      g.fillStyle(fill)
-      g.fillCircle(r, r, r)
-      g.generateTexture(key, r * 2, r * 2)
+    // ── HEARTS ────────────────────────────────────────────────────────────────
+    const drawHeart = (key: string, col: number) => {
+      clr()
+      g.fillStyle(col)
+      g.fillCircle(8, 9, 7); g.fillCircle(16, 9, 7)
+      g.fillTriangle(2, 13, 22, 13, 12, 23)
+      gen(key, 24, 24)
     }
+    drawHeart(KEYS.HEART,       0xff3355)
+    drawHeart(KEYS.HEART_EMPTY, 0x444444)
 
-    makeRect(KEYS.TILE_GROUND,    TILE_SIZE,     TILE_SIZE,     0x8b5e3c, 0x5a3a1a)
-    makeRect(KEYS.TILE_PLATFORM,  TILE_SIZE,     TILE_SIZE / 2, 0x5a8f3c, 0x3a6020)
-    makeCircle(KEYS.BONE,         8,             0xf5f0e0)
-    makeCircle(KEYS.GOLDEN_BONE,  10,            0xffd700)
-    makeRect(KEYS.PETISCO,        20, 14,        0xff8c00)
-    makeRect(KEYS.PIPOCA,         16, 20,        0xfffacd)
-    makeRect(KEYS.PIZZA,          22, 22,        0xff6347)
-    makeRect(KEYS.CHURRASCO,      24, 18,        0x8b0000)
-    makeCircle(KEYS.BOLA,         10,            0xadff2f)
-    makeRect(KEYS.FRISBEE,        24, 8,         0x00bcd4)
-    makeRect(KEYS.LACO,           16, 12,        0xff69b4)
-    makeRect(KEYS.COLEIRA,        24, 8,         0xcd853f)
-    makeRect(KEYS.CHAPEU,         24, 14,        0xff1493)
-    makeRect(KEYS.BANDANA,        20, 10,        0xff4500)
-    makeRect(KEYS.COLLAR_GOLD,    24, 8,         0xffd700, 0xb8860b)
-    makeCircle(KEYS.HEART,        12,            0xff3355)
-    makeCircle(KEYS.HEART_EMPTY,  12,            0x333333)
-    makeRect(KEYS.HYDRANT,        20, 32,        0xff2200, 0xaa0000)
-    makeRect(KEYS.EXIT_GATE,      48, 64,        0x8b6914, 0x5a4010)
-    makeRect(KEYS.SURPRISE_BLOCK, TILE_SIZE, TILE_SIZE, 0xffd700, 0xb8860b)
+    // ── POWER-UPS ─────────────────────────────────────────────────────────────
+    // PETISCO: pedaço de carne (speed)
+    clr()
+    g.fillStyle(0x8b1a1a); g.fillCircle(12, 11, 10)
+    g.fillStyle(0xcd5c5c)
+    g.fillCircle(9, 8, 5); g.fillRect(14, 6, 6, 4)
+    g.fillStyle(0xff8888); g.fillCircle(8, 7, 2)
+    gen(KEYS.PETISCO, 24, 22)
+
+    // PIPOCA: popcorn in striped bucket (super jump)
+    clr()
+    // bucket
+    g.fillStyle(0xff4444); g.fillRect(6, 16, 14, 10)
+    g.fillStyle(0xffffff); g.fillRect(8, 16, 3, 10); g.fillRect(14, 16, 3, 10)
+    g.lineStyle(1, 0xcc2222); g.strokeRect(6, 16, 14, 10)
+    // popcorn blobs
+    g.fillStyle(0xfff8dc)
+    g.fillCircle(8, 14, 5); g.fillCircle(15, 13, 5); g.fillCircle(11, 10, 5)
+    g.fillStyle(0xffee88)
+    g.fillCircle(18, 15, 4); g.fillCircle(5, 16, 4)
+    gen(KEYS.PIPOCA, 26, 26)
+
+    // PIZZA: fatia de pizza (heal)
+    clr()
+    g.fillStyle(0xd4891a); g.fillTriangle(13, 0, 0, 24, 26, 24)  // crust
+    g.fillStyle(0xff3300); g.fillTriangle(13, 3, 2, 23, 24, 23)  // sauce
+    g.fillStyle(0xffdd44)  // cheese
+    g.fillCircle(7, 18, 4); g.fillCircle(17, 17, 4); g.fillCircle(12, 11, 3)
+    g.fillStyle(0xcc2200); g.fillCircle(9, 15, 2); g.fillCircle(15, 14, 2)  // pepperoni
+    gen(KEYS.PIZZA, 26, 26)
+
+    // CHURRASCO: carne na espeto (invincible)
+    clr()
+    g.fillStyle(0xa0522d); g.fillRect(2, 2, 3, 22)  // espeto (stick)
+    g.fillStyle(0x8b0000); g.fillCircle(13, 13, 10)  // meat body
+    g.fillStyle(0xcd5c5c); g.fillCircle(11, 10, 5)   // highlight
+    g.fillStyle(0x3d1a00); g.fillCircle(15, 16, 3)   // grill marks
+    gen(KEYS.CHURRASCO, 26, 26)
+
+    // BOLA: tennis ball
+    clr()
+    g.fillStyle(0xb8f030); g.fillCircle(12, 12, 12)
+    g.fillStyle(0x88c020); g.fillCircle(10, 10, 6)
+    g.fillStyle(0xffffff)
+    g.fillRect(5, 6, 3, 2); g.fillRect(4, 9, 2, 5); g.fillRect(5, 15, 3, 2)
+    g.fillRect(15, 8, 3, 2); g.fillRect(17, 10, 2, 5); g.fillRect(15, 16, 3, 2)
+    gen(KEYS.BOLA, 24, 24)
+
+    // FRISBEE: disco voador
+    clr()
+    g.fillStyle(0x00bcd4); g.fillEllipse(15, 7, 30, 12)
+    g.fillStyle(0x0097a7); g.fillEllipse(15, 5, 22, 7)
+    g.fillStyle(0x80deea); g.fillEllipse(12, 4, 10, 4)
+    g.lineStyle(1, 0x006064); g.strokeEllipse(15, 7, 30, 12)
+    gen(KEYS.FRISBEE, 30, 14)
+
+    // ── ACCESSORIES ───────────────────────────────────────────────────────────
+    // LACO: laço de fita (bow)
+    clr()
+    g.fillStyle(0xff69b4)
+    g.fillTriangle(0, 0, 10, 8, 0, 16)
+    g.fillTriangle(22, 0, 12, 8, 22, 16)
+    g.fillStyle(0xff1493); g.fillCircle(11, 8, 4)
+    g.fillStyle(0xff8ac4); g.fillCircle(11, 8, 2)
+    gen(KEYS.LACO, 22, 16)
+
+    // COLEIRA: dog collar strip + tag
+    clr()
+    g.fillStyle(0xcd853f); g.fillRect(0, 3, 28, 8)
+    g.fillStyle(0xa0652a); g.fillRect(0, 3, 28, 2)
+    g.fillStyle(0xffd700); g.fillRect(11, 11, 6, 8)  // tag
+    g.lineStyle(1, 0x8b5a1a); g.strokeRect(0, 3, 28, 8); g.strokeRect(11, 11, 6, 8)
+    gen(KEYS.COLEIRA, 28, 20)
+
+    // CHAPEU: party hat
+    clr()
+    g.fillStyle(0xff1493); g.fillTriangle(13, 0, 1, 22, 25, 22)
+    g.fillStyle(0xffdd00); g.fillRect(1, 18, 24, 4)  // brim stripe
+    g.fillStyle(0xff69b4); g.fillRect(5, 10, 4, 3); g.fillRect(12, 6, 4, 3)  // dots
+    g.fillStyle(0xffffff); g.fillCircle(13, 1, 3)  // tip star/ball
+    gen(KEYS.CHAPEU, 26, 24)
+
+    // BANDANA
+    clr()
+    g.fillStyle(0xff4500); g.fillTriangle(0, 0, 26, 0, 13, 13)
+    g.fillStyle(0xff7733)
+    g.fillCircle(7, 4, 2); g.fillCircle(13, 4, 2); g.fillCircle(19, 4, 2)
+    g.fillCircle(10, 8, 2); g.fillCircle(16, 8, 2)
+    gen(KEYS.BANDANA, 26, 14)
+
+    // COLLAR_GOLD: golden special collar
+    clr()
+    g.fillStyle(0xffd700); g.fillRect(0, 2, 28, 9)
+    g.fillStyle(0xffec6e)
+    g.fillRect(2, 3, 5, 7); g.fillRect(11, 3, 5, 7); g.fillRect(21, 3, 5, 7)
+    g.lineStyle(2, 0xb8860b); g.strokeRect(0, 2, 28, 9)
+    gen(KEYS.COLLAR_GOLD, 28, 14)
+
+    // ── UI ────────────────────────────────────────────────────────────────────
+    // HYDRANT: hidrante vermelho
+    clr()
+    g.fillStyle(0xff2200)
+    g.fillRect(7, 5, 14, 22)   // corpo principal
+    g.fillRect(4, 26, 20, 6)   // base
+    g.fillRect(9, 1, 10, 6)    // topo
+    g.fillStyle(0xcc1100)
+    g.fillRect(2, 13, 6, 7)    // valvula esq
+    g.fillRect(20, 13, 6, 7)   // valvula dir
+    g.fillStyle(0xaaaaaa); g.fillCircle(14, 4, 4)  // tampao cinza
+    g.lineStyle(1, 0xaa0000)
+    g.strokeRect(7, 5, 14, 22); g.strokeRect(4, 26, 20, 6)
+    gen(KEYS.HYDRANT, 28, 34)
+
+    // EXIT_GATE: portao de saida
+    clr()
+    g.fillStyle(0x7a5c14)
+    g.fillRect(0, 6, 10, 64)    // pilar esq
+    g.fillRect(46, 6, 10, 64)   // pilar dir
+    g.fillRect(0, 0, 56, 10)    // trave
+    g.fillStyle(0xffd700)
+    g.fillCircle(5, 3, 4); g.fillCircle(51, 3, 4)  // enfeites dourados
+    g.fillStyle(0x1a2a4a)
+    g.fillRect(10, 10, 36, 60)  // vao do portao
+    g.fillStyle(0xffd700)
+    g.fillCircle(28, 38, 6)     // estrela central
+    g.fillCircle(20, 52, 3); g.fillCircle(36, 52, 3)
+    gen(KEYS.EXIT_GATE, 56, 70)
+
+    // SURPRISE_BLOCK: bloco surpresa
+    clr()
+    g.fillStyle(0xffd700); g.fillRect(0, 0, TILE_SIZE, TILE_SIZE)
+    g.fillStyle(0xffee55)
+    g.fillRect(2, 2, TILE_SIZE - 4, 4)
+    g.fillRect(2, 2, 4, TILE_SIZE - 4)
+    g.fillStyle(0xb8860b)
+    g.fillRect(0, TILE_SIZE - 4, TILE_SIZE, 4)
+    g.fillRect(TILE_SIZE - 4, 0, 4, TILE_SIZE)
+    g.fillStyle(0xffffff)
+    g.fillRect(12, 8, 8, 5); g.fillRect(14, 13, 4, 6); g.fillRect(14, 21, 4, 4)
+    gen(KEYS.SURPRISE_BLOCK, TILE_SIZE, TILE_SIZE)
+
+    // ── DECORAÇÕES ────────────────────────────────────────────────────────────
+    // CASA: casa residencial
+    clr()
+    const cw = 64, ch = 76
+    g.fillStyle(0xb03020); g.fillTriangle(0, 30, 32, 0, 64, 30)      // telhado
+    g.fillStyle(0xf5deb3); g.fillRect(2, 28, cw - 4, ch - 28)         // paredes
+    g.fillStyle(0xf0d090); g.fillRect(2, 28, cw - 4, 4)               // borda telhado
+    g.fillStyle(0x7a4e2c); g.fillRect(25, ch - 24, 14, 24)            // porta
+    g.fillStyle(0xffd700); g.fillCircle(36, ch - 13, 2)               // macaneta
+    g.fillStyle(0x87ceeb)
+    g.fillRect(7, 36, 16, 14); g.fillRect(41, 36, 16, 14)             // janelas
+    g.fillStyle(0xffffff)
+    g.lineBetween(7, 43, 23, 43); g.lineBetween(15, 36, 15, 50)       // cruz janela esq
+    g.lineBetween(41, 43, 57, 43); g.lineBetween(49, 36, 49, 50)      // cruz janela dir
+    g.lineStyle(1, 0x5a3a1a)
+    g.strokeRect(7, 36, 16, 14); g.strokeRect(41, 36, 16, 14)
+    g.lineStyle(2, 0x8a2010); g.strokeTriangle(0, 30, 32, 0, 64, 30) // borda telhado
+    gen(KEYS.CASA, cw, ch)
+
+    // ARVORE: arvore urbana
+    clr()
+    g.fillStyle(0x6b4226); g.fillRect(11, 52, 10, 22)                 // tronco
+    g.fillStyle(0x8b5c2a); g.fillRect(11, 52, 10, 4)
+    g.fillStyle(0x1e7a1e); g.fillCircle(16, 46, 18)                   // copa base
+    g.fillStyle(0x26a026); g.fillCircle(16, 35, 15)                   // copa meio
+    g.fillStyle(0x3cc03c); g.fillCircle(16, 26, 12)                   // copa topo
+    g.fillStyle(0x55d055); g.fillCircle(12, 22, 6); g.fillCircle(20, 24, 5)  // destaques
+    gen(KEYS.ARVORE, 32, 74)
+
+    // LOJA: loja de bairro
+    clr()
+    const lw = 80, lh = 68
+    g.fillStyle(0xdce8e8); g.fillRect(0, 18, lw, lh - 18)             // fachada
+    // toldo listrado
+    for (let i = 0; i < 5; i++) {
+      g.fillStyle(i % 2 === 0 ? 0xdd2222 : 0xffffff)
+      g.fillRect(i * 16, 6, 16, 14)
+    }
+    g.fillStyle(0xbb1111); g.fillRect(0, 18, lw, 3)                    // borda toldo
+    // vitrine
+    g.fillStyle(0xb8e4ff); g.fillRect(8, 26, lw - 16, 22)
+    g.fillStyle(0x88ccff); g.fillRect(10, 28, lw - 20, 8)             // reflexo vidro
+    g.lineStyle(2, 0x4a6a7a); g.strokeRect(8, 26, lw - 16, 22)
+    g.lineStyle(1, 0x4a6a7a); g.lineBetween(lw / 2, 26, lw / 2, 48)  // divisor vitrine
+    // porta
+    g.fillStyle(0x8b6914); g.fillRect(lw / 2 - 8, lh - 22, 16, 22)
+    g.fillStyle(0xffd700); g.fillCircle(lw / 2 + 5, lh - 12, 2)      // macaneta
+    g.lineStyle(1, 0x888888); g.strokeRect(0, 18, lw, lh - 18)
+    gen(KEYS.LOJA, lw, lh)
+
+    // POSTE: poste de luz
+    clr()
+    g.fillStyle(0x555566); g.fillRect(5, 12, 5, 62)                   // haste
+    g.fillStyle(0x444455); g.fillRect(2, 70, 11, 4)                   // base
+    g.fillRect(5, 12, 22, 4)                                           // braco horizontal
+    g.fillStyle(0xffee88); g.fillEllipse(24, 12, 14, 8)               // lampada
+    g.fillStyle(0xffffcc); g.fillEllipse(24, 11, 8, 5)                // brilho central
+    g.fillStyle(0x333344); g.fillRect(20, 8, 8, 4)                    // carcaca lampada
+    gen(KEYS.POSTE, 38, 74)
+
+    // ── PARALLAX BACKGROUNDS ───────────────────────────────────────────────────
+
+    // bg_rua_1: blue sky + clouds
+    clr()
+    g.fillStyle(0x5b8dd9); g.fillRect(0, 0, 200, 450)
+    g.fillStyle(0xffffff)
+    g.fillEllipse(40, 80, 80, 30); g.fillEllipse(65, 70, 50, 20); g.fillEllipse(20, 82, 40, 18)
+    g.fillEllipse(150, 50, 70, 25); g.fillEllipse(175, 42, 45, 18); g.fillEllipse(130, 55, 35, 14)
+    g.fillEllipse(100, 130, 60, 22); g.fillEllipse(120, 124, 40, 16)
+    gen(KEYS.BG_RUA_1, 200, 450)
+
+    // bg_rua_2: distant gray buildings (transparent base — layers on top of sky)
+    clr()
+    g.fillStyle(0x8a8a9a); g.fillRect(0, 180, 50, 270)
+    g.fillStyle(0x6a6a7a); g.fillRect(0, 100, 50, 80)
+    g.fillStyle(0x7a7a8a); g.fillRect(55, 220, 60, 230)
+    g.fillStyle(0x5a5a6a); g.fillRect(55, 130, 60, 90)
+    g.fillStyle(0x9a9aaa); g.fillRect(120, 250, 45, 200)
+    g.fillStyle(0x6a6a7a); g.fillRect(170, 200, 30, 250)
+    g.fillStyle(0xd0d8f0)
+    g.fillRect(8, 110, 8, 6);  g.fillRect(20, 110, 8, 6);  g.fillRect(32, 110, 8, 6)
+    g.fillRect(8, 125, 8, 6);  g.fillRect(20, 125, 8, 6);  g.fillRect(32, 125, 8, 6)
+    g.fillRect(62, 142, 10, 7); g.fillRect(76, 142, 10, 7); g.fillRect(90, 142, 10, 7)
+    g.fillRect(62, 158, 10, 7); g.fillRect(76, 158, 10, 7); g.fillRect(90, 158, 10, 7)
+    gen(KEYS.BG_RUA_2, 200, 450)
+
+    // bg_rua_3: near houses + tree tops
+    clr()
+    g.fillStyle(0xd4a57a); g.fillRect(10, 300, 50, 150)
+    g.fillStyle(0xc03030); g.fillTriangle(5, 300, 35, 268, 65, 300)
+    g.fillStyle(0x87ceeb); g.fillRect(18, 315, 14, 10); g.fillRect(37, 315, 14, 10)
+    g.fillStyle(0xe8c090); g.fillRect(80, 320, 60, 130)
+    g.fillStyle(0x902020); g.fillTriangle(75, 320, 110, 285, 145, 320)
+    g.fillStyle(0x87ceeb); g.fillRect(88, 334, 16, 12); g.fillRect(112, 334, 16, 12)
+    g.fillStyle(0x5a3a1a); g.fillRect(155, 310, 8, 100)
+    g.fillStyle(0x3a7a2a); g.fillCircle(159, 295, 28)
+    g.fillStyle(0x4a9a3a); g.fillCircle(155, 280, 18)
+    gen(KEYS.BG_RUA_3, 200, 450)
+
+    // bg_praca_1: light blue sky + soft clouds
+    clr()
+    g.fillStyle(0x87ceeb); g.fillRect(0, 0, 200, 450)
+    g.fillStyle(0xffffff)
+    g.fillEllipse(50, 60, 90, 32); g.fillEllipse(80, 52, 55, 22); g.fillEllipse(25, 65, 45, 20)
+    g.fillEllipse(160, 100, 75, 28); g.fillEllipse(185, 93, 48, 20)
+    gen(KEYS.BG_PRACA_1, 200, 450)
+
+    // bg_praca_2: green hills + tall trees
+    clr()
+    g.fillStyle(0x5a9a40); g.fillEllipse(60, 430, 180, 130)
+    g.fillStyle(0x4a8a30); g.fillEllipse(160, 440, 160, 100)
+    g.fillStyle(0x5a3a1a); g.fillRect(20, 240, 8, 120)
+    g.fillStyle(0x2a6a20); g.fillCircle(24, 228, 30)
+    g.fillStyle(0x3a8030); g.fillCircle(20, 212, 20)
+    g.fillStyle(0x5a3a1a); g.fillRect(110, 260, 8, 100)
+    g.fillStyle(0x2a6a20); g.fillCircle(114, 248, 28)
+    g.fillStyle(0x3a8030); g.fillCircle(110, 234, 18)
+    g.fillStyle(0x5a3a1a); g.fillRect(170, 250, 8, 110)
+    g.fillStyle(0x2a6a20); g.fillCircle(174, 238, 26)
+    gen(KEYS.BG_PRACA_2, 200, 450)
+
+    // bg_praca_3: bushes + wooden fence
+    clr()
+    g.fillStyle(0xc8a060)
+    g.fillRect(0, 350, 200, 8)
+    g.fillRect(10, 338, 10, 30); g.fillRect(40, 338, 10, 30)
+    g.fillRect(70, 338, 10, 30);  g.fillRect(100, 338, 10, 30)
+    g.fillRect(130, 338, 10, 30); g.fillRect(160, 338, 10, 30)
+    g.fillRect(190, 338, 10, 30)
+    g.fillStyle(0x3a8a2a)
+    g.fillEllipse(25, 360, 55, 40); g.fillEllipse(50, 355, 45, 35)
+    g.fillEllipse(100, 362, 60, 38); g.fillEllipse(125, 357, 48, 33)
+    g.fillEllipse(170, 360, 50, 36); g.fillEllipse(185, 356, 35, 28)
+    gen(KEYS.BG_PRACA_3, 200, 450)
+
+    // bg_mercado_1: sunset sky
+    clr()
+    g.fillStyle(0xff7a20); g.fillRect(0, 0, 200, 200)
+    g.fillStyle(0xff9a3c); g.fillRect(0, 200, 200, 150)
+    g.fillStyle(0xffd060); g.fillRect(0, 350, 200, 100)
+    g.fillStyle(0xffee80); g.fillCircle(150, 200, 60)
+    g.fillStyle(0xffcc40); g.fillCircle(150, 200, 40)
+    gen(KEYS.BG_MERCADO_1, 200, 450)
+
+    // bg_mercado_2: warehouses + colorful banners
+    clr()
+    g.fillStyle(0x6a6060); g.fillRect(0, 200, 90, 250)
+    g.fillStyle(0x5a5050); g.fillRect(0, 200, 90, 8)
+    g.fillStyle(0x7a7070); g.fillRect(100, 240, 100, 210)
+    g.fillStyle(0x6a6060); g.fillRect(100, 240, 100, 8)
+    g.fillStyle(0xff3333); g.fillRect(10, 220, 60, 12)
+    g.fillStyle(0x33cc33); g.fillRect(10, 236, 60, 12)
+    g.fillStyle(0x3399ff); g.fillRect(10, 252, 60, 12)
+    g.fillStyle(0xffcc00); g.fillRect(110, 258, 70, 12)
+    g.fillStyle(0xff6600); g.fillRect(110, 274, 70, 12)
+    gen(KEYS.BG_MERCADO_2, 200, 450)
+
+    // bg_mercado_3: market stalls + crates
+    clr()
+    g.fillStyle(0xff4444); g.fillRect(0, 300, 90, 20)
+    g.fillStyle(0xffffff); g.fillRect(10, 300, 12, 20); g.fillRect(34, 300, 12, 20); g.fillRect(58, 300, 12, 20)
+    g.fillStyle(0x8b6030); g.fillRect(0, 320, 90, 80)
+    g.fillStyle(0x44aaff); g.fillRect(105, 310, 95, 20)
+    g.fillStyle(0xffffff); g.fillRect(115, 310, 12, 20); g.fillRect(140, 310, 12, 20); g.fillRect(165, 310, 12, 20)
+    g.fillStyle(0x8b6030); g.fillRect(105, 330, 95, 70)
+    g.fillStyle(0xc8903a)
+    g.fillRect(10, 370, 28, 28); g.fillRect(42, 370, 28, 28)
+    g.lineStyle(1, 0x9a6020)
+    g.strokeRect(10, 370, 28, 28); g.strokeRect(42, 370, 28, 28)
+    g.lineBetween(24, 370, 24, 398); g.lineBetween(10, 384, 38, 384)
+    g.lineBetween(56, 370, 56, 398); g.lineBetween(42, 384, 70, 384)
+    gen(KEYS.BG_MERCADO_3, 200, 450)
+
+    // bg_boss_1: dark purple sky + crescent moon + stars
+    clr()
+    g.fillStyle(0x1a0033); g.fillRect(0, 0, 200, 450)
+    g.fillStyle(0xd4d0a0); g.fillCircle(150, 80, 30)
+    g.fillStyle(0x1a0033); g.fillCircle(162, 72, 24)
+    g.fillStyle(0xffffff)
+    g.fillRect(20, 30, 2, 2);  g.fillRect(55, 15, 2, 2);  g.fillRect(80, 60, 2, 2)
+    g.fillRect(100, 20, 2, 2); g.fillRect(30, 90, 2, 2);  g.fillRect(170, 30, 2, 2)
+    g.fillRect(10, 120, 2, 2); g.fillRect(60, 110, 2, 2); g.fillRect(120, 50, 2, 2)
+    g.fillRect(185, 70, 2, 2); g.fillRect(40, 140, 2, 2); g.fillRect(95, 130, 2, 2)
+    gen(KEYS.BG_BOSS_1, 200, 450)
+
+    // bg_boss_2: dark building silhouettes
+    clr()
+    g.fillStyle(0x1a1a2a); g.fillRect(0, 180, 45, 270)
+    g.fillStyle(0x111120); g.fillRect(0, 100, 45, 80)
+    g.fillRect(25, 90, 20, 90)
+    g.fillStyle(0x1a1a2a); g.fillRect(50, 220, 70, 230)
+    g.fillStyle(0x111120); g.fillRect(70, 150, 30, 70)
+    g.fillStyle(0x1a1a2a); g.fillRect(130, 260, 40, 190)
+    g.fillStyle(0x111120); g.fillRect(175, 200, 25, 250)
+    g.fillStyle(0xffaa00)
+    g.fillRect(10, 115, 6, 4); g.fillRect(22, 115, 6, 4)
+    g.fillRect(60, 165, 8, 5); g.fillRect(75, 165, 8, 5)
+    gen(KEYS.BG_BOSS_2, 200, 450)
+
+    // bg_boss_3: metal fence + spikes
+    clr()
+    g.fillStyle(0x3a3a4a)
+    g.fillRect(0, 330, 200, 8)
+    g.fillRect(0, 355, 200, 6)
+    for (let bx = 5; bx < 200; bx += 18) {
+      g.fillStyle(0x3a3a4a); g.fillRect(bx, 310, 6, 80)
+      g.fillStyle(0x505060); g.fillRect(bx + 1, 310, 2, 80)
+    }
+    g.fillStyle(0x505060)
+    for (let sx = 8; sx < 200; sx += 18) {
+      g.fillTriangle(sx, 310, sx + 4, 295, sx + 8, 310)
+    }
+    gen(KEYS.BG_BOSS_3, 200, 450)
 
     g.destroy()
     this.scene.start(KEYS.MENU)
@@ -79,6 +452,7 @@ export class BootScene extends Phaser.Scene {
       })
     })
 
-    this.textures.addSpriteSheet(key, canvas, { frameWidth, frameHeight })
+    // Phaser aceita HTMLCanvasElement em runtime, mas os tipos declaram HTMLImageElement
+    this.textures.addSpriteSheet(key, canvas as unknown as HTMLImageElement, { frameWidth, frameHeight })
   }
 }

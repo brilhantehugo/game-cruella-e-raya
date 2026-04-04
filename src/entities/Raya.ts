@@ -1,6 +1,7 @@
 import Phaser from 'phaser'
 import { KEYS, PHYSICS } from '../constants'
 import { gameState } from '../GameState'
+import { SoundManager } from '../audio/SoundManager'
 
 export class Raya extends Phaser.Physics.Arcade.Sprite {
   private jumpsLeft: number = 2
@@ -64,6 +65,7 @@ export class Raya extends Phaser.Physics.Arcade.Sprite {
         : PHYSICS.JUMP_VELOCITY
       this.setVelocityY(jumpVel)
       this.jumpsLeft--
+      SoundManager.play(this.jumpsLeft === 0 ? 'doubleJump' : 'jump')
     }
 
     if (Phaser.Input.Keyboard.JustDown(this.shiftKey) && !this.dashCooldown) {
@@ -81,6 +83,7 @@ export class Raya extends Phaser.Physics.Arcade.Sprite {
   }
 
   private dash(): void {
+    SoundManager.play('dash')
     this.isDashing = true
     this.dashCooldown = true
     const dir = this.flipX ? -1 : 1

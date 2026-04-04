@@ -1,4 +1,6 @@
-import { LevelData } from './LevelData'
+import { LevelData, DecorationSpawn } from './LevelData'
+
+const G = 416 // ground surface y (origin bottom = setOrigin(0.5,1) → y=416)
 
 const COLS = 80
 function emptyRow(): number[] { return Array(COLS).fill(0) }
@@ -8,7 +10,7 @@ function platformRow(x: number, len: number): number[] {
 }
 
 export const LEVEL_1_1: LevelData = {
-  id: '1-1', name: 'Rua Residencial', bgColor: 0x87CEEB, tileWidthCols: COLS,
+  id: '1-1', name: 'Rua Residencial', bgColor: 0x87CEEB, backgroundTheme: 'rua' as const, tileWidthCols: COLS,
   tiles: [
     emptyRow(), emptyRow(), emptyRow(),
     platformRow(10, 5), emptyRow(), platformRow(20, 6), emptyRow(),
@@ -33,10 +35,18 @@ export const LEVEL_1_1: LevelData = {
   ],
   goldenBones: [{ x: 352, y: 96 }, { x: 1536, y: 96 }, { x: 1952, y: 224 }],
   nextLevel: '1-2',
+  decorations: [
+    { type: 'casa',   x: 200,  y: G }, { type: 'poste',  x: 370,  y: G },
+    { type: 'loja',   x: 570,  y: G }, { type: 'arvore', x: 780,  y: G },
+    { type: 'poste',  x: 980,  y: G }, { type: 'casa',   x: 1180, y: G },
+    { type: 'arvore', x: 1430, y: G }, { type: 'loja',   x: 1650, y: G },
+    { type: 'poste',  x: 1880, y: G }, { type: 'arvore', x: 2050, y: G },
+    { type: 'casa',   x: 2250, y: G }, { type: 'poste',  x: 2430, y: G },
+  ],
 }
 
 export const LEVEL_1_2: LevelData = {
-  id: '1-2', name: 'Praça com Jardim', bgColor: 0x90EE90, tileWidthCols: COLS,
+  id: '1-2', name: 'Praça com Jardim', bgColor: 0x90EE90, backgroundTheme: 'praca' as const, tileWidthCols: COLS,
   tiles: [
     emptyRow(), emptyRow(), platformRow(5, 4), emptyRow(),
     platformRow(15, 5), platformRow(28, 3), emptyRow(),
@@ -60,10 +70,18 @@ export const LEVEL_1_2: LevelData = {
   ],
   goldenBones: [{ x: 192, y: 64 }, { x: 1248, y: 96 }, { x: 2112, y: 160 }],
   nextLevel: '1-3',
+  decorations: [
+    { type: 'arvore', x: 180,  y: G }, { type: 'arvore', x: 380,  y: G },
+    { type: 'poste',  x: 560,  y: G }, { type: 'arvore', x: 750,  y: G },
+    { type: 'casa',   x: 960,  y: G }, { type: 'arvore', x: 1180, y: G },
+    { type: 'poste',  x: 1380, y: G }, { type: 'arvore', x: 1560, y: G },
+    { type: 'arvore', x: 1780, y: G }, { type: 'poste',  x: 1980, y: G },
+    { type: 'arvore', x: 2160, y: G }, { type: 'arvore', x: 2380, y: G },
+  ],
 }
 
 export const LEVEL_1_3: LevelData = {
-  id: '1-3', name: 'Mercadinho / Feirinha', bgColor: 0xFFD700, tileWidthCols: COLS,
+  id: '1-3', name: 'Mercadinho / Feirinha', bgColor: 0xFFD700, backgroundTheme: 'mercado' as const, tileWidthCols: COLS,
   tiles: [
     emptyRow(), emptyRow(), platformRow(8, 5), platformRow(20, 4),
     platformRow(32, 5), platformRow(45, 3), emptyRow(),
@@ -88,11 +106,19 @@ export const LEVEL_1_3: LevelData = {
   ],
   goldenBones: [{ x: 288, y: 64 }, { x: 1472, y: 96 }, { x: 2048, y: 192 }],
   nextLevel: '1-boss',
+  decorations: [
+    { type: 'loja',   x: 180,  y: G }, { type: 'poste',  x: 370,  y: G },
+    { type: 'loja',   x: 560,  y: G }, { type: 'arvore', x: 760,  y: G },
+    { type: 'loja',   x: 950,  y: G }, { type: 'poste',  x: 1140, y: G },
+    { type: 'loja',   x: 1340, y: G }, { type: 'arvore', x: 1540, y: G },
+    { type: 'loja',   x: 1730, y: G }, { type: 'poste',  x: 1930, y: G },
+    { type: 'loja',   x: 2130, y: G }, { type: 'arvore', x: 2360, y: G },
+  ],
 }
 
 export const LEVEL_1_BOSS: LevelData = {
   id: '1-boss', name: 'Depósito de Lixo — Seu Bigodes', bgColor: 0x2F4F2F,
-  tileWidthCols: 30,
+  backgroundTheme: 'boss' as const, tileWidthCols: 30,
   tiles: [
     Array(30).fill(0), Array(30).fill(0), Array(30).fill(0),
     [...Array(5).fill(0), ...Array(4).fill(1), ...Array(3).fill(0),
@@ -106,6 +132,7 @@ export const LEVEL_1_BOSS: LevelData = {
   checkpointX: 480, checkpointY: 380,
   enemies: [], items: [], goldenBones: [],
   nextLevel: null, isBossLevel: true,
+  decorations: [],
 }
 
 export const WORLD1_LEVELS: Record<string, LevelData> = {
