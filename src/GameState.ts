@@ -115,6 +115,7 @@ export class GameState {
     this.checkpointReached = false
     this.checkpointX = 0
     this.checkpointY = 0
+    // muted é uma preferência de UI — persiste intencionalmente entre partidas
   }
 
   resetAtCheckpoint(): void {
