@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { KEYS } from '../constants'
+import { KEYS, GAME_WIDTH } from '../constants'
 import { BackgroundTheme } from '../levels/LevelData'
 
 interface LayerConfig {
@@ -40,7 +40,7 @@ export class ParallaxBackground {
     configs.forEach((cfg, i) => {
       // sky=-5, mid=-4, near=-3 (decorations are -1, tilemap 0+)
       const depth = -5 + i
-      const sprite = scene.add.tileSprite(0, cfg.y, 800, cfg.height, cfg.key)
+      const sprite = scene.add.tileSprite(0, cfg.y, GAME_WIDTH, cfg.height, cfg.key)
       sprite.setOrigin(0, 0)
       sprite.setDepth(depth)
       this.layers.push({ sprite, speed: cfg.speed })
