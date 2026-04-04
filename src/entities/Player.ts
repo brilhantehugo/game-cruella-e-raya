@@ -4,6 +4,7 @@ import { gameState } from '../GameState'
 import { Raya } from './Raya'
 import { Cruella } from './Cruella'
 import { Enemy } from './Enemy'
+import { SoundManager } from '../audio/SoundManager'
 
 export class Player {
   raya: Raya
@@ -63,6 +64,7 @@ export class Player {
   }
 
   private _performSwap(): void {
+    SoundManager.play('swap')
     const prev = this.active
     const next = this.ghost
 
