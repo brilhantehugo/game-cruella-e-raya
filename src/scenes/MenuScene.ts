@@ -4,6 +4,7 @@ import { gameState } from '../GameState'
 import { SoundManager } from '../audio/SoundManager'
 
 export class MenuScene extends Phaser.Scene {
+  private _mKey!: Phaser.Input.Keyboard.Key
   constructor() { super(KEYS.MENU) }
 
   create(): void {
@@ -88,13 +89,16 @@ export class MenuScene extends Phaser.Scene {
     // BGM do menu
     SoundManager.playBgm(KEYS.BGM_MENU, this)
 
-    // Mute toggle (M)
-    const mKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.M)
-    this.events.on('update', () => {
-      if (Phaser.Input.Keyboard.JustDown(mKey)) SoundManager.setMuted(!gameState.muted)
-    })
+    // Mute toggle (M) — registrado como Key para checagem em update()
+    this._mKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.M)
 
     // Para BGM ao sair
     this.events.once('shutdown', () => SoundManager.stopBgm())
+  }
+
+  update(): void {
+    if (Phaser.Input.Keyboard.JustDown(this._mKey)) {
+      SoundManager.setMuted(!gameState.muted)
+    }
   }
 }

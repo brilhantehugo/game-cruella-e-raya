@@ -141,6 +141,7 @@ export const SoundManager = {
         _currentBgm.play()
       } catch {
         // Cena pode ter sido destruída — próxima transição vai retomar o BGM
+        _currentBgm = null
         _lastBgmKey = null
         _lastBgmScene = null
       }
