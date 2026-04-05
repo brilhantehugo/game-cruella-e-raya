@@ -10,7 +10,7 @@ function platformRow(x: number, len: number): number[] {
 }
 
 export const LEVEL_1_1: LevelData = {
-  id: '1-1', name: 'Rua Residencial', bgColor: 0x87CEEB, backgroundTheme: 'rua' as const, tileWidthCols: COLS,
+  id: '1-1', name: 'Rua Residencial', bgColor: 0x87CEEB, backgroundTheme: 'rua' as const, timeLimit: 200, tileWidthCols: COLS,
   tiles: [
     emptyRow(), emptyRow(), emptyRow(),
     platformRow(10, 5), emptyRow(), platformRow(20, 6), emptyRow(),
@@ -46,7 +46,7 @@ export const LEVEL_1_1: LevelData = {
 }
 
 export const LEVEL_1_2: LevelData = {
-  id: '1-2', name: 'Praça com Jardim', bgColor: 0x90EE90, backgroundTheme: 'praca' as const, tileWidthCols: COLS,
+  id: '1-2', name: 'Praça com Jardim', bgColor: 0x90EE90, backgroundTheme: 'praca' as const, timeLimit: 200, tileWidthCols: COLS,
   tiles: [
     emptyRow(), emptyRow(), platformRow(5, 4), emptyRow(),
     platformRow(15, 5), platformRow(28, 3), emptyRow(),
@@ -81,7 +81,7 @@ export const LEVEL_1_2: LevelData = {
 }
 
 export const LEVEL_1_3: LevelData = {
-  id: '1-3', name: 'Mercadinho / Feirinha', bgColor: 0xFFD700, backgroundTheme: 'mercado' as const, tileWidthCols: COLS,
+  id: '1-3', name: 'Mercadinho / Feirinha', bgColor: 0xFFD700, backgroundTheme: 'mercado' as const, timeLimit: 200, tileWidthCols: COLS,
   tiles: [
     emptyRow(), emptyRow(), platformRow(8, 5), platformRow(20, 4),
     platformRow(32, 5), platformRow(45, 3), emptyRow(),
@@ -118,7 +118,7 @@ export const LEVEL_1_3: LevelData = {
 
 export const LEVEL_1_BOSS: LevelData = {
   id: '1-boss', name: 'Depósito de Lixo — Seu Bigodes', bgColor: 0x2F4F2F,
-  backgroundTheme: 'boss' as const, tileWidthCols: 30,
+  backgroundTheme: 'boss' as const, timeLimit: 0, tileWidthCols: 30,
   tiles: [
     Array(30).fill(0), Array(30).fill(0), Array(30).fill(0),
     [...Array(5).fill(0), ...Array(4).fill(1), ...Array(3).fill(0),
