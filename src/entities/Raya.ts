@@ -84,9 +84,17 @@ export class Raya extends Phaser.Physics.Arcade.Sprite {
 
   private dash(): void {
     SoundManager.play('dash')
+    const dir = this.flipX ? -1 : 1
+
+    // Atualiza cooldown no GameState para UIScene exibir
+    gameState.abilityUsedAt = this.scene.time.now
+    gameState.abilityCooldownMs = 800
+
+    // Emite evento para Player registrar janela de combo
+    this.emit('dashed', { dir, time: this.scene.time.now })
+
     this.isDashing = true
     this.dashCooldown = true
-    const dir = this.flipX ? -1 : 1
     this.setVelocityX(dir * PHYSICS.DASH_VELOCITY)
     this.setVelocityY(0)
     const body = this.body as Phaser.Physics.Arcade.Body
