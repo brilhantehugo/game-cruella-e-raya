@@ -71,6 +71,11 @@ export class GameScene extends Phaser.Scene {
 
     this.escKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.ESC)
     this.scene.launch(KEYS.UI)
+
+    // Inicia timer (delayedCall para garantir que UIScene já inicializou)
+    this.time.delayedCall(100, () => {
+      this.events.emit('start-timer', this.currentLevel.timeLimit)
+    })
   }
 
   private _runBossIntro(): void {

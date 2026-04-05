@@ -10,6 +10,9 @@ export class UIScene extends Phaser.Scene {
   private cooldownBg!: Phaser.GameObjects.Rectangle
   private accessoryText!: Phaser.GameObjects.Text
   private powerUpText!: Phaser.GameObjects.Text
+  private timerText!: Phaser.GameObjects.Text
+  private _timeRemaining: number = 0
+  private _timerActive: boolean = false
 
   constructor() { super({ key: KEYS.UI, active: false }) }
 
@@ -29,6 +32,16 @@ export class UIScene extends Phaser.Scene {
     this.cooldownBar = this.add.rectangle(GAME_WIDTH / 2, 30, 60, 6, 0x44ff44).setScrollFactor(0)
     this.accessoryText = this.add.text(140, 10, '', { fontSize: '12px', color: '#ffdd00' }).setScrollFactor(0)
     this.powerUpText   = this.add.text(140, 24, '', { fontSize: '11px', color: '#88ffff' }).setScrollFactor(0)
+
+    this.timerText = this.add.text(GAME_WIDTH / 2 + 80, 10, '', {
+      fontSize: '14px', color: '#ffffff', fontStyle: 'bold', fontFamily: 'monospace'
+    }).setScrollFactor(0)
+
+    // Escuta evento de início de timer emitido por GameScene
+    this.scene.get(KEYS.GAME).events.on('start-timer', (seconds: number) => {
+      this._timeRemaining = seconds
+      this._timerActive = seconds > 0
+    })
   }
 
   update(): void {
@@ -62,6 +75,28 @@ export class UIScene extends Phaser.Scene {
       this.powerUpText.setText(`${puLabels[gameState.activePowerUp.type] ?? gameState.activePowerUp.type} ${remaining}s`)
     } else {
       this.powerUpText.setText('')
+    }
+
+    // Timer de fase
+    if (this._timerActive) {
+      this._timeRemaining -= this.game.loop.delta / 1000
+      if (this._timeRemaining <= 0) {
+        this._timeRemaining = 0
+        this._timerActive = false
+        gameState.hearts = 0
+      }
+      const secs = Math.ceil(this._timeRemaining)
+      const color = secs <= 10 ? '#ef4444' : secs <= 30 ? '#f97316' : '#ffffff'
+      this.timerText.setText(`⏱ ${String(secs).padStart(3, '0')}`).setColor(color)
+
+      // Pisca abaixo de 10s
+      if (secs <= 10) {
+        this.timerText.setAlpha(Math.sin(now * 0.008) * 0.5 + 0.5)
+      } else {
+        this.timerText.setAlpha(1)
+      }
+    } else {
+      this.timerText.setText('')
     }
   }
 }
