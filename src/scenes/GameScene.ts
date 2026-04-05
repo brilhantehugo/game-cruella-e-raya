@@ -300,7 +300,12 @@ export class GameScene extends Phaser.Scene {
 
     this.player.cruella.on('bark', (bx: number, by: number) => {
       (this.enemyGroup.getChildren() as Enemy[]).forEach(e => {
-        if (Phaser.Math.Distance.Between(bx, by, e.x, e.y) <= PHYSICS.BARK_RADIUS) e.stun(2000)
+        const dist = Phaser.Math.Distance.Between(bx, by, e.x, e.y)
+        if (dist <= PHYSICS.BARK_RADIUS) {
+          e.stun(500)
+          e.setTint(0xffff44)
+          this.time.delayedCall(500, () => { if (e.active) e.clearTint() })
+        }
       })
     })
 

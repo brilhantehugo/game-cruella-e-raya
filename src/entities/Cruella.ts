@@ -71,6 +71,9 @@ export class Cruella extends Phaser.Physics.Arcade.Sprite {
 
   bark(): void {
     SoundManager.play('bark')
+    // Atualiza cooldown no GameState para UIScene exibir
+    gameState.abilityUsedAt = this.scene.time.now
+    gameState.abilityCooldownMs = 1500
     this.barkCooldown = true
     this.emit('bark', this.x, this.y)
     this.scene.time.delayedCall(1500, () => { this.barkCooldown = false })
