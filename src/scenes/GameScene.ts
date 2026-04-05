@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { KEYS, TILE_SIZE, GAME_HEIGHT, PHYSICS, SCORING } from '../constants'
+import { KEYS, TILE_SIZE, GAME_WIDTH, GAME_HEIGHT, PHYSICS, SCORING } from '../constants'
 import { gameState } from '../GameState'
 import { Player } from '../entities/Player'
 import { Enemy } from '../entities/Enemy'
@@ -30,6 +30,7 @@ export class GameScene extends Phaser.Scene {
   private _mKey!: Phaser.Input.Keyboard.Key
   private _camOffsetX: number = 0
   private _followingSprite: Phaser.Physics.Arcade.Sprite | null = null
+  private _cinematicActive: boolean = false
 
   constructor() { super(KEYS.GAME) }
 
@@ -44,6 +45,11 @@ export class GameScene extends Phaser.Scene {
     // BGM
     const bgmKey = this.currentLevel.isBossLevel ? KEYS.BGM_BOSS : KEYS.BGM_WORLD1
     SoundManager.playBgm(bgmKey, this)
+
+    // Boss intro cinemática
+    if (this.currentLevel.isBossLevel) {
+      this._runBossIntro()
+    }
 
     // Tecla de mute
     this._mKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.M)
@@ -63,6 +69,56 @@ export class GameScene extends Phaser.Scene {
     this._setupCamera()
     this.escKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.ESC)
     this.scene.launch(KEYS.UI)
+  }
+
+  private _runBossIntro(): void {
+    this._cinematicActive = true
+    const cam = this.cameras.main
+    const mapWidth = this.currentLevel.tileWidthCols * TILE_SIZE
+
+    // Etapa 1 (0–500ms): para de seguir o player, zoom out suave
+    cam.stopFollow()
+    this.tweens.add({
+      targets: cam,
+      zoom: 0.85,
+      duration: 500,
+      ease: 'Sine.easeInOut',
+    })
+
+    // Etapa 2 (500–1500ms): pan até o boss (centro da arena)
+    this.time.delayedCall(500, () => {
+      const bossX = mapWidth / 2
+      const bossY = GAME_HEIGHT / 2
+      this.tweens.add({
+        targets: cam,
+        scrollX: bossX - GAME_WIDTH / 2 / 0.85,
+        scrollY: bossY - GAME_HEIGHT / 2 / 0.85,
+        duration: 800,
+        ease: 'Sine.easeInOut',
+        onComplete: () => {
+          cam.shake(200, 0.003)
+        },
+      })
+    })
+
+    // Etapa 3 (1500–2000ms): volta ao player, restaura zoom, libera controle
+    this.time.delayedCall(1500, () => {
+      this.tweens.add({
+        targets: cam,
+        zoom: 1,
+        duration: 500,
+        ease: 'Sine.easeInOut',
+      })
+      this._followingSprite = this.player.active
+      cam.startFollow(this._followingSprite, true, 0.1, 0.1)
+      cam.setDeadzone(160, 80)
+    })
+
+    this.time.delayedCall(2000, () => {
+      this._cinematicActive = false
+      // Trava a câmera dentro dos limites da arena
+      cam.setBounds(0, 0, mapWidth, GAME_HEIGHT)
+    })
   }
 
   private _buildDecorations(): void {
@@ -274,6 +330,7 @@ export class GameScene extends Phaser.Scene {
       this.scene.launch(KEYS.PAUSE)
       return
     }
+    if (this._cinematicActive) return
     // Mute toggle
     if (Phaser.Input.Keyboard.JustDown(this._mKey)) {
       SoundManager.setMuted(!gameState.muted)
