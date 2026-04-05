@@ -36,12 +36,11 @@ export const LEVEL_1_1: LevelData = {
   goldenBones: [{ x: 352, y: 96 }, { x: 1536, y: 96 }, { x: 1952, y: 224 }],
   nextLevel: '1-2',
   decorations: [
-    { type: 'casa',   x: 200,  y: G }, { type: 'poste',  x: 370,  y: G },
-    { type: 'loja',   x: 570,  y: G }, { type: 'arvore', x: 780,  y: G },
-    { type: 'poste',  x: 980,  y: G }, { type: 'casa',   x: 1180, y: G },
-    { type: 'arvore', x: 1430, y: G }, { type: 'loja',   x: 1650, y: G },
-    { type: 'poste',  x: 1880, y: G }, { type: 'arvore', x: 2050, y: G },
-    { type: 'casa',   x: 2250, y: G }, { type: 'poste',  x: 2430, y: G },
+    { type: 'casa',   x: 300,  y: G },
+    { type: 'poste',  x: 750,  y: G },
+    { type: 'arvore', x: 1200, y: G },
+    { type: 'loja',   x: 1750, y: G },
+    { type: 'poste',  x: 2300, y: G },
   ],
 }
 
@@ -71,12 +70,11 @@ export const LEVEL_1_2: LevelData = {
   goldenBones: [{ x: 192, y: 64 }, { x: 1248, y: 96 }, { x: 2112, y: 160 }],
   nextLevel: '1-3',
   decorations: [
-    { type: 'arvore', x: 180,  y: G }, { type: 'arvore', x: 380,  y: G },
-    { type: 'poste',  x: 560,  y: G }, { type: 'arvore', x: 750,  y: G },
-    { type: 'casa',   x: 960,  y: G }, { type: 'arvore', x: 1180, y: G },
-    { type: 'poste',  x: 1380, y: G }, { type: 'arvore', x: 1560, y: G },
-    { type: 'arvore', x: 1780, y: G }, { type: 'poste',  x: 1980, y: G },
-    { type: 'arvore', x: 2160, y: G }, { type: 'arvore', x: 2380, y: G },
+    { type: 'arvore', x: 250,  y: G },
+    { type: 'casa',   x: 800,  y: G },
+    { type: 'poste',  x: 1300, y: G },
+    { type: 'arvore', x: 1800, y: G },
+    { type: 'arvore', x: 2350, y: G },
   ],
 }
 
@@ -107,12 +105,11 @@ export const LEVEL_1_3: LevelData = {
   goldenBones: [{ x: 288, y: 64 }, { x: 1472, y: 96 }, { x: 2048, y: 192 }],
   nextLevel: '1-boss',
   decorations: [
-    { type: 'loja',   x: 180,  y: G }, { type: 'poste',  x: 370,  y: G },
-    { type: 'loja',   x: 560,  y: G }, { type: 'arvore', x: 760,  y: G },
-    { type: 'loja',   x: 950,  y: G }, { type: 'poste',  x: 1140, y: G },
-    { type: 'loja',   x: 1340, y: G }, { type: 'arvore', x: 1540, y: G },
-    { type: 'loja',   x: 1730, y: G }, { type: 'poste',  x: 1930, y: G },
-    { type: 'loja',   x: 2130, y: G }, { type: 'arvore', x: 2360, y: G },
+    { type: 'loja',   x: 250,  y: G },
+    { type: 'arvore', x: 800,  y: G },
+    { type: 'loja',   x: 1300, y: G },
+    { type: 'poste',  x: 1850, y: G },
+    { type: 'loja',   x: 2300, y: G },
   ],
 }
 

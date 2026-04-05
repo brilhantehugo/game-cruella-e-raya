@@ -73,21 +73,27 @@ export class Player {
 
   private _performSwap(): void {
     SoundManager.play('swap')
-    const prev = this.active
-    const next = this.ghost
+    // gameState.swap() já mudou activeDog antes desta chamada
+    // this.active = cachorra que ACABOU de se tornar ativa (nova)
+    // this.ghost  = cachorra que ACABOU de virar ghost (antiga)
+    const newActive = this.active
+    const newGhost  = this.ghost
 
-    next.setPosition(prev.x, prev.y)
-    next.setVelocity(
-      (prev.body as Phaser.Physics.Arcade.Body).velocity.x,
-      (prev.body as Phaser.Physics.Arcade.Body).velocity.y
+    // Teletransporta nova ativa para onde a antiga estava
+    newActive.setPosition(newGhost.x, newGhost.y)
+    newActive.setVelocity(
+      (newGhost.body as Phaser.Physics.Arcade.Body).velocity.x,
+      (newGhost.body as Phaser.Physics.Arcade.Body).velocity.y
     )
-    ;(next.body as Phaser.Physics.Arcade.Body).setEnable(true)
-    next.setAlpha(1)
-    next.setActive(true)
+    // Habilita nova ativa
+    ;(newActive.body as Phaser.Physics.Arcade.Body).setEnable(true)
+    newActive.setAlpha(1)
+    newActive.setActive(true)
 
-    prev.setAlpha(0.35)
-    prev.setActive(false)
-    ;(prev.body as Phaser.Physics.Arcade.Body).setEnable(false)
+    // Desabilita nova ghost
+    newGhost.setAlpha(0.35)
+    newGhost.setActive(false)
+    ;(newGhost.body as Phaser.Physics.Arcade.Body).setEnable(false)
 
     this.scene.cameras.main.flash(80, 255, 255, 255)
 
