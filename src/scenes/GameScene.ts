@@ -76,6 +76,11 @@ export class GameScene extends Phaser.Scene {
     this.time.delayedCall(100, () => {
       this.events.emit('start-timer', this.currentLevel.timeLimit)
     })
+
+    // Listener para game-over por tempo
+    this.events.on('timer-game-over', () => {
+      if (!this._gameOverPending) this._gameOver()
+    })
   }
 
   private _runBossIntro(): void {

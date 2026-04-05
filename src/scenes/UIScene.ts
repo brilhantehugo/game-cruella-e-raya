@@ -84,6 +84,8 @@ export class UIScene extends Phaser.Scene {
         this._timeRemaining = 0
         this._timerActive = false
         gameState.hearts = 0
+        // Dispara game-over imediatamente via GameScene
+        this.scene.get(KEYS.GAME).events.emit('timer-game-over')
       }
       const secs = Math.ceil(this._timeRemaining)
       const color = secs <= 10 ? '#ef4444' : secs <= 30 ? '#f97316' : '#ffffff'
