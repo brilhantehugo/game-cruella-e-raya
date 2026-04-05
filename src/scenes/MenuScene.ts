@@ -168,7 +168,7 @@ export class MenuScene extends Phaser.Scene {
       fontSize: '18px', color: '#88ffaa',
     }).setOrigin(0.5).setInteractive()
 
-    const enemyBtn = this.add.text(GAME_WIDTH / 2, 389, '[ I — BESTIÁRIO ]', {
+    const enemyBtn = this.add.text(GAME_WIDTH / 2, 389, '[ I — PERSONAGENS ]', {
       fontSize: '16px', color: '#ffaa55',
     }).setOrigin(0.5).setInteractive()
 
@@ -177,7 +177,7 @@ export class MenuScene extends Phaser.Scene {
       fontSize: '10px', color: '#555555',
     }).setOrigin(0.5)
 
-    this.add.text(GAME_WIDTH / 2, 428, 'M — silenciar música   I — bestiário de inimigos', {
+    this.add.text(GAME_WIDTH / 2, 428, 'M — silenciar música   I — guia de personagens', {
       fontSize: '10px', color: '#333355',
     }).setOrigin(0.5)
 
