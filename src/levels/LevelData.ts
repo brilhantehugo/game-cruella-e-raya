@@ -1,4 +1,4 @@
-export type EnemyType = 'gato' | 'pombo' | 'rato' | 'dono' | 'aspirador'
+export type EnemyType = 'gato' | 'pombo' | 'rato' | 'dono' | 'aspirador' | 'hugo' | 'hannah'
 export interface DecorationSpawn { type: string; x: number; y: number }
 
 export type ItemType =

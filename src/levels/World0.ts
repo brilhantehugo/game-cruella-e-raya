@@ -22,13 +22,9 @@ export const LEVEL_0_1: LevelData = {
   spawnX: 64, spawnY: 300, exitX: 1984, exitY: 370,
   checkpointX: 992, checkpointY: 380,
   enemies: [
-    { type: 'rato',  x: 300,  y: 390 },
-    { type: 'gato',  x: 550,  y: 390 },
-    { type: 'rato',  x: 800,  y: 390 },
-    { type: 'dono',  x: 1050, y: 390 },
-    { type: 'gato',  x: 1300, y: 390 },
-    { type: 'rato',  x: 1600, y: 390 },
-    { type: 'dono',  x: 1850, y: 390 },
+    { type: 'hugo',   x: 500,  y: 390 },
+    { type: 'hannah', x: 1200, y: 390 },
+    { type: 'hugo',   x: 1650, y: 390 },
   ],
   items: [
     { type: 'bone',     x: 160,  y: 380 },

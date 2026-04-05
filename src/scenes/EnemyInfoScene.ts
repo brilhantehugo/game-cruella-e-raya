@@ -46,6 +46,22 @@ const ENEMIES: EnemyCard[] = [
     col: 0x88ff88,
   },
   {
+    key: KEYS.HUGO,
+    name: 'Hugo',
+    desc: 'O dono do apartamento.\nPatrulha os cômodos.\nImune a qualquer ataque.',
+    weakness: 'Impossível machucar —\nevite ou contorne-o',
+    tip: '💡 Só desvie — não tente atacar!',
+    col: 0x3060c0,
+  },
+  {
+    key: KEYS.HANNAH,
+    name: 'Hannah',
+    desc: 'A dona do apartamento.\nPatrulha o corredor.\nImune — te empurra de volta.',
+    weakness: 'Impossível machucar —\nuse saltos para passar',
+    tip: '💡 Pule por cima ou espere abrir caminho!',
+    col: 0xcc2233,
+  },
+  {
     key: KEYS.ASPIRADOR,
     name: 'Aspirador (Chefe 0)',
     desc: '8 HP, 3 fases:\n• Fase 1: patrulha + pulsa ondas\n• Fase 2: avança (charge!) laranja\n• Fase 3: vermelho, mais rápido',
@@ -91,63 +107,64 @@ export class EnemyInfoScene extends Phaser.Scene {
     lr.strokeLineShape(new Phaser.Geom.Line(30, 36, GAME_WIDTH - 30, 36))
 
     // ── Enemy cards (2 columns) ───────────────────────────────────────────
-    const CARD_W = 350, CARD_H = 118
-    const startX = 28, startY = 44
-    const colGap = 8
+    // Layout compacto para caber 8 inimigos (4 pares + 1 chefe em largura total)
+    const CARD_W = 350, CARD_H = 68
+    const startX = 28, startY = 42
+    const colGap = 8, rowGap = 4
 
     ENEMIES.forEach((enemy, i) => {
-      // Boss spans full width
+      // Último entry (Bigodes) é chefe e ocupa largura total
       const isBoss = i === ENEMIES.length - 1
       const col   = isBoss ? 0 : i % 2
       const row   = isBoss ? Math.ceil((ENEMIES.length - 1) / 2) : Math.floor(i / 2)
       const cardW = isBoss ? GAME_WIDTH - startX * 2 : CARD_W
       const cardX = isBoss ? startX + cardW / 2 : startX + col * (CARD_W + colGap) + CARD_W / 2
-      const cardY = startY + row * (CARD_H + 6) + CARD_H / 2
+      const cardY = startY + row * (CARD_H + rowGap) + CARD_H / 2
 
       // Card background
       const bg = this.add.graphics()
       bg.fillStyle(0x111122, 0.9)
-      bg.fillRoundedRect(cardX - cardW / 2, cardY - CARD_H / 2, cardW, CARD_H, 8)
+      bg.fillRoundedRect(cardX - cardW / 2, cardY - CARD_H / 2, cardW, CARD_H, 6)
       bg.lineStyle(1, enemy.col, 0.5)
-      bg.strokeRoundedRect(cardX - cardW / 2, cardY - CARD_H / 2, cardW, CARD_H, 8)
+      bg.strokeRoundedRect(cardX - cardW / 2, cardY - CARD_H / 2, cardW, CARD_H, 6)
 
       // Sprite
-      const spriteX = cardX - cardW / 2 + (isBoss ? 54 : 40)
-      const scale   = isBoss ? 3 : 2.5
+      const spriteX = cardX - cardW / 2 + (isBoss ? 44 : 32)
+      const scale   = isBoss ? 2.5 : 2
       this.add.sprite(spriteX, cardY, enemy.key, 0)
         .setScale(scale)
         .setTint(enemy.col)
 
       // Name
-      const tx = cardX - cardW / 2 + (isBoss ? 104 : 74)
-      this.add.text(tx, cardY - CARD_H / 2 + 8, enemy.name, {
-        fontSize: '11px', color: `#${enemy.col.toString(16).padStart(6, '0')}`, fontStyle: 'bold',
+      const tx = cardX - cardW / 2 + (isBoss ? 86 : 60)
+      this.add.text(tx, cardY - CARD_H / 2 + 5, enemy.name, {
+        fontSize: '10px', color: `#${enemy.col.toString(16).padStart(6, '0')}`, fontStyle: 'bold',
       })
 
       // Description
-      this.add.text(tx, cardY - CARD_H / 2 + 24, enemy.desc, {
-        fontSize: '9px', color: '#cccccc', lineSpacing: 2,
+      this.add.text(tx, cardY - CARD_H / 2 + 18, enemy.desc, {
+        fontSize: '8px', color: '#cccccc', lineSpacing: 1,
       })
 
       // Weakness
-      const wkY = cardY + CARD_H / 2 - 32
-      this.add.text(tx, wkY, `⚔ Fraqueza: ${enemy.weakness}`, {
-        fontSize: '9px', color: '#ffdd88',
+      const wkY = cardY + CARD_H / 2 - 28
+      this.add.text(tx, wkY, `⚔ ${enemy.weakness}`, {
+        fontSize: '8px', color: '#ffdd88',
       })
-      this.add.text(tx, wkY + 14, enemy.tip, {
-        fontSize: '9px', color: '#88ffaa', fontStyle: 'italic',
+      this.add.text(tx, wkY + 13, enemy.tip, {
+        fontSize: '8px', color: '#88ffaa', fontStyle: 'italic',
       })
     })
 
     // ── Footer ─────────────────────────────────────────────────────────────
     const lr2 = this.add.graphics()
     lr2.lineStyle(1, 0x333355, 0.6)
-    lr2.strokeLineShape(new Phaser.Geom.Line(30, GAME_HEIGHT - 30, GAME_WIDTH - 30, GAME_HEIGHT - 30))
+    lr2.strokeLineShape(new Phaser.Geom.Line(30, GAME_HEIGHT - 22, GAME_WIDTH - 30, GAME_HEIGHT - 22))
 
     const backLabel = fromGame
       ? '[ ESC — voltar ao jogo ]'
       : '[ ESC / BACKSPACE — voltar ao menu ]'
-    const backBtn = this.add.text(cx, GAME_HEIGHT - 16, backLabel, {
+    const backBtn = this.add.text(cx, GAME_HEIGHT - 10, backLabel, {
       fontSize: '12px', color: '#ffffff', fontStyle: 'bold',
     }).setOrigin(0.5).setInteractive()
     this.tweens.add({ targets: backBtn, alpha: 0.35, duration: 700, yoyo: true, repeat: -1 })

@@ -16,6 +16,8 @@ import { LevelData } from '../levels/LevelData'
 import { WORLD1_LEVELS } from '../levels/World1'
 import { WORLD0_LEVELS } from '../levels/World0'
 import { Aspirador } from '../entities/enemies/Aspirador'
+import { Hugo } from '../entities/npc/Hugo'
+import { Hannah } from '../entities/npc/Hannah'
 import { ParallaxBackground } from '../background/ParallaxBackground'
 import { SoundManager } from '../audio/SoundManager'
 
@@ -214,6 +216,8 @@ export class GameScene extends Phaser.Scene {
         case 'rato':      enemy = new RatoDeCalcada(this, spawn.x, spawn.y);   break
         case 'dono':      enemy = new DonoNervoso(this, spawn.x, spawn.y);     break
         case 'aspirador': enemy = new Aspirador(this, spawn.x, spawn.y);       break
+        case 'hugo':      enemy = new Hugo(this, spawn.x, spawn.y);            break
+        case 'hannah':    enemy = new Hannah(this, spawn.x, spawn.y);          break
       }
       if (!enemy) return
       this.enemyGroup.add(enemy)
@@ -291,12 +295,22 @@ export class GameScene extends Phaser.Scene {
 
         // Stomp: player falling and centre above enemy centre
         if (pBody.velocity.y > 50 && pBody.bottom <= eBody.top + 12) {
-          e.takeDamage(999)
+          if (!e.isNPC) {
+            e.takeDamage(999)
+            SoundManager.play('stomp')
+            // Hit stop: pausa física por 80ms para dar peso ao golpe
+            this.physics.pause()
+            this.time.delayedCall(80, () => this.physics.resume())
+          }
           pBody.setVelocityY(-380)
-          SoundManager.play('stomp')
-          // Hit stop: pausa física por 80ms para dar peso ao golpe
-          this.physics.pause()
-          this.time.delayedCall(80, () => this.physics.resume())
+          return
+        }
+
+        // NPCs: empurra o jogador para o lado, sem tirar coração
+        if (e.isNPC) {
+          const pushDir = (ps as Phaser.Physics.Arcade.Sprite).x < e.x ? -1 : 1
+          pBody.setVelocityX(pushDir * 320)
+          pBody.setVelocityY(-200)
           return
         }
 

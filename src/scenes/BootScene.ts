@@ -592,6 +592,71 @@ export class BootScene extends Phaser.Scene {
     }
     gen(KEYS.BG_BOSS_3, 200, 450)
 
+    // ── NPCs — HUGO (homem, camisa azul) ─────────────────────────────────────
+    clr()
+    // Cabelo
+    g.fillStyle(0x3a2008); g.fillRect(3, 0, 12, 5)
+    // Cabeça (pele)
+    g.fillStyle(0xf0c090)
+    g.fillRect(3, 3, 12, 11)
+    // Olhos
+    g.fillStyle(0x222222)
+    g.fillRect(5, 7, 2, 2); g.fillRect(11, 7, 2, 2)
+    // Boca
+    g.fillRect(7, 12, 4, 1)
+    // Pescoço
+    g.fillStyle(0xf0c090); g.fillRect(6, 14, 6, 3)
+    // Camisa azul (torso)
+    g.fillStyle(0x3060c0); g.fillRect(2, 17, 14, 10)
+    g.fillStyle(0x2050b0); g.fillRect(2, 17, 14, 3)  // ombros
+    // Braços
+    g.fillStyle(0x3060c0); g.fillRect(0, 17, 2, 8)
+    g.fillStyle(0xf0c090); g.fillRect(0, 25, 2, 3)   // mão esq
+    g.fillStyle(0x3060c0); g.fillRect(16, 17, 2, 8)
+    g.fillStyle(0xf0c090); g.fillRect(16, 25, 2, 3)  // mão dir
+    // Calça cinza
+    g.fillStyle(0x606070); g.fillRect(2, 27, 6, 12)
+    g.fillStyle(0x606070); g.fillRect(10, 27, 6, 12)
+    g.fillStyle(0x707080); g.fillRect(2, 27, 6, 2)   // cinto
+    // Sapatos
+    g.fillStyle(0x302010); g.fillRect(1, 39, 7, 3)
+    g.fillStyle(0x302010); g.fillRect(10, 39, 7, 3)
+    gen(KEYS.HUGO, 18, 42)
+
+    // ── NPCs — HANNAH (mulher, blusa vermelha) ────────────────────────────────
+    clr()
+    // Cabelo longo (castanho claro)
+    g.fillStyle(0x8b4513)
+    g.fillRect(2, 0, 12, 4)  // topo
+    g.fillRect(1, 4, 3, 14)  // lateral esq
+    g.fillRect(12, 4, 3, 14) // lateral dir
+    // Cabeça (pele)
+    g.fillStyle(0xf0c090)
+    g.fillRect(3, 3, 10, 10)
+    // Olhos
+    g.fillStyle(0x553300)
+    g.fillRect(5, 7, 2, 2); g.fillRect(9, 7, 2, 2)
+    // Boca (sorriso leve)
+    g.fillStyle(0xc05050); g.fillRect(6, 11, 4, 1)
+    // Brinco
+    g.fillStyle(0xffd700); g.fillRect(3, 10, 1, 2); g.fillRect(12, 10, 1, 2)
+    // Pescoço
+    g.fillStyle(0xf0c090); g.fillRect(6, 13, 4, 3)
+    // Blusa vermelha (torso)
+    g.fillStyle(0xcc2233); g.fillRect(2, 16, 12, 10)
+    g.fillStyle(0xdd3344); g.fillRect(3, 16, 10, 3)  // gola
+    // Braços
+    g.fillStyle(0xf0c090); g.fillRect(0, 16, 2, 9)
+    g.fillStyle(0xf0c090); g.fillRect(14, 16, 2, 9)
+    // Calça escura
+    g.fillStyle(0x2a2a4a); g.fillRect(2, 26, 5, 13)
+    g.fillStyle(0x2a2a4a); g.fillRect(9, 26, 5, 13)
+    g.fillStyle(0x3a3a5a); g.fillRect(2, 26, 12, 2)  // cinto
+    // Sapatos
+    g.fillStyle(0x3a1a10); g.fillRect(1, 39, 6, 3)
+    g.fillStyle(0x3a1a10); g.fillRect(9, 39, 6, 3)
+    gen(KEYS.HANNAH, 16, 42)
+
     g.destroy()
     this.scene.start(KEYS.MENU)
   }

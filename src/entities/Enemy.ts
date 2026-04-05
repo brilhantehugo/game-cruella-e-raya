@@ -1,6 +1,7 @@
 import Phaser from 'phaser'
 
 export abstract class Enemy extends Phaser.Physics.Arcade.Sprite {
+  readonly isNPC: boolean = false
   protected hp: number
   protected speed: number
   protected direction: number = 1
