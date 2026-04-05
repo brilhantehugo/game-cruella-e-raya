@@ -134,10 +134,13 @@ export class IntroCrawlScene extends Phaser.Scene {
       onComplete: () => this._start(),
     })
 
-    // ── Input to skip ───────────────────────────────────────────────────
-    const kb = this.input.keyboard!
-    kb.once('keydown-ENTER', () => this._start())
-    kb.once('keydown-SPACE', () => this._start())
+    // ── Input to skip (delay 400ms evita disparo imediato vindo da cena anterior)
+    this.time.delayedCall(400, () => {
+      const kb = this.input.keyboard!
+      kb.on('keydown-ENTER', () => this._start())
+      kb.on('keydown-SPACE', () => this._start())
+      this.input.on('pointerdown', () => this._start())
+    })
 
     // ── Dramatic intro music ────────────────────────────────────────────
     SoundManager.playProceduralBgm('intro')

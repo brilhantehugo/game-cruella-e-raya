@@ -2,13 +2,8 @@ import Phaser from 'phaser'
 import { KEYS, GAME_WIDTH, GAME_HEIGHT } from '../constants'
 import { LevelData } from '../levels/LevelData'
 
-// Duration before auto-advance (ms)
-const AUTO_ADVANCE_MS = 5000
-
 export class LevelIntroScene extends Phaser.Scene {
   private _levelData!: LevelData
-  private _countdownBar!: Phaser.GameObjects.Graphics
-  private _countdownTimer!: Phaser.Time.TimerEvent
   private _started = false
 
   constructor() { super(KEYS.LEVEL_INTRO) }
@@ -119,25 +114,14 @@ export class LevelIntroScene extends Phaser.Scene {
     div2.lineStyle(1, 0x333355, 0.6)
     div2.strokeLineShape(new Phaser.Geom.Line(40, BUBBLE_Y + BUBBLE_H + 16, GAME_WIDTH - 40, BUBBLE_Y + BUBBLE_H + 16))
 
-    // ── Countdown progress bar ────────────────────────────────────────────
-    const BAR_Y  = BUBBLE_Y + BUBBLE_H + 24
-    const BAR_H  = 4
-    const BAR_X  = 40
-    const BAR_W  = GAME_WIDTH - 80
-
-    const barBg = this.add.graphics()
-    barBg.fillStyle(0x222244, 1)
-    barBg.fillRect(BAR_X, BAR_Y, BAR_W, BAR_H)
-
-    this._countdownBar = this.add.graphics()
-    this._drawCountdownBar(1)   // start full
-
-    // ── Action button ─────────────────────────────────────────────────────
+    // ── Action button (sem auto-avanço — jogador deve pressionar) ────────
     const BTN_Y = GAME_HEIGHT - 22
     const btn = this.add.text(cx, BTN_Y, '[ ENTER / ESPAÇO — começar ]', {
-      fontSize: '14px', color: '#ffffff', fontStyle: 'bold',
-    }).setOrigin(0.5)
-    this.tweens.add({ targets: btn, alpha: 0.3, duration: 600, yoyo: true, repeat: -1 })
+      fontSize: '14px', color: '#ffcc44', fontStyle: 'bold',
+      stroke: '#000000', strokeThickness: 2,
+    }).setOrigin(0.5).setInteractive()
+    this.tweens.add({ targets: btn, alpha: 0.35, duration: 700, yoyo: true, repeat: -1 })
+    btn.on('pointerdown', () => this._advance())
 
     // ── Fade in ───────────────────────────────────────────────────────────
     this.cameras.main.fadeIn(300, 0, 0, 0)
@@ -153,21 +137,6 @@ export class LevelIntroScene extends Phaser.Scene {
       kb.off('keydown-ENTER', advance)
       kb.off('keydown-SPACE', advance)
     })
-
-    // ── Auto-advance timer ────────────────────────────────────────────────
-    this._countdownTimer = this.time.addEvent({
-      delay: AUTO_ADVANCE_MS,
-      callback: () => { this._advance() },
-    })
-
-    // Update countdown bar every frame via update()
-  }
-
-  update(): void {
-    if (this._started) return
-    const elapsed = this._countdownTimer.getElapsed()
-    const progress = 1 - elapsed / AUTO_ADVANCE_MS
-    this._drawCountdownBar(Math.max(0, progress))
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────────
@@ -218,21 +187,9 @@ export class LevelIntroScene extends Phaser.Scene {
     })
   }
 
-  private _drawCountdownBar(progress: number): void {
-    const BAR_X = 40
-    const BAR_Y = 130 + 140 + 24
-    const BAR_W = GAME_WIDTH - 80
-    const BAR_H = 4
-
-    this._countdownBar.clear()
-    this._countdownBar.fillStyle(0xffcc44, 0.8)
-    this._countdownBar.fillRect(BAR_X, BAR_Y, Math.floor(BAR_W * progress), BAR_H)
-  }
-
   private _advance(): void {
     if (this._started) return
     this._started = true
-    this._countdownTimer.remove()
     this.cameras.main.fadeOut(200, 0, 0, 0)
     this.cameras.main.once('camerafadeoutcomplete', () => {
       this.scene.start(KEYS.GAME)
