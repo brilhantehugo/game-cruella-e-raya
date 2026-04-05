@@ -16,10 +16,10 @@ export class Raya extends Phaser.Physics.Arcade.Sprite {
     scene.add.existing(this)
     scene.physics.add.existing(this)
     this.setCollideWorldBounds(true)
-    this.setScale(2)
+    this.setScale(1.8)
     // Smaller physics body prevents catching on tile seams
-    this.setBodySize(22, 26)
-    this.setOffset(5, 3)
+    this.setBodySize(20, 24)
+    this.setOffset(6, 4)
     this.cursors = scene.input.keyboard!.createCursorKeys()
     this.shiftKey = scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT)
 
@@ -83,7 +83,7 @@ export class Raya extends Phaser.Physics.Arcade.Sprite {
   }
 
   private dash(): void {
-    SoundManager.play('dash')
+    SoundManager.play('dashAbility')
     const dir = this.flipX ? -1 : 1
 
     // Atualiza cooldown no GameState para UIScene exibir

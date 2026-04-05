@@ -44,6 +44,14 @@ export class GameScene extends Phaser.Scene {
     this._gameOverPending = false
     const ALL_LEVELS = { ...WORLD0_LEVELS, ...WORLD1_LEVELS }
     this.currentLevel = ALL_LEVELS[gameState.currentLevel] ?? WORLD0_LEVELS['0-1']
+
+    // Show level intro screen for non-boss levels that have intro data
+    if (this.currentLevel.intro && !this.currentLevel.isBossLevel && !gameState.introSeen.has(this.currentLevel.id)) {
+      gameState.introSeen.add(this.currentLevel.id)
+      this.scene.start(KEYS.LEVEL_INTRO, { levelData: this.currentLevel })
+      return
+    }
+
     this.cameras.main.setBackgroundColor(this.currentLevel.bgColor)
 
     // Parallax (antes das decorações para ordem de profundidade correta)
@@ -359,34 +367,46 @@ export class GameScene extends Phaser.Scene {
     })
 
     this.player.cruella.on('bark', (bx: number, by: number) => {
-      // ── Visual shockwave rings ──────────────────────────────────────────
-      for (let ring = 0; ring < 3; ring++) {
-        this.time.delayedCall(ring * 90, () => {
-          if (!this.scene.isActive(KEYS.GAME)) return
-          const wave = this.add.graphics()
-          const lineW = 3 - ring
-          wave.lineStyle(lineW, 0x88ccff, 0.85)
-          wave.strokeCircle(0, 0, PHYSICS.BARK_RADIUS * 0.1)
-          wave.setPosition(bx, by)
-          this.tweens.add({
-            targets: wave,
-            scaleX: 10, scaleY: 10,
-            alpha: 0,
-            duration: 380,
-            ease: 'Quad.easeOut',
-            onComplete: () => { if (wave.active) wave.destroy() },
-          })
+      // ── Visual shockwave — circle 1: cyan, fast ─────────────────────────
+      const wave1 = this.add.graphics()
+      wave1.lineStyle(4, 0x22ccff, 0.9)
+      wave1.strokeCircle(0, 0, PHYSICS.BARK_RADIUS * 0.08)
+      wave1.setPosition(bx, by)
+      this.tweens.add({
+        targets: wave1,
+        scaleX: 13, scaleY: 13,
+        alpha: 0,
+        duration: 300,
+        ease: 'Quad.easeOut',
+        onComplete: () => { if (wave1.active) wave1.destroy() },
+      })
+
+      // ── Visual shockwave — circle 2: white, delayed, slower ────────────
+      this.time.delayedCall(80, () => {
+        if (!this.scene.isActive(KEYS.GAME)) return
+        const wave2 = this.add.graphics()
+        wave2.lineStyle(3, 0xffffff, 0.75)
+        wave2.strokeCircle(0, 0, PHYSICS.BARK_RADIUS * 0.06)
+        wave2.setPosition(bx, by)
+        this.tweens.add({
+          targets: wave2,
+          scaleX: 11, scaleY: 11,
+          alpha: 0,
+          duration: 400,
+          ease: 'Quad.easeOut',
+          onComplete: () => { if (wave2.active) wave2.destroy() },
         })
-      }
+      })
+
+      // ── Camera shake ───────────────────────────────────────────────────
+      this.cameras.main.shake(150, 0.007)
 
       // ── Enemy stun ─────────────────────────────────────────────────────
       ;(this.enemyGroup.getChildren() as Enemy[]).forEach(e => {
         const dist = Phaser.Math.Distance.Between(bx, by, e.x, e.y)
         if (dist <= PHYSICS.BARK_RADIUS) {
-          e.stun(500)
-          e.setTint(0xffff44)
-          this.time.delayedCall(500, () => { if (e.active) e.clearTint() })
-          this._spawnScorePopup(e.x, e.y - 24, 'STUN!', '#ffff44')
+          e.stun(2000)
+          this._spawnScorePopup(e.x, e.y - 24, 'STUN!', '#ffdd00')
         }
       })
     })

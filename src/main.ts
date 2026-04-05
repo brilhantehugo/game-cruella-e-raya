@@ -11,15 +11,15 @@ import { HowToPlayScene } from './scenes/HowToPlayScene'
 import { IntroCrawlScene } from './scenes/IntroCrawlScene'
 import { CharacterSelectScene } from './scenes/CharacterSelectScene'
 import { EnemyInfoScene } from './scenes/EnemyInfoScene'
+import { LevelIntroScene } from './scenes/LevelIntroScene'
 import { GAME_WIDTH, GAME_HEIGHT, PHYSICS } from './constants'
 import { SoundManager } from './audio/SoundManager'
 import { gameState } from './GameState'
 
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
-  width: GAME_WIDTH,
-  height: GAME_HEIGHT,
-  backgroundColor: '#87CEEB',
+  backgroundColor: '#1a1a2e',
+  parent: 'game-container',   // div fixo que ocupa 100vw × 100vh
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
@@ -46,6 +46,7 @@ const config: Phaser.Types.Core.GameConfig = {
     IntroCrawlScene,
     CharacterSelectScene,
     EnemyInfoScene,
+    LevelIntroScene,
   ],
 }
 

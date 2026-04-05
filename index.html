@@ -12,10 +12,21 @@
       background: #1a1a2e;
       overflow: hidden;
     }
-    canvas { display: block; }
+    #game-container {
+      position: fixed;
+      inset: 0;               /* top/right/bottom/left = 0 */
+      width: 100%;
+      height: 100%;
+    }
+    canvas {
+      display: block;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
   </style>
 </head>
 <body>
+  <div id="game-container"></div>
   <script type="module" src="/src/main.ts"></script>
 </body>
 </html>

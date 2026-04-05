@@ -34,4 +34,8 @@ export interface LevelData {
   nextLevel: string | null
   isBossLevel?: boolean
   decorations: DecorationSpawn[]
+  intro?: {
+    complexity: 1 | 2 | 3          // 1=fácil, 2=médio, 3=difícil
+    dialogue: [string, string]     // [Raya fala, Cruella fala]
+  }
 }

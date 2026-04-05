@@ -14,10 +14,10 @@ export class Cruella extends Phaser.Physics.Arcade.Sprite {
     scene.add.existing(this)
     scene.physics.add.existing(this)
     this.setCollideWorldBounds(true)
-    this.setScale(2)
-    // Smaller body prevents tile-seam stuttering
-    this.setBodySize(18, 22)
-    this.setOffset(5, 3)
+    this.setScale(2.5)
+    // Larger body matches bigger dog proportions
+    this.setBodySize(22, 26)
+    this.setOffset(3, 1)
     this.cursors = scene.input.keyboard!.createCursorKeys()
     this.shiftKey = scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT)
 
@@ -70,7 +70,7 @@ export class Cruella extends Phaser.Physics.Arcade.Sprite {
   }
 
   bark(): void {
-    SoundManager.play('bark')
+    SoundManager.play('barkAbility')
     // Atualiza cooldown no GameState para UIScene exibir
     gameState.abilityUsedAt = this.scene.time.now
     gameState.abilityCooldownMs = 1500

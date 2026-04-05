@@ -107,11 +107,11 @@ export class Player {
     // Aplica impulso na direção do dash original
     this.cruella.setVelocityX(this._lastDashDir * 440)
 
-    // VFX: pulse de escala em Cruella
+    // VFX: pulse de escala em Cruella (10% acima da escala base 2.5)
     this.scene.tweens.add({
       targets: this.cruella,
-      scaleX: 1.3,
-      scaleY: 1.3,
+      scaleX: 2.75,
+      scaleY: 2.75,
       duration: 150,
       yoyo: true,
       ease: 'Quad.easeOut',

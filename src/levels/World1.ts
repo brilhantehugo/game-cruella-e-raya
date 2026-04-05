@@ -35,6 +35,13 @@ export const LEVEL_1_1: LevelData = {
   ],
   goldenBones: [{ x: 352, y: 96 }, { x: 1536, y: 96 }, { x: 1952, y: 224 }],
   nextLevel: '1-2',
+  intro: {
+    complexity: 2,
+    dialogue: [
+      'A rua está cheia de gatos e pombos hoje. Cuidado!',
+      'Hm, que odor terrível... Vamos logo antes que eu desmaiee!',
+    ],
+  },
   decorations: [
     { type: 'poste',  x: 110,  y: G },
     { type: 'arvore', x: 300,  y: G },
@@ -74,6 +81,13 @@ export const LEVEL_1_2: LevelData = {
   ],
   goldenBones: [{ x: 192, y: 64 }, { x: 1248, y: 96 }, { x: 2112, y: 160 }],
   nextLevel: '1-3',
+  intro: {
+    complexity: 2,
+    dialogue: [
+      'Uma praça cheia de ratos! Vamos usar o jardim como cobertura.',
+      'Jardim? Eu preferia um spa, mas... vamos nessa, querida!',
+    ],
+  },
   decorations: [
     { type: 'poste',  x: 110,  y: G },
     { type: 'arvore', x: 320,  y: G },
@@ -114,6 +128,13 @@ export const LEVEL_1_3: LevelData = {
   ],
   goldenBones: [{ x: 288, y: 64 }, { x: 1472, y: 96 }, { x: 2048, y: 192 }],
   nextLevel: '1-boss',
+  intro: {
+    complexity: 2,
+    dialogue: [
+      'O mercadinho está infestado! Donos nervosos por todo lado.',
+      'Aquele cheiro de churrasco é perturbador... e delicioso.',
+    ],
+  },
   decorations: [
     { type: 'arvore', x: 110,  y: G },
     { type: 'loja',   x: 340,  y: G },

@@ -48,6 +48,7 @@ export const KEYS = {
   INTRO_CRAWL: 'IntroCrawlScene',
   CHARACTER_SELECT: 'CharacterSelectScene',
   ENEMY_INFO: 'EnemyInfoScene',
+  LEVEL_INTRO: 'LevelIntroScene',
   // decorações de cenário — rua
   CASA:   'casa',
   ARVORE: 'arvore',

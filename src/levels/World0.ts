@@ -44,6 +44,13 @@ export const LEVEL_0_1: LevelData = {
     { x: 1760, y: 80 },
   ],
   nextLevel: '0-boss',
+  intro: {
+    complexity: 1,
+    dialogue: [
+      'Precisamos passar pela sala sem que Hugo nos veja!',
+      'Deixa comigo, eu sei latir bem alto para distraí-los!',
+    ],
+  },
   // ── Mobília: sala (x 0–950) → corredor → cozinha (x 1050–1950) → saída
   decorations: [
     // Sala de estar

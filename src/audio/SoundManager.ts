@@ -4,6 +4,8 @@ export type SfxKey =
   | 'jump' | 'doubleJump' | 'dash' | 'bark'
   | 'collectBone' | 'collectGolden' | 'damage' | 'stomp'
   | 'powerUp' | 'swap' | 'gameOver' | 'levelComplete' | 'checkpoint'
+  | 'dashAbility'   // Raya — poder do dash (whoosh + impacto)
+  | 'barkAbility'   // Cruella — latido de habilidade (3 camadas)
 
 let _ctx: AudioContext | null = null
 let _currentBgm: Phaser.Sound.BaseSound | null = null
@@ -263,6 +265,40 @@ export const SoundManager = {
       case 'gameOver':      playArpeggio([440, 330, 220], 200, 0.3);              break
       case 'levelComplete': playArpeggio([523, 659, 784, 880, 1047], 100);         break
       case 'checkpoint':    playTone('sine',     440,  880, 200);                   break
+
+      // ── Habilidades especiais ──────────────────────────────────────────────
+      case 'dashAbility': {
+        // Raya dash: impacto de ruído + whoosh descendente
+        if (gameState.muted) break
+        playNoise(70, 0.22)                               // punch de impacto
+        playTone('sawtooth', 750, 140, 260, 0.35)        // whoosh descendente
+        break
+      }
+      case 'barkAbility': {
+        // Cruella bark: 3 camadas simultâneas — corpo grave + latido médio + yip agudo
+        if (gameState.muted) break
+        const c = getCtx()
+        const now = c.currentTime
+        // Camada 1: rumble grave
+        const o1 = c.createOscillator(); const g1 = c.createGain()
+        o1.type = 'square'; o1.frequency.setValueAtTime(110, now)
+        o1.frequency.linearRampToValueAtTime(65, now + 0.35)
+        g1.gain.setValueAtTime(0.38, now); g1.gain.exponentialRampToValueAtTime(0.001, now + 0.35)
+        o1.connect(g1); g1.connect(c.destination); o1.start(now); o1.stop(now + 0.35)
+        // Camada 2: latido médio
+        const o2 = c.createOscillator(); const g2 = c.createGain()
+        o2.type = 'square'; o2.frequency.setValueAtTime(260, now)
+        o2.frequency.linearRampToValueAtTime(175, now + 0.22)
+        g2.gain.setValueAtTime(0.32, now); g2.gain.exponentialRampToValueAtTime(0.001, now + 0.22)
+        o2.connect(g2); g2.connect(c.destination); o2.start(now); o2.stop(now + 0.22)
+        // Camada 3: yip agudo (atrasado 55ms — reforço)
+        const o3 = c.createOscillator(); const g3 = c.createGain()
+        o3.type = 'triangle'; o3.frequency.setValueAtTime(950, now + 0.055)
+        o3.frequency.linearRampToValueAtTime(480, now + 0.055 + 0.18)
+        g3.gain.setValueAtTime(0.22, now + 0.055); g3.gain.exponentialRampToValueAtTime(0.001, now + 0.055 + 0.18)
+        o3.connect(g3); g3.connect(c.destination); o3.start(now + 0.055); o3.stop(now + 0.055 + 0.18)
+        break
+      }
     }
   },
 

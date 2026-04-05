@@ -23,6 +23,7 @@ export class GameState {
   muted: boolean = false
   abilityUsedAt: number = 0      // timestamp do último uso da habilidade especial
   abilityCooldownMs: number = 800 // duração do cooldown em ms (800 Raya, 1500 Cruella)
+  introSeen: Set<string> = new Set()
 
   canSwap(now: number): boolean {
     return now >= this.swapBlockedUntil
@@ -119,6 +120,7 @@ export class GameState {
     this.checkpointY = 0
     this.abilityUsedAt = 0
     this.abilityCooldownMs = 800
+    this.introSeen = new Set()
     // muted é uma preferência de UI — persiste intencionalmente entre partidas
   }
 

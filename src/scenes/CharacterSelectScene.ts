@@ -66,9 +66,9 @@ export class CharacterSelectScene extends Phaser.Scene {
     portraitRaya.setStrokeStyle(1, 0x333355)
     portraitCruella.setStrokeStyle(1, 0x333355)
 
-    // ── Sprites (centered in portrait zone, scale=3 → 96px visual, fits in 148px zone) ──
-    const rayaSprite    = this.add.sprite(rayaX,    PORTRAIT_CY, KEYS.RAYA,    0).setScale(3)
-    const cruellaSprite = this.add.sprite(cruellaX, PORTRAIT_CY, KEYS.CRUELLA, 0).setScale(3)
+    // ── Sprites (Raya menor=escala 2.4, Cruella maior=escala 3.8, ambas no retrato de 148px) ──
+    const rayaSprite    = this.add.sprite(rayaX,    PORTRAIT_CY, KEYS.RAYA,    0).setScale(2.4)
+    const cruellaSprite = this.add.sprite(cruellaX, PORTRAIT_CY, KEYS.CRUELLA, 0).setScale(3.8)
 
     // Bob animation
     this.tweens.add({ targets: rayaSprite,    y: PORTRAIT_CY - 6, duration: 1100, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' })
@@ -79,8 +79,8 @@ export class CharacterSelectScene extends Phaser.Scene {
     this.add.text(cruellaX, CONTENT_Y + 14, 'CRUELLA', { fontSize: '20px', color: '#aaaaff', fontStyle: 'bold' }).setOrigin(0.5)
 
     // ── Playstyle badge ────────────────────────────────────────────────────
-    this.add.text(rayaX,    CONTENT_Y + 34, '[ VELOCIDADE & DANO ]',  { fontSize: '8px', color: '#ffaa55' }).setOrigin(0.5)
-    this.add.text(cruellaX, CONTENT_Y + 34, '[ CONTROLE & SUPORTE ]', { fontSize: '8px', color: '#88aaff' }).setOrigin(0.5)
+    this.add.text(rayaX,    CONTENT_Y + 34, '[ PEQUENA & ÁGIL — VELOCIDADE & DANO ]',  { fontSize: '7px', color: '#ffaa55' }).setOrigin(0.5)
+    this.add.text(cruellaX, CONTENT_Y + 34, '[ GRANDE & PODEROSA — CONTROLE & SUPORTE ]', { fontSize: '7px', color: '#88aaff' }).setOrigin(0.5)
 
     // ── Divider ────────────────────────────────────────────────────────────
     const divGfx = this.add.graphics()
