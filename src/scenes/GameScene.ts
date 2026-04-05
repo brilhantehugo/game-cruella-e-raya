@@ -303,6 +303,15 @@ export class GameScene extends Phaser.Scene {
         if (Phaser.Math.Distance.Between(bx, by, e.x, e.y) <= PHYSICS.BARK_RADIUS) e.stun(2000)
       })
     })
+
+    // Dash de Raya causa dano em inimigos durante o movimento
+    this.physics.add.overlap(this.player.raya, this.enemyGroup, (_r, enemy) => {
+      const e = enemy as Enemy
+      if (this.player.raya.getIsDashing()) {
+        e.takeDamage(1)
+        this._spawnScorePopup(e.x, e.y - 20, '+50', '#f97316')
+      }
+    })
   }
 
   private _handleItemCollect(type: string, item: Phaser.Physics.Arcade.Image): void {
