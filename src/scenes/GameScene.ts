@@ -201,12 +201,14 @@ export class GameScene extends Phaser.Scene {
     // y da superfície do chão: última fileira de tiles
     const groundY = (tiles.length - 1) * TILE_SIZE
 
-    // Checkpoint — sprite configurável por fase (default: hidrante de rua)
-    const cpSprite = this.currentLevel.checkpointSprite ?? KEYS.HYDRANT
-    const cp = this.physics.add.staticImage(this.currentLevel.checkpointX, groundY, cpSprite)
-    cp.setOrigin(0.5, 1).refreshBody()
-    cp.setData('type', 'checkpoint')
-    this.itemGroup.add(cp)
+    // Checkpoint — omitido em fases de boss; sprite configurável nas demais
+    if (!this.currentLevel.isBossLevel) {
+      const cpSprite = this.currentLevel.checkpointSprite ?? KEYS.HYDRANT
+      const cp = this.physics.add.staticImage(this.currentLevel.checkpointX, groundY, cpSprite)
+      cp.setOrigin(0.5, 1).refreshBody()
+      cp.setData('type', 'checkpoint')
+      this.itemGroup.add(cp)
+    }
 
     // Saída — base alinhada ao chão
     const exit = this.physics.add.staticImage(this.currentLevel.exitX, groundY, KEYS.EXIT_GATE)

@@ -341,6 +341,63 @@ export class BootScene extends Phaser.Scene {
     })
     gen(KEYS.ESTANTE, 72, 68)
 
+    // ── DECORAÇÕES — APARTAMENTO (COZINHA) ────────────────────────────────────
+    // FOGÃO: fogão de 4 bocas visto de frente
+    clr()
+    g.fillStyle(0x555566); g.fillRect(0, 0, 48, 60)        // corpo cinza
+    g.fillStyle(0x444455); g.fillRect(0, 0, 48, 12)        // painel superior
+    g.fillStyle(0x777788); g.fillRect(2, 2, 44, 8)         // frente painel
+    // 4 bocas do fogão
+    ;[[10,6],[30,6],[10,20],[30,20]].forEach(([bx,by]) => {
+      g.fillStyle(0x222233); g.fillCircle(bx, by, 5)
+      g.fillStyle(0x888899); g.fillCircle(bx, by, 3)
+      g.fillStyle(0x444455); g.fillCircle(bx, by, 1)
+    })
+    // porta do forno
+    g.fillStyle(0x333344); g.fillRect(4, 28, 40, 26)
+    g.fillStyle(0x555566); g.fillRect(6, 30, 36, 22)
+    g.fillStyle(0x222233); g.fillRect(10, 34, 28, 14)      // vidro forno
+    g.fillStyle(0x778899); g.fillRect(12, 36, 24, 10)      // reflexo vidro
+    g.fillStyle(0x888899); g.fillRect(14, 56, 20, 4)       // pé
+    gen(KEYS.FOGAO, 48, 60)
+
+    // GELADEIRA: geladeira vertical com freezer no topo
+    clr()
+    g.fillStyle(0xdde8ee); g.fillRect(0, 0, 38, 80)        // corpo branco-azulado
+    g.fillStyle(0xc8d8e4); g.fillRect(2, 2, 34, 76)        // face frontal
+    // separação freezer / geladeira
+    g.fillStyle(0x8899aa); g.fillRect(0, 22, 38, 3)
+    // alça freezer
+    g.fillStyle(0x667788); g.fillRect(28, 8, 4, 10)
+    g.fillStyle(0x778899); g.fillRect(29, 9, 2, 8)
+    // alça geladeira
+    g.fillStyle(0x667788); g.fillRect(28, 32, 4, 18)
+    g.fillStyle(0x778899); g.fillRect(29, 33, 2, 16)
+    // detalhe logo
+    g.fillStyle(0xaabbcc); g.fillRect(6, 50, 16, 6)
+    g.fillStyle(0x8899aa); g.fillRect(7, 51, 12, 4)
+    // pezinhos
+    g.fillStyle(0x778899); g.fillRect(4, 76, 8, 4); g.fillRect(26, 76, 8, 4)
+    gen(KEYS.GELADEIRA, 38, 80)
+
+    // BALCÃO: bancada de cozinha com armário abaixo
+    clr()
+    g.fillStyle(0xf0ede0); g.fillRect(0, 0, 80, 10)        // tampo mármore claro
+    g.fillStyle(0xe8e5d0); g.fillRect(0, 2, 78, 4)         // reflexo tampo
+    g.fillStyle(0xddcaaa); g.fillRect(0, 0, 80, 2)         // borda frontal tampo
+    // armário abaixo do balcão
+    g.fillStyle(0xc8a878); g.fillRect(0, 10, 80, 46)       // corpo armário
+    g.fillStyle(0xb89868); g.fillRect(2, 12, 76, 42)       // face
+    // duas portas
+    g.fillStyle(0xa88858); g.fillRect(2, 12, 36, 42)       // porta esq
+    g.fillStyle(0xa88858); g.fillRect(42, 12, 36, 42)      // porta dir
+    g.fillStyle(0xddbb88); g.fillRect(4, 14, 32, 38); g.fillRect(44, 14, 32, 38)
+    // puxadores
+    g.fillStyle(0x888877); g.fillRect(28, 30, 8, 4); g.fillRect(44, 30, 8, 4)
+    // base/pé
+    g.fillStyle(0x998855); g.fillRect(0, 52, 80, 4)
+    gen(KEYS.BALCAO, 80, 56)
+
     // ── PARALLAX BACKGROUNDS ───────────────────────────────────────────────────
 
     // bg_rua_1: blue sky + clouds

@@ -44,14 +44,20 @@ export const LEVEL_0_1: LevelData = {
     { x: 1760, y: 80 },
   ],
   nextLevel: '0-boss',
-  // ── Mobília da sala — curada, sem grade (que é visual de janela, não chão)
+  // ── Mobília: sala (x 0–950) → corredor → cozinha (x 1050–1950) → saída
   decorations: [
-    { type: 'cadeira', x: 200,  y: G, blocking: true },   // início: cadeira isolada
-    { type: 'mesa',    x: 450,  y: G, blocking: true },   // mesa de centro
-    { type: 'estante', x: 780,  y: G, blocking: true },   // estante de livros
-    { type: 'cadeira', x: 1130, y: G, blocking: true },   // cadeira antes do meio
-    { type: 'mesa',    x: 1420, y: G, blocking: true },   // mesa lateral
-    { type: 'estante', x: 1750, y: G, blocking: true },   // estante no final
+    // Sala de estar
+    { type: 'cadeira', x: 180,  y: G, blocking: true },
+    { type: 'mesa',    x: 380,  y: G, blocking: true },
+    { type: 'vaso',    x: 580,  y: G, blocking: true },
+    { type: 'estante', x: 800,  y: G, blocking: true },
+    // Cozinha — balcão, fogão, geladeira
+    { type: 'balcao',    x: 1080, y: G, blocking: true },
+    { type: 'fogao',     x: 1280, y: G, blocking: true },
+    { type: 'geladeira', x: 1480, y: G, blocking: true },
+    { type: 'balcao',    x: 1680, y: G, blocking: true },
+    // Grade de segurança perto da porta de saída
+    { type: 'grade',   x: 1900, y: G, blocking: true },
   ],
 }
 

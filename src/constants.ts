@@ -53,12 +53,16 @@ export const KEYS = {
   ARVORE: 'arvore',
   LOJA:   'loja',
   POSTE:  'poste',
-  // decorações de cenário — apartamento
-  CADEIRA:  'cadeira',
-  MESA:     'mesa',
-  GRADE:    'grade',
-  VASO:     'vaso',
-  ESTANTE:  'estante',
+  // decorações de cenário — apartamento (sala)
+  CADEIRA:   'cadeira',
+  MESA:      'mesa',
+  GRADE:     'grade',
+  VASO:      'vaso',
+  ESTANTE:   'estante',
+  // decorações de cenário — apartamento (cozinha)
+  FOGAO:     'fogao',
+  GELADEIRA: 'geladeira',
+  BALCAO:    'balcao',
   // inimigos world-0
   ASPIRADOR: 'aspirador',
   // NPCs world-0

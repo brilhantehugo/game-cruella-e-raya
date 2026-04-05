@@ -17,6 +17,8 @@ export class Aspirador extends Enemy {
     this.setScale(2.5)
     // Corpo físico ligeiramente menor que o sprite para melhor jogabilidade
     ;(this.body as Phaser.Physics.Arcade.Body).setSize(32, 14).setOffset(2, 4)
+    // Colide com os limites do mundo para nunca sair da arena do boss
+    this.setCollideWorldBounds(true)
     this.setVelocityX(70)
   }
 
