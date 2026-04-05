@@ -28,6 +28,8 @@ export class GameScene extends Phaser.Scene {
   private _gameOverPending = false
   private _parallax!: ParallaxBackground
   private _mKey!: Phaser.Input.Keyboard.Key
+  private _camOffsetX: number = 0
+  private _followingSprite: Phaser.Physics.Arcade.Sprite | null = null
 
   constructor() { super(KEYS.GAME) }
 
@@ -242,7 +244,9 @@ export class GameScene extends Phaser.Scene {
     const mapWidth = this.currentLevel.tileWidthCols * TILE_SIZE
     this.physics.world.setBounds(0, 0, mapWidth, GAME_HEIGHT)
     this.cameras.main.setBounds(0, 0, mapWidth, GAME_HEIGHT)
-    this.cameras.main.startFollow(this.player.active, true, 0.1, 0.1)
+    this.cameras.main.setDeadzone(160, 80)
+    this._followingSprite = this.player.active
+    this.cameras.main.startFollow(this._followingSprite, true, 0.1, 0.1)
   }
 
   private _levelComplete(): void {
@@ -278,7 +282,16 @@ export class GameScene extends Phaser.Scene {
     this._parallax.update(this.cameras.main.scrollX)
     const enemies = this.enemyGroup.getChildren() as Enemy[]
     this.player.update(enemies)
-    this.cameras.main.startFollow(this.player.active, true, 0.1, 0.1)
+    // Lookahead: câmera adianta na direção do movimento
+    const targetOffsetX = this.player.active.flipX ? -80 : 80
+    this._camOffsetX = Phaser.Math.Linear(this._camOffsetX, targetOffsetX, 0.05)
+    this.cameras.main.setFollowOffset(-this._camOffsetX, 0)
+
+    // Re-segue sprite ativa se o swap mudou a cachorra
+    if (this._followingSprite !== this.player.active) {
+      this._followingSprite = this.player.active
+      this.cameras.main.startFollow(this._followingSprite, true, 0.1, 0.1)
+    }
     enemies.forEach(e => {
       e.update(time, delta)
       if (e instanceof DonoNervoso) e.setTarget(this.player.x)
