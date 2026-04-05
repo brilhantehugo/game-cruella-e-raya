@@ -139,6 +139,21 @@ export class GameScene extends Phaser.Scene {
     })
   }
 
+  _spawnScorePopup(x: number, y: number, text: string, color: string = '#ffffff'): void {
+    const popup = this.add.text(x, y, text, {
+      fontSize: '16px', color, fontStyle: 'bold',
+      stroke: '#000000', strokeThickness: 3,
+    }).setDepth(10)
+    this.tweens.add({
+      targets: popup,
+      y: y - 48,
+      alpha: 0,
+      duration: 800,
+      ease: 'Quad.easeOut',
+      onComplete: () => popup.destroy(),
+    })
+  }
+
   private _buildDecorations(): void {
     this.currentLevel.decorations.forEach(d => {
       this.add.image(d.x, d.y, d.type).setOrigin(0.5, 1).setDepth(-1)
@@ -196,20 +211,27 @@ export class GameScene extends Phaser.Scene {
       }
       if (!enemy) return
       this.enemyGroup.add(enemy)
-      enemy.on('died', () => { gameState.addScore(50) })
+      enemy.on('died', (e: Enemy) => {
+        gameState.addScore(50)
+        this._spawnScorePopup(e.x, e.y - 20, '+50', '#f97316')
+      })
     })
 
     if (this.currentLevel.isBossLevel) {
       const boss = new SeuBigodes(this, 480, 360)
       this.enemyGroup.add(boss)
-      boss.on('died', () => {
+      boss.on('died', (b: Enemy) => {
         gameState.addScore(1000)
         gameState.collarOfGold = true
+        this._spawnScorePopup(b.x, b.y - 30, '+1000', '#22c55e')
         this._levelComplete()
       })
       boss.on('spawnMinion', (minion: Enemy) => {
         this.enemyGroup.add(minion)
-        minion.on('died', () => { gameState.addScore(SCORING.ENEMY_KILL) })
+        minion.on('died', (e: Enemy) => {
+          gameState.addScore(SCORING.ENEMY_KILL)
+          this._spawnScorePopup(e.x, e.y - 20, '+50', '#f97316')
+        })
       })
     }
   }
@@ -253,6 +275,9 @@ export class GameScene extends Phaser.Scene {
           e.takeDamage(999)
           pBody.setVelocityY(-380)
           SoundManager.play('stomp')
+          // Hit stop: pausa física por 80ms para dar peso ao golpe
+          this.physics.pause()
+          this.time.delayedCall(80, () => this.physics.resume())
           return
         }
 
@@ -295,21 +320,26 @@ export class GameScene extends Phaser.Scene {
       case 'bone':
         gameState.addScore(10)
         SoundManager.play('collectBone')
+        this._spawnScorePopup(item.x, item.y - 16, '+10')
         break
       case 'golden_bone':
         gameState.collectGoldenBone(gameState.currentLevel, (item as GoldenBone).boneIndex)
         gameState.addScore(500)
         SoundManager.play('collectGolden')
+        this._spawnScorePopup(item.x, item.y - 16, '+500', '#ffd700')
         break
       case 'pizza':
         gameState.restoreHeart()
+        this._spawnScorePopup(item.x, item.y - 16, '❤️', '#ff6b6b')
         break
       case 'laco': case 'coleira': case 'chapeu': case 'bandana':
         gameState.equipAccessory(type as any)
+        this._spawnScorePopup(item.x, item.y - 16, '✨', '#00ffff')
         break
       default:
         gameState.applyPowerUp(type, now)
         SoundManager.play('powerUp')
+        this._spawnScorePopup(item.x, item.y - 16, '✨', '#00ffff')
     }
     item.destroy()
   }
