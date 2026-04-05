@@ -27,6 +27,7 @@ export interface LevelData {
   exitY: number
   checkpointX: number
   checkpointY: number
+  checkpointSprite?: string  // default: KEYS.HYDRANT; override per-level
   enemies: EnemySpawn[]
   items: ItemSpawn[]
   goldenBones: Array<{ x: number; y: number }>

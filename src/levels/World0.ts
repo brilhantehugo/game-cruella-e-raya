@@ -21,21 +21,22 @@ export const LEVEL_0_1: LevelData = {
   ],
   spawnX: 64, spawnY: 300, exitX: 1984, exitY: 370,
   checkpointX: 992, checkpointY: 380,
+  checkpointSprite: 'vaso',   // planta de sala — faz sentido num apto
   enemies: [
     { type: 'hugo',   x: 500,  y: 390 },
     { type: 'hannah', x: 1200, y: 390 },
     { type: 'hugo',   x: 1650, y: 390 },
   ],
   items: [
-    { type: 'bone',     x: 160,  y: 380 },
-    { type: 'bone',     x: 400,  y: 380 },
-    { type: 'petisco',  x: 650,  y: 380 },
-    { type: 'bone',     x: 850,  y: 380 },
+    { type: 'bone',          x: 160,  y: 380 },
+    { type: 'bone',          x: 400,  y: 380 },
+    { type: 'petisco',       x: 650,  y: 380 },
+    { type: 'bone',          x: 850,  y: 380 },
     { type: 'surprise_block', x: 1000, y: 310 },
-    { type: 'laco',     x: 1200, y: 380 },
-    { type: 'bone',     x: 1400, y: 380 },
-    { type: 'pizza',    x: 1700, y: 380 },
-    { type: 'bone',     x: 1900, y: 380 },
+    { type: 'laco',          x: 1200, y: 380 },
+    { type: 'bone',          x: 1400, y: 380 },
+    { type: 'pizza',         x: 1700, y: 380 },
+    { type: 'bone',          x: 1900, y: 380 },
   ],
   goldenBones: [
     { x: 220,  y: 80 },
@@ -43,17 +44,14 @@ export const LEVEL_0_1: LevelData = {
     { x: 1760, y: 80 },
   ],
   nextLevel: '0-boss',
+  // ── Mobília da sala — curada, sem grade (que é visual de janela, não chão)
   decorations: [
-    { type: 'cadeira',  x: 110,  y: G, blocking: true },
-    { type: 'mesa',     x: 280,  y: G, blocking: true },
-    { type: 'vaso',     x: 490,  y: G, blocking: true },
-    { type: 'cadeira',  x: 700,  y: G, blocking: true },
-    { type: 'grade',    x: 870,  y: G, blocking: true },
-    { type: 'estante',  x: 1060, y: G, blocking: true },
-    { type: 'vaso',     x: 1250, y: G, blocking: true },
-    { type: 'mesa',     x: 1450, y: G, blocking: true },
-    { type: 'cadeira',  x: 1680, y: G, blocking: true },
-    { type: 'grade',    x: 1870, y: G, blocking: true },
+    { type: 'cadeira', x: 200,  y: G, blocking: true },   // início: cadeira isolada
+    { type: 'mesa',    x: 450,  y: G, blocking: true },   // mesa de centro
+    { type: 'estante', x: 780,  y: G, blocking: true },   // estante de livros
+    { type: 'cadeira', x: 1130, y: G, blocking: true },   // cadeira antes do meio
+    { type: 'mesa',    x: 1420, y: G, blocking: true },   // mesa lateral
+    { type: 'estante', x: 1750, y: G, blocking: true },   // estante no final
   ],
 }
 
@@ -77,9 +75,9 @@ export const LEVEL_0_BOSS: LevelData = {
   enemies: [], items: [], goldenBones: [],
   nextLevel: '1-1', isBossLevel: true,
   decorations: [
-    { type: 'grade',   x: 100, y: G },
-    { type: 'mesa',    x: 400, y: G },
-    { type: 'grade',   x: 730, y: G },
+    { type: 'mesa',   x: 200, y: G, blocking: true },   // bancada da cozinha
+    { type: 'cadeira', x: 430, y: G, blocking: true },  // cadeira da cozinha
+    { type: 'estante', x: 680, y: G, blocking: true },  // armário de cozinha
   ],
 }
 

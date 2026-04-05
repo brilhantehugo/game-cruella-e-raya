@@ -201,8 +201,9 @@ export class GameScene extends Phaser.Scene {
     // y da superfície do chão: última fileira de tiles
     const groundY = (tiles.length - 1) * TILE_SIZE
 
-    // Checkpoint (hidrante) — base alinhada ao chão
-    const cp = this.physics.add.staticImage(this.currentLevel.checkpointX, groundY, KEYS.HYDRANT)
+    // Checkpoint — sprite configurável por fase (default: hidrante de rua)
+    const cpSprite = this.currentLevel.checkpointSprite ?? KEYS.HYDRANT
+    const cp = this.physics.add.staticImage(this.currentLevel.checkpointX, groundY, cpSprite)
     cp.setOrigin(0.5, 1).refreshBody()
     cp.setData('type', 'checkpoint')
     this.itemGroup.add(cp)
