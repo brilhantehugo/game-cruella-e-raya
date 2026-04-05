@@ -9,7 +9,11 @@ export class UIScene extends Phaser.Scene {
   private cooldownBar!: Phaser.GameObjects.Rectangle
   private cooldownBg!: Phaser.GameObjects.Rectangle
   private accessoryText!: Phaser.GameObjects.Text
-  private powerUpText!: Phaser.GameObjects.Text
+  private _puIcon!: Phaser.GameObjects.Text
+  private _puBarBg!: Phaser.GameObjects.Rectangle
+  private _puBar!: Phaser.GameObjects.Rectangle
+  private _damageFlash!: Phaser.GameObjects.Rectangle
+  private _lastHitAtTracked: number = 0
   private timerText!: Phaser.GameObjects.Text
   private _timeRemaining: number = 0
   private _timerActive: boolean = false
@@ -31,7 +35,11 @@ export class UIScene extends Phaser.Scene {
     this.cooldownBg  = this.add.rectangle(GAME_WIDTH / 2, 30, 60, 6, 0x444444).setScrollFactor(0)
     this.cooldownBar = this.add.rectangle(GAME_WIDTH / 2, 30, 60, 6, 0x44ff44).setScrollFactor(0)
     this.accessoryText = this.add.text(140, 10, '', { fontSize: '12px', color: '#ffdd00' }).setScrollFactor(0)
-    this.powerUpText   = this.add.text(140, 24, '', { fontSize: '11px', color: '#88ffff' }).setScrollFactor(0)
+    this._puIcon   = this.add.text(140, 24, '', { fontSize: '14px' }).setScrollFactor(0)
+    this._puBarBg  = this.add.rectangle(185, 31, 60, 7, 0x333333).setScrollFactor(0)
+    this._puBar    = this.add.rectangle(185, 31, 60, 7, 0x06b6d4).setScrollFactor(0).setOrigin(0.5)
+    this._damageFlash = this.add.rectangle(GAME_WIDTH / 2, 240, GAME_WIDTH, 480, 0xff0000, 0)
+      .setScrollFactor(0).setDepth(10)
 
     this.timerText = this.add.text(GAME_WIDTH / 2 + 80, 10, '', {
       fontSize: '14px', color: '#ffffff', fontStyle: 'bold', fontFamily: 'monospace'
@@ -55,6 +63,18 @@ export class UIScene extends Phaser.Scene {
         this.heartImages[i].setAlpha(1)
       }
     }
+    // Flash de dano
+    if (gameState.lastHitAt !== this._lastHitAtTracked && gameState.lastHitAt > 0) {
+      this._lastHitAtTracked = gameState.lastHitAt
+      this._damageFlash.setAlpha(0.35)
+      this.tweens.add({
+        targets: this._damageFlash,
+        alpha: 0,
+        duration: 400,
+        ease: 'Quad.easeOut',
+      })
+    }
+
     this.scoreText.setText(`Ossos: ${gameState.score}`)
     const isDog = gameState.activeDog === 'raya'
     this.dogText.setText(isDog ? 'RAYA' : 'CRUELLA').setColor(isDog ? '#ff6b6b' : '#6b6bff')
@@ -67,14 +87,20 @@ export class UIScene extends Phaser.Scene {
     }
     this.accessoryText.setText(gameState.equippedAccessory ? accLabels[gameState.equippedAccessory] : '')
     if (gameState.hasAnyPowerUp(now) && gameState.activePowerUp) {
-      const remaining = Math.ceil((gameState.activePowerUp.expiresAt - now) / 1000)
-      const puLabels: Record<string, string> = {
-        petisco: '🍖 Turbo', pipoca: '🍿 Super Pulo',
-        churrasco: '🥩 Invencível', bola: '🎾 Bola', frisbee: '🥏 Frisbee'
+      const puIcons: Record<string, string> = {
+        petisco: '🍖', pipoca: '🍿', churrasco: '🥩', bola: '🎾', frisbee: '🥏'
       }
-      this.powerUpText.setText(`${puLabels[gameState.activePowerUp.type] ?? gameState.activePowerUp.type} ${remaining}s`)
+      const fraction = Math.max(0, (gameState.activePowerUp.expiresAt - now) / 10000)
+      const barColor = fraction < 0.2 ? 0xef4444 : 0x06b6d4
+      this._puIcon.setText(puIcons[gameState.activePowerUp.type] ?? '⚡')
+      this._puBar.setDisplaySize(60 * fraction, 7).setFillStyle(barColor)
+      this._puBarBg.setVisible(true)
+      this._puBar.setVisible(true)
+      this._puIcon.setVisible(true)
     } else {
-      this.powerUpText.setText('')
+      this._puBarBg.setVisible(false)
+      this._puBar.setVisible(false)
+      this._puIcon.setVisible(false)
     }
 
     // Timer de fase
