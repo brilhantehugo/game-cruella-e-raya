@@ -11,12 +11,20 @@ export class Player {
   cruella: Cruella
   private tabKey: Phaser.Input.Keyboard.Key
   private scene: Phaser.Scene
+  private _dashComboWindowUntil: number = 0
+  private _lastDashDir: number = 1
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     this.scene = scene
     this.raya = new Raya(scene, x, y)
     this.cruella = new Cruella(scene, x, y)
     this.tabKey = scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.TAB)
+
+    // Ouve evento de dash para registrar janela de combo
+    this.raya.on('dashed', ({ dir, time }: { dir: number; time: number }) => {
+      this._dashComboWindowUntil = time + 600
+      this._lastDashDir = dir
+    })
 
     if (gameState.activeDog === 'cruella') {
       this.raya.setAlpha(0.35)
@@ -82,6 +90,32 @@ export class Player {
     ;(prev.body as Phaser.Physics.Arcade.Body).setEnable(false)
 
     this.scene.cameras.main.flash(80, 255, 255, 255)
+
+    // Verifica janela de combo: Raya dasheu → swap → impulso em Cruella
+    if (this.scene.time.now < this._dashComboWindowUntil && gameState.activeDog === 'cruella') {
+      this._activateDashCombo()
+    }
+  }
+
+  private _activateDashCombo(): void {
+    // Aplica impulso na direção do dash original
+    this.cruella.setVelocityX(this._lastDashDir * 440)
+
+    // VFX: pulse de escala em Cruella
+    this.scene.tweens.add({
+      targets: this.cruella,
+      scaleX: 1.3,
+      scaleY: 1.3,
+      duration: 150,
+      yoyo: true,
+      ease: 'Quad.easeOut',
+    })
+
+    // Flash adicional de câmera para indicar combo
+    this.scene.cameras.main.flash(120, 255, 200, 50)
+
+    // Reseta janela para não acionar combo duplo
+    this._dashComboWindowUntil = 0
   }
 
   takeDamage(): void {
