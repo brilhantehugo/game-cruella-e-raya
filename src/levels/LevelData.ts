@@ -1,5 +1,5 @@
 export type EnemyType = 'gato' | 'pombo' | 'rato' | 'dono' | 'aspirador' | 'hugo' | 'hannah'
-export interface DecorationSpawn { type: string; x: number; y: number }
+export interface DecorationSpawn { type: string; x: number; y: number; blocking?: boolean }
 
 export type ItemType =
   | 'bone' | 'golden_bone'

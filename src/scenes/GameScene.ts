@@ -25,6 +25,7 @@ export class GameScene extends Phaser.Scene {
   private player!: Player
   private groundLayer!: Phaser.Physics.Arcade.StaticGroup
   private platformLayer!: Phaser.Physics.Arcade.StaticGroup
+  private decorationLayer!: Phaser.Physics.Arcade.StaticGroup
   private enemyGroup!: Phaser.Physics.Arcade.Group
   private itemGroup!: Phaser.Physics.Arcade.StaticGroup
   private escKey!: Phaser.Input.Keyboard.Key
@@ -162,8 +163,16 @@ export class GameScene extends Phaser.Scene {
   }
 
   private _buildDecorations(): void {
+    this.decorationLayer = this.physics.add.staticGroup()
     this.currentLevel.decorations.forEach(d => {
-      this.add.image(d.x, d.y, d.type).setOrigin(0.5, 1).setDepth(-1)
+      if (d.blocking) {
+        // Decoração sólida — bloqueia personagens
+        const img = this.decorationLayer.create(d.x, d.y, d.type) as Phaser.Physics.Arcade.Image
+        img.setOrigin(0.5, 1).setDepth(0).refreshBody()
+      } else {
+        // Decoração visual apenas — sem física
+        this.add.image(d.x, d.y, d.type).setOrigin(0.5, 1).setDepth(-1)
+      }
     })
   }
 
@@ -189,13 +198,18 @@ export class GameScene extends Phaser.Scene {
       }
     }
 
-    // Checkpoint (hidrante)
-    const cp = this.physics.add.staticImage(this.currentLevel.checkpointX, this.currentLevel.checkpointY, KEYS.HYDRANT)
+    // y da superfície do chão: última fileira de tiles
+    const groundY = (tiles.length - 1) * TILE_SIZE
+
+    // Checkpoint (hidrante) — base alinhada ao chão
+    const cp = this.physics.add.staticImage(this.currentLevel.checkpointX, groundY, KEYS.HYDRANT)
+    cp.setOrigin(0.5, 1).refreshBody()
     cp.setData('type', 'checkpoint')
     this.itemGroup.add(cp)
 
-    // Saída
-    const exit = this.physics.add.staticImage(this.currentLevel.exitX, this.currentLevel.exitY, KEYS.EXIT_GATE)
+    // Saída — base alinhada ao chão
+    const exit = this.physics.add.staticImage(this.currentLevel.exitX, groundY, KEYS.EXIT_GATE)
+    exit.setOrigin(0.5, 1).refreshBody()
     exit.setData('type', 'exit')
     this.itemGroup.add(exit)
   }
@@ -287,6 +301,13 @@ export class GameScene extends Phaser.Scene {
     this.physics.add.collider(this.enemyGroup, this.groundLayer)
     this.physics.add.collider(this.enemyGroup, this.platformLayer)
 
+    // Decorações sólidas (móveis, grades) bloqueiam personagens e inimigos
+    if (this.decorationLayer.getLength() > 0) {
+      this.physics.add.collider(this.player.raya,   this.decorationLayer)
+      this.physics.add.collider(this.player.cruella, this.decorationLayer)
+      this.physics.add.collider(this.enemyGroup,     this.decorationLayer)
+    }
+
     playerSprites.forEach(sprite => {
       this.physics.add.overlap(sprite, this.enemyGroup, (ps, enemy) => {
         const e = enemy as Enemy
@@ -306,11 +327,14 @@ export class GameScene extends Phaser.Scene {
           return
         }
 
-        // NPCs: empurra o jogador para o lado, sem tirar coração
+        // NPCs (Hugo/Hannah): empurra o jogador e causa dano — mas não morrem
         if (e.isNPC) {
           const pushDir = (ps as Phaser.Physics.Arcade.Sprite).x < e.x ? -1 : 1
-          pBody.setVelocityX(pushDir * 320)
-          pBody.setVelocityY(-200)
+          pBody.setVelocityX(pushDir * 340)
+          pBody.setVelocityY(-220)
+          this.player.takeDamage()
+          SoundManager.play('damage')
+          if (gameState.isDead()) this._gameOver()
           return
         }
 

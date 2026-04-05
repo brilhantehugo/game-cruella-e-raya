@@ -1,6 +1,6 @@
 import Phaser from 'phaser'
 import { KEYS, TILE_SIZE } from '../constants'
-import { CompiledSprite, RAYA_SPRITE, CRUELLA_SPRITE, GATO_SPRITE, POMBO_SPRITE, RATO_SPRITE, DONO_SPRITE, BIGODES_SPRITE, ASPIRADOR_SPRITE } from '../sprites/SpriteData'
+import { CompiledSprite, RAYA_SPRITE, CRUELLA_SPRITE, GATO_SPRITE, POMBO_SPRITE, RATO_SPRITE, DONO_SPRITE, BIGODES_SPRITE } from '../sprites/SpriteData'
 
 export class BootScene extends Phaser.Scene {
   constructor() { super(KEYS.BOOT) }
@@ -22,8 +22,7 @@ export class BootScene extends Phaser.Scene {
     this._makePixelSprite(KEYS.POMBO,   POMBO_SPRITE)
     this._makePixelSprite(KEYS.RATO,    RATO_SPRITE)
     this._makePixelSprite(KEYS.DONO,    DONO_SPRITE)
-    this._makePixelSprite(KEYS.BIGODES,    BIGODES_SPRITE)
-    this._makePixelSprite(KEYS.ASPIRADOR, ASPIRADOR_SPRITE)
+    this._makePixelSprite(KEYS.BIGODES, BIGODES_SPRITE)
 
     // ── Graphics textures ──────────────────────────────────────────────────────
     const g = this.make.graphics({ x: 0, y: 0 })
@@ -591,6 +590,57 @@ export class BootScene extends Phaser.Scene {
       g.fillTriangle(sx, 310, sx + 4, 295, sx + 8, 310)
     }
     gen(KEYS.BG_BOSS_3, 200, 450)
+
+    // ── ASPIRADOR: robô aspirador (disco branco, vista lateral) ──────────────
+    // Inspirado em robô Xiaomi: corpo oval achatado, sensor LiDAR laranja,
+    // câmera ciano, ventilação lateral, rodas embaixo
+    clr()
+    const AW = 36, AH = 20
+    // Sombra suave embaixo
+    g.fillStyle(0xcccccc, 0.4)
+    g.fillEllipse(AW / 2 + 1, AH - 1, AW - 4, 5)
+    // Corpo principal — oval branco-gelo
+    g.fillStyle(0xf4f4f4)
+    g.fillEllipse(AW / 2, AH / 2 - 1, AW - 2, AH - 6)
+    // Faixa divisória cinza (lateral do disco — vista de lado)
+    g.fillStyle(0xbbbbbb)
+    g.fillRect(3, AH / 2 + 1, AW - 6, 3)
+    // Sensor LiDAR (domo laranja/âmbar — posicionado no terço esquerdo do topo)
+    g.fillStyle(0xee7700)
+    g.fillCircle(11, 5, 5)
+    g.fillStyle(0xffaa22)
+    g.fillCircle(10, 4, 3)
+    g.fillStyle(0xffcc66)
+    g.fillCircle(9, 3, 1)       // reflexo brilhante
+    // Base do sensor LiDAR
+    g.fillStyle(0xdddddd)
+    g.fillRect(7, 8, 8, 2)
+    // Câmera/olho (círculo ciano pequeno — lado direito)
+    g.fillStyle(0x00ccff)
+    g.fillCircle(24, 7, 2)
+    g.fillStyle(0x88eeff)
+    g.fillCircle(23, 6, 1)      // reflexo
+    // Botão power (retângulo arredondado — extremo direito)
+    g.fillStyle(0xdddddd)
+    g.fillRect(28, 7, 5, 3)
+    g.lineStyle(0.5, 0xaaaaaa); g.strokeRect(28, 7, 5, 3)
+    // Ventilação (listras escuras — lado esquerdo)
+    g.fillStyle(0x999999)
+    g.fillRect(2, 10, 4, 1)
+    g.fillRect(2, 12, 4, 1)
+    g.fillRect(2, 14, 4, 1)
+    g.fillRect(2, 16, 3, 1)
+    // Rodas (elipses escuras embaixo)
+    g.fillStyle(0x444444)
+    g.fillEllipse(9,       AH - 2, 8, 4)   // roda esquerda
+    g.fillEllipse(AW - 9,  AH - 2, 8, 4)   // roda direita
+    g.fillStyle(0x666666)
+    g.fillEllipse(9,      AH - 3, 5, 2)    // brilho roda esq
+    g.fillEllipse(AW - 9, AH - 3, 5, 2)    // brilho roda dir
+    // Contorno suave do corpo
+    g.lineStyle(1, 0xaaaaaa, 0.6)
+    g.strokeEllipse(AW / 2, AH / 2 - 1, AW - 2, AH - 6)
+    gen(KEYS.ASPIRADOR, AW, AH)
 
     // ── NPCs — HUGO (homem, camisa azul) ─────────────────────────────────────
     clr()

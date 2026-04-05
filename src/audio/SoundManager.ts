@@ -183,13 +183,24 @@ const _INTRO_BASS: PBeat[] = [
   [98.0,  14, 1.8, 0.18], // G2
 ]
 
-let _procActive  = false
+let _procActive   = false
 let _procTimeout: ReturnType<typeof setTimeout> | null = null
 let _procType: 'menu' | 'intro' | null = null
+// Nó de ganho mestre para silenciar notas já agendadas na Web Audio API
+let _procGainNode: GainNode | null = null
 
 function _stopProcLoop(): void {
   _procActive = false
   if (_procTimeout !== null) { clearTimeout(_procTimeout); _procTimeout = null }
+  // Zera o ganho imediatamente para silenciar qualquer nota já agendada
+  if (_procGainNode) {
+    try {
+      const ctx = _procGainNode.context as AudioContext
+      _procGainNode.gain.cancelScheduledValues(ctx.currentTime)
+      _procGainNode.gain.setValueAtTime(0, ctx.currentTime)
+    } catch { /* silencia erros de contexto fechado */ }
+    _procGainNode = null
+  }
 }
 
 function _playNoteAt(
@@ -200,6 +211,7 @@ function _playNoteAt(
   dur: number,
   gain: number
 ): void {
+  if (!_procGainNode) return          // nó mestre ausente → sessão encerrada
   const osc = ctx.createOscillator()
   const g   = ctx.createGain()
   osc.type  = type
@@ -209,7 +221,7 @@ function _playNoteAt(
   g.gain.setValueAtTime(gain, t + dur * 0.75)
   g.gain.exponentialRampToValueAtTime(0.001, t + dur)
   osc.connect(g)
-  g.connect(ctx.destination)
+  g.connect(_procGainNode)            // ← roteado pelo nó mestre (não direto)
   osc.start(t)
   osc.stop(t + dur + 0.01)
 }
@@ -220,6 +232,13 @@ function _runProc(mel: PBeat[], bass: PBeat[], bpm: number, loop: number): void 
   const beat = 60 / bpm
   const now  = c.currentTime + 0.05
   const loopMs = loop * beat * 1000
+
+  // Garante que o nó mestre existe antes de agendar notas
+  if (!_procGainNode) {
+    _procGainNode = c.createGain()
+    _procGainNode.gain.value = 1
+    _procGainNode.connect(c.destination)
+  }
 
   mel.forEach(([f, b, d, g])  => _playNoteAt(c, 'sine',     f, now + b * beat, d * beat, g))
   bass.forEach(([f, b, d, g]) => _playNoteAt(c, 'triangle', f, now + b * beat, d * beat, g))
@@ -264,10 +283,15 @@ export const SoundManager = {
   playProceduralBgm(type: 'menu' | 'intro' | 'victory' | 'gameover'): void {
     if (_currentBgm) { _currentBgm.stop(); _currentBgm.destroy(); _currentBgm = null }
     _lastBgmKey = null
-    _stopProcLoop()
+    _stopProcLoop()                    // silencia notas antigas imediatamente
     _procType   = type as 'menu' | 'intro'
     _procActive = true
     if (gameState.muted) return
+    // Cria nó mestre novo para esta sessão (notas antigas vão para o nó antigo que está em 0)
+    const c = getCtx()
+    _procGainNode = c.createGain()
+    _procGainNode.gain.value = 1
+    _procGainNode.connect(c.destination)
     const map: Record<string, [PBeat[], PBeat[], number, number]> = {
       menu:     [_MENU_MEL,     _MENU_BASS,     _MENU_BPM,     _MENU_LOOP],
       intro:    [_INTRO_MEL,    _INTRO_BASS,    _INTRO_BPM,    _INTRO_LOOP],
@@ -299,8 +323,12 @@ export const SoundManager = {
         _currentBgm = null; _lastBgmKey = null; _lastBgmScene = null
       }
     } else if (_procType) {
-      // Retoma procedural
+      // Retoma procedural — cria nó mestre novo
       _procActive = true
+      const c2 = getCtx()
+      _procGainNode = c2.createGain()
+      _procGainNode.gain.value = 1
+      _procGainNode.connect(c2.destination)
       const map: Record<string, [PBeat[], PBeat[], number, number]> = {
         menu:     [_MENU_MEL,     _MENU_BASS,     _MENU_BPM,     _MENU_LOOP],
         intro:    [_INTRO_MEL,    _INTRO_BASS,    _INTRO_BPM,    _INTRO_LOOP],

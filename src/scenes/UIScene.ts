@@ -17,6 +17,7 @@ export class UIScene extends Phaser.Scene {
   private _cdGraphics!: Phaser.GameObjects.Graphics
   private _cdIcon!: Phaser.GameObjects.Text
   private timerText!: Phaser.GameObjects.Text
+  private _muteText!: Phaser.GameObjects.Text
   private _timeRemaining: number = 0
   private _timerActive: boolean = false
 
@@ -52,6 +53,11 @@ export class UIScene extends Phaser.Scene {
     this._cdIcon = this.add.text(292, 22, '⚡', {
       fontSize: '14px'
     }).setScrollFactor(0).setDepth(6).setOrigin(0.5)
+
+    // Indicador de mudo (M para alternar)
+    this._muteText = this.add.text(GAME_WIDTH - 8, 36, '🔊', {
+      fontSize: '12px', color: '#aaaaaa',
+    }).setOrigin(1, 0).setScrollFactor(0).setDepth(5).setAlpha(0.7)
 
     // Escuta evento de início de timer emitido por GameScene
     this.scene.get(KEYS.GAME).events.on('start-timer', (seconds: number) => {
@@ -156,5 +162,9 @@ export class UIScene extends Phaser.Scene {
     this._cdGraphics.fillCircle(cx, cy, r - 4)
     // Ícone muda por cachorra ativa
     this._cdIcon.setText(gameState.activeDog === 'raya' ? '⚡' : '🔊')
+
+    // Indicador de mudo
+    this._muteText.setText(gameState.muted ? '🔇 M' : '🔊 M')
+      .setAlpha(gameState.muted ? 1 : 0.45)
   }
 }

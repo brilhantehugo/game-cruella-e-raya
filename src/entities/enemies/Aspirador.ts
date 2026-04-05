@@ -13,7 +13,10 @@ export class Aspirador extends Enemy {
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y, KEYS.ASPIRADOR, 8, 70)
+    // Sprite: 36×20px — robô disco achatado. Ajusta corpo físico para formato correto.
     this.setScale(2.5)
+    // Corpo físico ligeiramente menor que o sprite para melhor jogabilidade
+    ;(this.body as Phaser.Physics.Arcade.Body).setSize(32, 14).setOffset(2, 4)
     this.setVelocityX(70)
   }
 

@@ -16,65 +16,65 @@ const ENEMIES: EnemyCard[] = [
   {
     key: KEYS.GATO,
     name: 'Gato Malencarado',
-    desc: 'Patrulha plataformas\nem vaivém constante.\nIgnora Cruella totalmente.',
-    weakness: 'Pisão de cima (ESPAÇO)\nou Dash da Raya',
-    tip: '💡 Fica de olho nas plataformas altas!',
+    desc: 'Patrulha plataformas em vaivém.\nIgnora Cruella totalmente.',
+    weakness: 'Pisão (ESPAÇO) ou Dash da Raya',
+    tip: '💡 Cuidado com plataformas altas!',
     col: 0xff8866,
   },
   {
     key: KEYS.POMBO,
     name: 'Pombo Agitado',
-    desc: 'Voa em ondas sinusoidais.\nNão sofre gravidade.\nMuda de direção nas paredes.',
-    weakness: 'Dash da Raya (SHIFT)\nou latido da Cruella',
+    desc: 'Voa em ondas sinusoidais.\nMuda direção nas paredes.',
+    weakness: 'Dash da Raya (SHIFT) ou latido',
     tip: '💡 Use Raya para derrubar voando!',
     col: 0xaabbff,
   },
   {
     key: KEYS.RATO,
     name: 'Rato de Calçada',
-    desc: 'Se move rapidamente\nno chão. Muda direção\naleatoriamente a cada 1–3s.',
-    weakness: 'Pisão ou Dash;\ntambém foge de Cruella',
+    desc: 'Corre rápido no chão.\nMuda direção aleatoriamente.',
+    weakness: 'Pisão ou Dash; foge de Cruella',
     tip: '💡 Rápido — use o Dash para acertá-lo!',
     col: 0xccaa44,
   },
   {
     key: KEYS.DONO,
     name: 'Dono Nervoso',
-    desc: 'Persegue a cachorra ativa.\nIMMUNE a danos.\nAtordoável pelo latido.',
-    weakness: 'Impossível matar —\nevite ou atordoe com Cruella',
-    tip: '💡 Troque para Cruella e uiva para parar!',
+    desc: 'Persegue a cachorra ativa.\nImune — atordoável pelo latido.',
+    weakness: 'Não pode ser morto — evite',
+    tip: '💡 Troque para Cruella e uive!',
     col: 0x88ff88,
   },
   {
     key: KEYS.HUGO,
-    name: 'Hugo',
-    desc: 'O dono do apartamento.\nPatrulha os cômodos.\nImune a qualquer ataque.',
-    weakness: 'Impossível machucar —\nevite ou contorne-o',
-    tip: '💡 Só desvie — não tente atacar!',
+    name: 'Hugo (Dono)',
+    desc: 'Patrulha o apartamento.\nImune — empurra ao contato.',
+    weakness: 'Não pode ser machucado',
+    tip: '💡 Pule por cima ou contorne!',
     col: 0x3060c0,
   },
   {
     key: KEYS.HANNAH,
-    name: 'Hannah',
-    desc: 'A dona do apartamento.\nPatrulha o corredor.\nImune — te empurra de volta.',
-    weakness: 'Impossível machucar —\nuse saltos para passar',
-    tip: '💡 Pule por cima ou espere abrir caminho!',
+    name: 'Hannah (Dona)',
+    desc: 'Patrulha o corredor.\nImune — causa dano no contato.',
+    weakness: 'Não pode ser machucada',
+    tip: '💡 Use plataformas para passar!',
     col: 0xcc2233,
   },
   {
     key: KEYS.ASPIRADOR,
     name: 'Aspirador (Chefe 0)',
-    desc: '8 HP, 3 fases:\n• Fase 1: patrulha + pulsa ondas\n• Fase 2: avança (charge!) laranja\n• Fase 3: vermelho, mais rápido',
-    weakness: 'Pisões ou Dash:\n2 danos máx por acerto',
-    tip: '💡 Fique nas plataformas — ele não sobe!',
+    desc: '8 HP · 3 fases: patrulha,\ncharge laranja, vermelho veloz.',
+    weakness: 'Pisões ou Dash (máx 2 dano/golpe)',
+    tip: '💡 Plataformas — ele não sobe!',
     col: 0x22ccff,
   },
   {
     key: KEYS.BIGODES,
     name: 'Seu Bigodes (Chefe 1)',
-    desc: '12 HP, 3 fases:\n• Fase 1: patrulha + atira lixo\n• Fase 2: pula entre plataformas\n• Fase 3: fica vermelho + convoca gatos',
-    weakness: 'Pisões repetidos (3–4×)\ne Dash da Raya nos minions',
-    tip: '💡 Cuide-se dos minions na fase 3!',
+    desc: '12 HP · 3 fases: lixo, saltos\ne convoca gatos na fase final.',
+    weakness: 'Pisões repetidos (3–4×)',
+    tip: '💡 Cuide dos minions na fase 3!',
     col: 0xff4455,
   },
 ]
@@ -136,22 +136,22 @@ export class EnemyInfoScene extends Phaser.Scene {
         .setTint(enemy.col)
 
       // Name
-      const tx = cardX - cardW / 2 + (isBoss ? 86 : 60)
-      this.add.text(tx, cardY - CARD_H / 2 + 5, enemy.name, {
+      const tx = cardX - cardW / 2 + (isBoss ? 86 : 62)
+      this.add.text(tx, cardY - CARD_H / 2 + 4, enemy.name, {
         fontSize: '10px', color: `#${enemy.col.toString(16).padStart(6, '0')}`, fontStyle: 'bold',
       })
 
-      // Description
-      this.add.text(tx, cardY - CARD_H / 2 + 18, enemy.desc, {
-        fontSize: '8px', color: '#cccccc', lineSpacing: 1,
+      // Description (máx 2 linhas × 8px = 16px)
+      this.add.text(tx, cardY - CARD_H / 2 + 17, enemy.desc, {
+        fontSize: '8px', color: '#cccccc', lineSpacing: 2,
       })
 
-      // Weakness
-      const wkY = cardY + CARD_H / 2 - 28
+      // Weakness + tip (parte inferior do card)
+      const wkY = cardY + CARD_H / 2 - 27
       this.add.text(tx, wkY, `⚔ ${enemy.weakness}`, {
         fontSize: '8px', color: '#ffdd88',
       })
-      this.add.text(tx, wkY + 13, enemy.tip, {
+      this.add.text(tx, wkY + 14, enemy.tip, {
         fontSize: '8px', color: '#88ffaa', fontStyle: 'italic',
       })
     })

@@ -12,6 +12,8 @@ import { IntroCrawlScene } from './scenes/IntroCrawlScene'
 import { CharacterSelectScene } from './scenes/CharacterSelectScene'
 import { EnemyInfoScene } from './scenes/EnemyInfoScene'
 import { GAME_WIDTH, GAME_HEIGHT, PHYSICS } from './constants'
+import { SoundManager } from './audio/SoundManager'
+import { gameState } from './GameState'
 
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
@@ -42,3 +44,10 @@ const config: Phaser.Types.Core.GameConfig = {
 }
 
 new Phaser.Game(config)
+
+// ── Tecla M global para silenciar/reativar música em qualquer cena ────────────
+window.addEventListener('keydown', (e: KeyboardEvent) => {
+  if ((e.key === 'm' || e.key === 'M') && !e.repeat) {
+    SoundManager.setMuted(!gameState.muted)
+  }
+})

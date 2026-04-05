@@ -441,15 +441,13 @@ export const BIGODES_SPRITE = compile(48, 48, bigP, [[
 ]])
 
 
-// ─── Aspirador (vacuum robot boss, round disc shape with LED eye) ─────────────
-// 28×28px, 1 frame: idle
-// Palette: . transparent  B black  D dark-gray  G mid-gray  L light-gray
-//          R red(indicator)  W white(LED)  C cyan(logo)  Y yellow(bumper)
+// ─── Aspirador — textura gerada via Graphics em BootScene (não usa CompiledSprite)
+// Mantido aqui apenas para referência histórica.
 const aspP: Record<string, string | null> = {
   '.': null, 'B': '#111111', 'D': '#2a2a2a', 'G': '#555555',
   'L': '#888888', 'R': '#ff2222', 'W': '#ffffff', 'C': '#22ccff', 'Y': '#ffdd00',
 }
-export const ASPIRADOR_SPRITE = compile(28, 28, aspP, [[
+const _ASPIRADOR_SPRITE_UNUSED = compile(28, 28, aspP, [[
   '..........BBBBBBBB..........',  // r0
   '.......BBDDGGGGGGGDBB.......',  // r1
   '.....BBDGLLLLLLLLLLGDBB.....',  // r2
