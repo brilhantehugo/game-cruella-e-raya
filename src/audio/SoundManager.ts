@@ -110,6 +110,38 @@ const _MENU_BASS: PBeat[] = [
   [196.0, 6, 0.65, 0.15], // G3
 ]
 
+// ── Victory theme — Dó maior, 180 BPM, loop de 4 beats (fanfarra triunfal) ──
+const _VICTORY_BPM  = 180
+const _VICTORY_LOOP = 4
+const _VICTORY_MEL: PBeat[] = [
+  [523.3, 0,    0.28, 0.20], // C5
+  [659.3, 0.5,  0.28, 0.20], // E5
+  [784.0, 1,    0.28, 0.22], // G5
+  [1046.5,1.5,  0.70, 0.24], // C6 — clímax
+  [880.0, 2.25, 0.35, 0.20], // A5
+  [784.0, 2.75, 0.35, 0.20], // G5
+  [1046.5,3.25, 0.60, 0.22], // C6 — reforço
+]
+const _VICTORY_BASS: PBeat[] = [
+  [130.8, 0,  1.8, 0.20], // C3
+  [174.6, 2,  0.9, 0.18], // F3
+  [196.0, 3,  0.9, 0.18], // G3
+]
+
+// ── Game-over theme — Ré menor, 45 BPM, loop de 8 beats (sombrio, triste) ──
+const _GAMEOVER_BPM  = 45
+const _GAMEOVER_LOOP = 8
+const _GAMEOVER_MEL: PBeat[] = [
+  [293.7, 0,    1.6, 0.18], // D4
+  [261.6, 2,    1.6, 0.17], // C4
+  [233.1, 4,    1.6, 0.18], // Bb3
+  [220.0, 6,    1.8, 0.20], // A3 — queda final
+]
+const _GAMEOVER_BASS: PBeat[] = [
+  [73.4,  0, 3.6, 0.22], // D2
+  [55.0,  4, 3.6, 0.20], // A1
+]
+
 // ── Intro theme — Ré menor, 72 BPM, loop de 16 beats (dramático, épico) ────
 const _INTRO_BPM  = 72
 const _INTRO_LOOP = 16
@@ -229,16 +261,20 @@ export const SoundManager = {
   },
 
   /** BGM gerado proceduralmente via Web Audio — funciona sem arquivos MP3 */
-  playProceduralBgm(type: 'menu' | 'intro'): void {
+  playProceduralBgm(type: 'menu' | 'intro' | 'victory' | 'gameover'): void {
     if (_currentBgm) { _currentBgm.stop(); _currentBgm.destroy(); _currentBgm = null }
     _lastBgmKey = null
     _stopProcLoop()
-    _procType   = type
+    _procType   = type as 'menu' | 'intro'
     _procActive = true
     if (gameState.muted) return
-    const [mel, bass, bpm, loop] = type === 'menu'
-      ? [_MENU_MEL,  _MENU_BASS,  _MENU_BPM,  _MENU_LOOP]
-      : [_INTRO_MEL, _INTRO_BASS, _INTRO_BPM, _INTRO_LOOP]
+    const map: Record<string, [PBeat[], PBeat[], number, number]> = {
+      menu:     [_MENU_MEL,     _MENU_BASS,     _MENU_BPM,     _MENU_LOOP],
+      intro:    [_INTRO_MEL,    _INTRO_BASS,    _INTRO_BPM,    _INTRO_LOOP],
+      victory:  [_VICTORY_MEL,  _VICTORY_BASS,  _VICTORY_BPM,  _VICTORY_LOOP],
+      gameover: [_GAMEOVER_MEL, _GAMEOVER_BASS, _GAMEOVER_BPM, _GAMEOVER_LOOP],
+    }
+    const [mel, bass, bpm, loop] = map[type]
     _runProc(mel, bass, bpm, loop)
   },
 
@@ -265,9 +301,13 @@ export const SoundManager = {
     } else if (_procType) {
       // Retoma procedural
       _procActive = true
-      const [mel, bass, bpm, loop] = _procType === 'menu'
-        ? [_MENU_MEL,  _MENU_BASS,  _MENU_BPM,  _MENU_LOOP]
-        : [_INTRO_MEL, _INTRO_BASS, _INTRO_BPM, _INTRO_LOOP]
+      const map: Record<string, [PBeat[], PBeat[], number, number]> = {
+        menu:     [_MENU_MEL,     _MENU_BASS,     _MENU_BPM,     _MENU_LOOP],
+        intro:    [_INTRO_MEL,    _INTRO_BASS,    _INTRO_BPM,    _INTRO_LOOP],
+        victory:  [_VICTORY_MEL,  _VICTORY_BASS,  _VICTORY_BPM,  _VICTORY_LOOP],
+        gameover: [_GAMEOVER_MEL, _GAMEOVER_BASS, _GAMEOVER_BPM, _GAMEOVER_LOOP],
+      }
+      const [mel, bass, bpm, loop] = map[_procType]
       _runProc(mel, bass, bpm, loop)
     }
   },
