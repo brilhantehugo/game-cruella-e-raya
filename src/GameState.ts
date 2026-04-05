@@ -21,6 +21,8 @@ export class GameState {
   currentLevel: string = '1-1'
   goldenBones: Record<string, boolean[]> = {}
   muted: boolean = false
+  abilityUsedAt: number = 0      // timestamp do último uso da habilidade especial
+  abilityCooldownMs: number = 800 // duração do cooldown em ms (800 Raya, 1500 Cruella)
 
   canSwap(now: number): boolean {
     return now >= this.swapBlockedUntil
@@ -115,6 +117,8 @@ export class GameState {
     this.checkpointReached = false
     this.checkpointX = 0
     this.checkpointY = 0
+    this.abilityUsedAt = 0
+    this.abilityCooldownMs = 800
     // muted é uma preferência de UI — persiste intencionalmente entre partidas
   }
 
