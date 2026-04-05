@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { KEYS, TILE_SIZE, GAME_HEIGHT, PHYSICS, SCORING } from '../constants'
+import { KEYS, TILE_SIZE, GAME_WIDTH, GAME_HEIGHT, PHYSICS, SCORING } from '../constants'
 import { gameState } from '../GameState'
 import { Player } from '../entities/Player'
 import { Enemy } from '../entities/Enemy'
@@ -28,6 +28,9 @@ export class GameScene extends Phaser.Scene {
   private _gameOverPending = false
   private _parallax!: ParallaxBackground
   private _mKey!: Phaser.Input.Keyboard.Key
+  private _camOffsetX: number = 0
+  private _followingSprite: Phaser.Physics.Arcade.Sprite | null = null
+  private _cinematicActive: boolean = false
 
   constructor() { super(KEYS.GAME) }
 
@@ -59,8 +62,96 @@ export class GameScene extends Phaser.Scene {
     this._spawnItems()
     this._setupCollisions()
     this._setupCamera()
+
+    // Boss intro cinemática — deve rodar depois de _setupCamera() para que
+    // cam.stopFollow() e setBounds() operem sobre uma câmera já configurada
+    if (this.currentLevel.isBossLevel) {
+      this._runBossIntro()
+    }
+
     this.escKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.ESC)
     this.scene.launch(KEYS.UI)
+
+    // Inicia timer (delayedCall para garantir que UIScene já inicializou)
+    this.time.delayedCall(100, () => {
+      this.events.emit('start-timer', this.currentLevel.timeLimit)
+    })
+
+    // Listener para game-over por tempo
+    this.events.on('timer-game-over', () => {
+      if (!this._gameOverPending) this._gameOver()
+    })
+  }
+
+  private _runBossIntro(): void {
+    this._cinematicActive = true
+    const cam = this.cameras.main
+    const mapWidth = this.currentLevel.tileWidthCols * TILE_SIZE
+
+    // Etapa 1 (0–500ms): para de seguir o player, zoom out suave
+    cam.stopFollow()
+    this.tweens.add({
+      targets: cam,
+      zoom: 0.85,
+      duration: 500,
+      ease: 'Sine.easeInOut',
+    })
+
+    // Etapa 2 (500–1500ms): pan até o boss (centro da arena)
+    this.time.delayedCall(500, () => {
+      if (!this.scene.isActive(KEYS.GAME)) return
+      const bossX = mapWidth / 2
+      const bossY = GAME_HEIGHT / 2
+      // scrollX = worldX - (viewportWidth / zoom / 2) para centrar o boss na tela
+      const scrollX = bossX - GAME_WIDTH / 2 / 0.85
+      const scrollY = bossY - GAME_HEIGHT / 2 / 0.85
+      this.tweens.add({
+        targets: cam,
+        scrollX,
+        scrollY,
+        duration: 800,
+        ease: 'Sine.easeInOut',
+        onComplete: () => {
+          cam.shake(200, 0.003)
+        },
+      })
+    })
+
+    // Etapa 3 (1500–2000ms): volta ao player, restaura zoom, libera controle
+    this.time.delayedCall(1500, () => {
+      if (!this.scene.isActive(KEYS.GAME)) return
+      this.tweens.add({
+        targets: cam,
+        zoom: 1,
+        duration: 500,
+        ease: 'Sine.easeInOut',
+      })
+      this._followingSprite = this.player.active
+      cam.startFollow(this._followingSprite, true, 0.1, 0.1)
+      cam.setDeadzone(160, 80)
+    })
+
+    this.time.delayedCall(2000, () => {
+      if (!this.scene.isActive(KEYS.GAME)) return
+      this._cinematicActive = false
+      // Trava a câmera dentro dos limites da arena
+      cam.setBounds(0, 0, mapWidth, GAME_HEIGHT)
+    })
+  }
+
+  _spawnScorePopup(x: number, y: number, text: string, color: string = '#ffffff'): void {
+    const popup = this.add.text(x, y, text, {
+      fontSize: '16px', color, fontStyle: 'bold',
+      stroke: '#000000', strokeThickness: 3,
+    }).setDepth(10)
+    this.tweens.add({
+      targets: popup,
+      y: y - 48,
+      alpha: 0,
+      duration: 800,
+      ease: 'Quad.easeOut',
+      onComplete: () => popup.destroy(),
+    })
   }
 
   private _buildDecorations(): void {
@@ -120,20 +211,27 @@ export class GameScene extends Phaser.Scene {
       }
       if (!enemy) return
       this.enemyGroup.add(enemy)
-      enemy.on('died', () => { gameState.addScore(50) })
+      enemy.on('died', (e: Enemy) => {
+        gameState.addScore(50)
+        this._spawnScorePopup(e.x, e.y - 20, '+50', '#f97316')
+      })
     })
 
     if (this.currentLevel.isBossLevel) {
       const boss = new SeuBigodes(this, 480, 360)
       this.enemyGroup.add(boss)
-      boss.on('died', () => {
+      boss.on('died', (b: Enemy) => {
         gameState.addScore(1000)
         gameState.collarOfGold = true
+        this._spawnScorePopup(b.x, b.y - 30, '+1000', '#22c55e')
         this._levelComplete()
       })
       boss.on('spawnMinion', (minion: Enemy) => {
         this.enemyGroup.add(minion)
-        minion.on('died', () => { gameState.addScore(SCORING.ENEMY_KILL) })
+        minion.on('died', (e: Enemy) => {
+          gameState.addScore(SCORING.ENEMY_KILL)
+          this._spawnScorePopup(e.x, e.y - 20, '+50', '#f97316')
+        })
       })
     }
   }
@@ -177,6 +275,9 @@ export class GameScene extends Phaser.Scene {
           e.takeDamage(999)
           pBody.setVelocityY(-380)
           SoundManager.play('stomp')
+          // Hit stop: pausa física por 80ms para dar peso ao golpe
+          this.physics.pause()
+          this.time.delayedCall(80, () => this.physics.resume())
           return
         }
 
@@ -199,8 +300,22 @@ export class GameScene extends Phaser.Scene {
 
     this.player.cruella.on('bark', (bx: number, by: number) => {
       (this.enemyGroup.getChildren() as Enemy[]).forEach(e => {
-        if (Phaser.Math.Distance.Between(bx, by, e.x, e.y) <= PHYSICS.BARK_RADIUS) e.stun(2000)
+        const dist = Phaser.Math.Distance.Between(bx, by, e.x, e.y)
+        if (dist <= PHYSICS.BARK_RADIUS) {
+          e.stun(500)
+          e.setTint(0xffff44)
+          this.time.delayedCall(500, () => { if (e.active) e.clearTint() })
+        }
       })
+    })
+
+    // Dash de Raya causa dano em inimigos durante o movimento
+    this.physics.add.overlap(this.player.raya, this.enemyGroup, (_r, enemy) => {
+      const e = enemy as Enemy
+      if (this.player.raya.getIsDashing()) {
+        e.takeDamage(1)
+        this._spawnScorePopup(e.x, e.y - 20, '+50', '#f97316')
+      }
     })
   }
 
@@ -219,21 +334,26 @@ export class GameScene extends Phaser.Scene {
       case 'bone':
         gameState.addScore(10)
         SoundManager.play('collectBone')
+        this._spawnScorePopup(item.x, item.y - 16, '+10')
         break
       case 'golden_bone':
         gameState.collectGoldenBone(gameState.currentLevel, (item as GoldenBone).boneIndex)
         gameState.addScore(500)
         SoundManager.play('collectGolden')
+        this._spawnScorePopup(item.x, item.y - 16, '+500', '#ffd700')
         break
       case 'pizza':
         gameState.restoreHeart()
+        this._spawnScorePopup(item.x, item.y - 16, '❤️', '#ff6b6b')
         break
       case 'laco': case 'coleira': case 'chapeu': case 'bandana':
         gameState.equipAccessory(type as any)
+        this._spawnScorePopup(item.x, item.y - 16, '✨', '#00ffff')
         break
       default:
         gameState.applyPowerUp(type, now)
         SoundManager.play('powerUp')
+        this._spawnScorePopup(item.x, item.y - 16, '✨', '#00ffff')
     }
     item.destroy()
   }
@@ -242,7 +362,9 @@ export class GameScene extends Phaser.Scene {
     const mapWidth = this.currentLevel.tileWidthCols * TILE_SIZE
     this.physics.world.setBounds(0, 0, mapWidth, GAME_HEIGHT)
     this.cameras.main.setBounds(0, 0, mapWidth, GAME_HEIGHT)
-    this.cameras.main.startFollow(this.player.active, true, 0.1, 0.1)
+    this.cameras.main.setDeadzone(160, 80)
+    this._followingSprite = this.player.active
+    this.cameras.main.startFollow(this._followingSprite, true, 0.1, 0.1)
   }
 
   private _levelComplete(): void {
@@ -270,6 +392,8 @@ export class GameScene extends Phaser.Scene {
       this.scene.launch(KEYS.PAUSE)
       return
     }
+    // Bloqueia todo input (inclusive mute) durante a cinemática do boss — intencional
+    if (this._cinematicActive) return
     // Mute toggle
     if (Phaser.Input.Keyboard.JustDown(this._mKey)) {
       SoundManager.setMuted(!gameState.muted)
@@ -278,7 +402,16 @@ export class GameScene extends Phaser.Scene {
     this._parallax.update(this.cameras.main.scrollX)
     const enemies = this.enemyGroup.getChildren() as Enemy[]
     this.player.update(enemies)
-    this.cameras.main.startFollow(this.player.active, true, 0.1, 0.1)
+    // Lookahead: câmera adianta na direção do movimento
+    const targetOffsetX = this.player.active.flipX ? -80 : 80
+    this._camOffsetX = Phaser.Math.Linear(this._camOffsetX, targetOffsetX, 0.05)
+    this.cameras.main.setFollowOffset(-this._camOffsetX, 0)
+
+    // Re-segue sprite ativa se o swap mudou a cachorra
+    if (this._followingSprite !== this.player.active) {
+      this._followingSprite = this.player.active
+      this.cameras.main.startFollow(this._followingSprite, true, 0.1, 0.1)
+    }
     enemies.forEach(e => {
       e.update(time, delta)
       if (e instanceof DonoNervoso) e.setTarget(this.player.x)

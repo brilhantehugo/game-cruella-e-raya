@@ -18,6 +18,7 @@ export interface LevelData {
   name: string
   bgColor: number
   backgroundTheme: BackgroundTheme
+  timeLimit: number  // segundos — 0 = sem limite (boss level)
   tiles: number[][]
   tileWidthCols: number
   spawnX: number

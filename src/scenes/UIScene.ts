@@ -9,7 +9,16 @@ export class UIScene extends Phaser.Scene {
   private cooldownBar!: Phaser.GameObjects.Rectangle
   private cooldownBg!: Phaser.GameObjects.Rectangle
   private accessoryText!: Phaser.GameObjects.Text
-  private powerUpText!: Phaser.GameObjects.Text
+  private _puIcon!: Phaser.GameObjects.Text
+  private _puBarBg!: Phaser.GameObjects.Rectangle
+  private _puBar!: Phaser.GameObjects.Rectangle
+  private _damageFlash!: Phaser.GameObjects.Rectangle
+  private _lastHitAtTracked: number = 0
+  private _cdGraphics!: Phaser.GameObjects.Graphics
+  private _cdIcon!: Phaser.GameObjects.Text
+  private timerText!: Phaser.GameObjects.Text
+  private _timeRemaining: number = 0
+  private _timerActive: boolean = false
 
   constructor() { super({ key: KEYS.UI, active: false }) }
 
@@ -28,7 +37,27 @@ export class UIScene extends Phaser.Scene {
     this.cooldownBg  = this.add.rectangle(GAME_WIDTH / 2, 30, 60, 6, 0x444444).setScrollFactor(0)
     this.cooldownBar = this.add.rectangle(GAME_WIDTH / 2, 30, 60, 6, 0x44ff44).setScrollFactor(0)
     this.accessoryText = this.add.text(140, 10, '', { fontSize: '12px', color: '#ffdd00' }).setScrollFactor(0)
-    this.powerUpText   = this.add.text(140, 24, '', { fontSize: '11px', color: '#88ffff' }).setScrollFactor(0)
+    this._puIcon   = this.add.text(140, 24, '', { fontSize: '14px' }).setScrollFactor(0)
+    this._puBarBg  = this.add.rectangle(185, 31, 60, 7, 0x333333).setScrollFactor(0)
+    this._puBar    = this.add.rectangle(185, 31, 60, 7, 0x06b6d4).setScrollFactor(0).setOrigin(0.5)
+    this._damageFlash = this.add.rectangle(GAME_WIDTH / 2, 240, GAME_WIDTH, 480, 0xff0000, 0)
+      .setScrollFactor(0).setDepth(10)
+
+    this.timerText = this.add.text(GAME_WIDTH / 2 + 80, 10, '', {
+      fontSize: '14px', color: '#ffffff', fontStyle: 'bold', fontFamily: 'monospace'
+    }).setScrollFactor(0)
+
+    // Cooldown visual da habilidade (Shift)
+    this._cdGraphics = this.add.graphics().setScrollFactor(0).setDepth(5)
+    this._cdIcon = this.add.text(292, 22, '⚡', {
+      fontSize: '14px'
+    }).setScrollFactor(0).setDepth(6).setOrigin(0.5)
+
+    // Escuta evento de início de timer emitido por GameScene
+    this.scene.get(KEYS.GAME).events.on('start-timer', (seconds: number) => {
+      this._timeRemaining = seconds
+      this._timerActive = seconds > 0
+    })
   }
 
   update(): void {
@@ -42,6 +71,18 @@ export class UIScene extends Phaser.Scene {
         this.heartImages[i].setAlpha(1)
       }
     }
+    // Flash de dano
+    if (gameState.lastHitAt !== this._lastHitAtTracked && gameState.lastHitAt > 0) {
+      this._lastHitAtTracked = gameState.lastHitAt
+      this._damageFlash.setAlpha(0.35)
+      this.tweens.add({
+        targets: this._damageFlash,
+        alpha: 0,
+        duration: 400,
+        ease: 'Quad.easeOut',
+      })
+    }
+
     this.scoreText.setText(`Ossos: ${gameState.score}`)
     const isDog = gameState.activeDog === 'raya'
     this.dogText.setText(isDog ? 'RAYA' : 'CRUELLA').setColor(isDog ? '#ff6b6b' : '#6b6bff')
@@ -54,14 +95,66 @@ export class UIScene extends Phaser.Scene {
     }
     this.accessoryText.setText(gameState.equippedAccessory ? accLabels[gameState.equippedAccessory] : '')
     if (gameState.hasAnyPowerUp(now) && gameState.activePowerUp) {
-      const remaining = Math.ceil((gameState.activePowerUp.expiresAt - now) / 1000)
-      const puLabels: Record<string, string> = {
-        petisco: '🍖 Turbo', pipoca: '🍿 Super Pulo',
-        churrasco: '🥩 Invencível', bola: '🎾 Bola', frisbee: '🥏 Frisbee'
+      const puIcons: Record<string, string> = {
+        petisco: '🍖', pipoca: '🍿', churrasco: '🥩', bola: '🎾', frisbee: '🥏'
       }
-      this.powerUpText.setText(`${puLabels[gameState.activePowerUp.type] ?? gameState.activePowerUp.type} ${remaining}s`)
+      const fraction = Math.max(0, (gameState.activePowerUp.expiresAt - now) / 10000)
+      const barColor = fraction < 0.2 ? 0xef4444 : 0x06b6d4
+      this._puIcon.setText(puIcons[gameState.activePowerUp.type] ?? '⚡')
+      this._puBar.setDisplaySize(60 * fraction, 7).setFillStyle(barColor)
+      this._puBarBg.setVisible(true)
+      this._puBar.setVisible(true)
+      this._puIcon.setVisible(true)
     } else {
-      this.powerUpText.setText('')
+      this._puBarBg.setVisible(false)
+      this._puBar.setVisible(false)
+      this._puIcon.setVisible(false)
     }
+
+    // Timer de fase
+    if (this._timerActive) {
+      this._timeRemaining -= this.game.loop.delta / 1000
+      if (this._timeRemaining <= 0) {
+        this._timeRemaining = 0
+        this._timerActive = false
+        gameState.hearts = 0
+        // Dispara game-over imediatamente via GameScene
+        this.scene.get(KEYS.GAME).events.emit('timer-game-over')
+      }
+      const secs = Math.ceil(this._timeRemaining)
+      const color = secs <= 10 ? '#ef4444' : secs <= 30 ? '#f97316' : '#ffffff'
+      this.timerText.setText(`⏱ ${String(secs).padStart(3, '0')}`).setColor(color)
+
+      // Pisca abaixo de 10s
+      if (secs <= 10) {
+        this.timerText.setAlpha(Math.sin(now * 0.008) * 0.5 + 0.5)
+      } else {
+        this.timerText.setAlpha(1)
+      }
+    } else {
+      this.timerText.setText('')
+    }
+
+    // Cooldown arc da habilidade especial
+    const cdFraction = Math.min(1, (now - gameState.abilityUsedAt) / Math.max(1, gameState.abilityCooldownMs))
+    const cx = 292, cy = 22, r = 13
+    this._cdGraphics.clear()
+    // Círculo de fundo
+    this._cdGraphics.fillStyle(0x222222, 0.85)
+    this._cdGraphics.fillCircle(cx, cy, r)
+    // Arco de progresso
+    if (cdFraction >= 1) {
+      this._cdGraphics.fillStyle(0x22c55e, 1)
+      this._cdGraphics.fillCircle(cx, cy, r)
+    } else {
+      this._cdGraphics.fillStyle(0x7c3aed, 0.9)
+      this._cdGraphics.slice(cx, cy, r, -Math.PI / 2, -Math.PI / 2 + cdFraction * Math.PI * 2, false)
+      this._cdGraphics.fillPath()
+    }
+    // Círculo interno (efeito de anel)
+    this._cdGraphics.fillStyle(0x1a1a2e, 1)
+    this._cdGraphics.fillCircle(cx, cy, r - 4)
+    // Ícone muda por cachorra ativa
+    this._cdIcon.setText(gameState.activeDog === 'raya' ? '⚡' : '🔊')
   }
 }

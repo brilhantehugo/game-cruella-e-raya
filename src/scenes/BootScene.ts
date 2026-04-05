@@ -6,6 +6,8 @@ export class BootScene extends Phaser.Scene {
   constructor() { super(KEYS.BOOT) }
 
   preload(): void {
+    // Erros de carregamento de áudio são silenciados — jogo funciona sem BGM
+    this.load.on('loaderror', () => { /* arquivo ausente: continua sem BGM */ })
     this.load.audio(KEYS.BGM_MENU,    'audio/bgm_menu.mp3')
     this.load.audio(KEYS.BGM_WORLD1,  'audio/bgm_world1.mp3')
     this.load.audio(KEYS.BGM_BOSS,    'audio/bgm_boss.mp3')

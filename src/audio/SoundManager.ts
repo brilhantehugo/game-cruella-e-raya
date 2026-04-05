@@ -111,8 +111,13 @@ export const SoundManager = {
       _currentBgm = null
     }
     if (gameState.muted) return
-    _currentBgm = scene.sound.add(key, { loop, volume: 0.5 })
-    _currentBgm.play()
+    try {
+      _currentBgm = scene.sound.add(key, { loop, volume: 0.5 })
+      _currentBgm.play()
+    } catch {
+      // Arquivo de áudio não encontrado ou não carregado — jogo continua sem BGM
+      _currentBgm = null
+    }
   },
 
   stopBgm(): void {
