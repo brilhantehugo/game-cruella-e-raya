@@ -11,6 +11,8 @@ export class SeuBigodes extends Enemy {
   private actionTimer: number = 0
   private jumpCooldown: number = 0
   private minions: GatoMalencarado[] = []
+  /** Prevents update() and phase transitions from running during death animation */
+  private _isDying = false
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y, KEYS.BIGODES, 12, 60)
@@ -19,8 +21,14 @@ export class SeuBigodes extends Enemy {
     this.setVelocityX(0)
   }
 
+  /** Caps single-hit damage to 2 so stomp/dash don't one-shot the boss */
+  takeDamage(amount: number = 1): void {
+    if (this._isDying) return
+    super.takeDamage(Math.min(amount, 2))
+  }
+
   update(time: number, _delta: number): void {
-    if (this.isStunned()) return
+    if (this._isDying || this.isStunned()) return
 
     this._checkPhaseTransition()
 
@@ -110,6 +118,9 @@ export class SeuBigodes extends Enemy {
   }
 
   protected onDeath(): void {
+    this._isDying = true
+    // Desativa física imediatamente para parar de colidir
+    ;(this.body as Phaser.Physics.Arcade.Body).setEnable(false)
     // Animação de derrota antes de destruir
     this.scene.tweens.add({
       targets: this,

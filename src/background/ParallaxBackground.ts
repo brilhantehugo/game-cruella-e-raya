@@ -30,6 +30,16 @@ const THEME_LAYERS: Record<BackgroundTheme, LayerConfig[]> = {
     { key: KEYS.BG_BOSS_2,    speed: 0.2,  y: 0, height: 450 },
     { key: KEYS.BG_BOSS_3,    speed: 0.5,  y: 0, height: 450 },
   ],
+  apartamento: [
+    { key: KEYS.BG_APTO_1,    speed: 0.03, y: 0, height: 450 },
+    { key: KEYS.BG_APTO_2,    speed: 0.15, y: 0, height: 450 },
+    { key: KEYS.BG_APTO_3,    speed: 0.4,  y: 0, height: 450 },
+  ],
+  apto_boss: [
+    { key: KEYS.BG_APTO_BOSS_1, speed: 0.02, y: 0, height: 450 },
+    { key: KEYS.BG_APTO_BOSS_2, speed: 0.1,  y: 0, height: 450 },
+    { key: KEYS.BG_APTO_BOSS_3, speed: 0.35, y: 0, height: 450 },
+  ],
 }
 
 export class ParallaxBackground {

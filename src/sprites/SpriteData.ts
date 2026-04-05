@@ -439,3 +439,43 @@ export const BIGODES_SPRITE = compile(48, 48, bigP, [[
   '................................................',  // r46
   '................................................',  // r47
 ]])
+
+
+// ─── Aspirador (vacuum robot boss, round disc shape with LED eye) ─────────────
+// 28×28px, 1 frame: idle
+// Palette: . transparent  B black  D dark-gray  G mid-gray  L light-gray
+//          R red(indicator)  W white(LED)  C cyan(logo)  Y yellow(bumper)
+const aspP: Record<string, string | null> = {
+  '.': null, 'B': '#111111', 'D': '#2a2a2a', 'G': '#555555',
+  'L': '#888888', 'R': '#ff2222', 'W': '#ffffff', 'C': '#22ccff', 'Y': '#ffdd00',
+}
+export const ASPIRADOR_SPRITE = compile(28, 28, aspP, [[
+  '..........BBBBBBBB..........',  // r0
+  '.......BBDDGGGGGGGDBB.......',  // r1
+  '.....BBDGLLLLLLLLLLGDBB.....',  // r2
+  '....BDGLLLLLLLLLLLLLGDB.....',  // r3
+  '...BDGLLLLLLLLLLLLLLLGDB....',  // r4
+  '..BDGLLL..LLLLLLLLL..LLLGDB.',  // r5
+  '..BGLLL..RLLLLLLLLRL..LLLGB.',  // r6
+  '.BDGLLL.RRWLLLLLLWRRL.LLLGDB',  // r7
+  '.BGLLL.RRRWWLLLWWRRRLLLLGB.',   // r8
+  'BDGLLL.RRRWWCCCWWRRRLLLGDB.',   // r9
+  'BDGLL..RRWWCCCCWWRR..LLLGDB',   // r10
+  'BGLLL..RWWCCCCCWWR..LLLLGB.',   // r11
+  'BGLL...BWWCCCCCWWB...LLLGB.',   // r12
+  'BGLL...BWWCCCCCWWB...LLLGB.',   // r13
+  'BGLL..RBBWWCCCCWWBBR.LLLGB.',   // r14
+  'BDGLL..RWWWCCCWWWR..LLLGDB.',   // r15
+  'BDGLL...BWWCCWWB...LLLLGDB.',   // r16
+  '.BGLL...YYYYYYYYYYY.LLLGB..',   // r17 yellow bumper
+  '.BDGLLL.YYYYYYYYYYY.LLLGDB.',   // r18
+  '..BGLLL..YYYYYYYYY..LLLGB..',   // r19
+  '..BDGLLL...........LLLGDB..',   // r20
+  '...BDGLLLLLLLLLLLLLLLGDB...',   // r21
+  '....BDGLLLLLLLLLLLLLGDB....',   // r22
+  '.....BDDGLLLLLLLLLGDDB.....',   // r23
+  '.......BBDDDGGGGGDDBB......',   // r24
+  '..........BBBBBBBBB........',   // r25
+  '............................',   // r26
+  '............................',   // r27
+]])

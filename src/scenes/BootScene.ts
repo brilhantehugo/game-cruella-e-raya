@@ -1,6 +1,6 @@
 import Phaser from 'phaser'
 import { KEYS, TILE_SIZE } from '../constants'
-import { CompiledSprite, RAYA_SPRITE, CRUELLA_SPRITE, GATO_SPRITE, POMBO_SPRITE, RATO_SPRITE, DONO_SPRITE, BIGODES_SPRITE } from '../sprites/SpriteData'
+import { CompiledSprite, RAYA_SPRITE, CRUELLA_SPRITE, GATO_SPRITE, POMBO_SPRITE, RATO_SPRITE, DONO_SPRITE, BIGODES_SPRITE, ASPIRADOR_SPRITE } from '../sprites/SpriteData'
 
 export class BootScene extends Phaser.Scene {
   constructor() { super(KEYS.BOOT) }
@@ -22,7 +22,8 @@ export class BootScene extends Phaser.Scene {
     this._makePixelSprite(KEYS.POMBO,   POMBO_SPRITE)
     this._makePixelSprite(KEYS.RATO,    RATO_SPRITE)
     this._makePixelSprite(KEYS.DONO,    DONO_SPRITE)
-    this._makePixelSprite(KEYS.BIGODES, BIGODES_SPRITE)
+    this._makePixelSprite(KEYS.BIGODES,    BIGODES_SPRITE)
+    this._makePixelSprite(KEYS.ASPIRADOR, ASPIRADOR_SPRITE)
 
     // ── Graphics textures ──────────────────────────────────────────────────────
     const g = this.make.graphics({ x: 0, y: 0 })
@@ -278,6 +279,69 @@ export class BootScene extends Phaser.Scene {
     g.fillStyle(0x333344); g.fillRect(20, 8, 8, 4)                    // carcaca lampada
     gen(KEYS.POSTE, 38, 74)
 
+    // ── DECORAÇÕES — APARTAMENTO ──────────────────────────────────────────
+    // CADEIRA: cadeira simples de sala
+    clr()
+    g.fillStyle(0x8b5c2a); g.fillRect(8, 30, 16, 28)   // assento
+    g.fillStyle(0x7a4e1a); g.fillRect(8, 26, 16, 6)    // encosto
+    g.fillRect(6, 18, 4, 44); g.fillRect(22, 18, 4, 44)// pernas traseiras
+    g.fillRect(6, 58, 4, 16); g.fillRect(22, 58, 4, 16)// pernas dianteiras
+    g.fillRect(26, 18, 4, 44);                          // segundo par
+    g.fillStyle(0xd4a05a); g.fillRect(9, 27, 14, 5)    // detalhe encosto
+    gen(KEYS.CADEIRA, 34, 74)
+
+    // MESA: mesa de jantar vista de frente
+    clr()
+    g.fillStyle(0x7a4e1a); g.fillRect(0, 0, 80, 8)     // tampo
+    g.fillStyle(0x9a6830); g.fillRect(2, 0, 76, 4)     // brilho tampo
+    g.fillStyle(0x7a4e1a)
+    g.fillRect(4, 8, 8, 48)                             // perna esq
+    g.fillRect(68, 8, 8, 48)                            // perna dir
+    g.fillStyle(0x8b5c2a); g.fillRect(4, 26, 72, 4)    // travessa
+    gen(KEYS.MESA, 80, 56)
+
+    // GRADE: grade de janela (barras verticais)
+    clr()
+    g.fillStyle(0x666677)
+    g.fillRect(0, 0, 40, 4)                              // barra top
+    g.fillRect(0, 60, 40, 4)                             // barra bot
+    for (let bx = 4; bx < 38; bx += 9) {
+      g.fillRect(bx, 0, 5, 64)                          // barras verticais
+    }
+    g.fillStyle(0x888899)
+    for (let bx = 5; bx < 38; bx += 9) {
+      g.fillRect(bx, 2, 2, 60)                          // brilho nas barras
+    }
+    gen(KEYS.GRADE, 40, 64)
+
+    // VASO: vaso de planta
+    clr()
+    g.fillStyle(0xc65c28); g.fillRect(10, 30, 30, 28)  // vaso
+    g.fillStyle(0xe0701a); g.fillRect(12, 32, 8, 6)    // detalhe
+    g.fillStyle(0xaa4818); g.fillRect(8, 52, 34, 6)    // base
+    g.fillStyle(0x3a8a2a); g.fillCircle(25, 22, 18)    // folhagem base
+    g.fillStyle(0x4aaa3a); g.fillCircle(20, 12, 12); g.fillCircle(30, 15, 11)
+    g.fillStyle(0x5acc4a); g.fillCircle(25, 8, 8)
+    gen(KEYS.VASO, 50, 58)
+
+    // ESTANTE: estante de livros
+    clr()
+    g.fillStyle(0x7a4e1a); g.fillRect(0, 0, 72, 68)    // corpo
+    g.fillStyle(0x9a6830); g.fillRect(0, 0, 72, 4)     // topo
+    g.fillStyle(0x5a3a0a); g.fillRect(0, 32, 72, 4)    // prateleira meio
+    g.fillStyle(0x5a3a0a); g.fillRect(0, 64, 72, 4)    // base
+    // Livros prateleira superior
+    const bkCols1 = [0xd43030, 0x3064d4, 0x30a030, 0xd4a030, 0x8830d4, 0xd47030]
+    bkCols1.forEach((c, i) => {
+      g.fillStyle(c); g.fillRect(4 + i * 11, 4, 9, 28)
+    })
+    // Livros prateleira inferior
+    const bkCols2 = [0x30d4a0, 0xd43090, 0x606060, 0xd4c030, 0x3090d4, 0xa04010]
+    bkCols2.forEach((c, i) => {
+      g.fillStyle(c); g.fillRect(4 + i * 11, 36, 9, 28)
+    })
+    gen(KEYS.ESTANTE, 72, 68)
+
     // ── PARALLAX BACKGROUNDS ───────────────────────────────────────────────────
 
     // bg_rua_1: blue sky + clouds
@@ -416,6 +480,102 @@ export class BootScene extends Phaser.Scene {
     g.fillRect(10, 115, 6, 4); g.fillRect(22, 115, 6, 4)
     g.fillRect(60, 165, 8, 5); g.fillRect(75, 165, 8, 5)
     gen(KEYS.BG_BOSS_2, 200, 450)
+
+    // ── Apartamento backgrounds ──────────────────────────────────────────────
+
+    // bg_apto_1: parede bege com janela + céu externo
+    clr()
+    g.fillStyle(0xe8d8b0); g.fillRect(0, 0, 200, 450)         // parede bege
+    g.fillStyle(0x87ceeb); g.fillRect(60, 40, 80, 100)        // janela — céu
+    g.fillStyle(0xffffff)
+    g.fillRect(90, 40, 4, 100); g.fillRect(60, 85, 80, 4)    // caixilho
+    g.fillStyle(0x666677)                                       // grade
+    for (let bx = 64; bx < 136; bx += 10) {
+      g.fillRect(bx, 40, 4, 100)
+    }
+    g.fillStyle(0xd0c090); g.fillRect(55, 140, 90, 6)         // peitoril
+    g.fillStyle(0xffffff); g.fillRect(0, 260, 200, 2)         // rodapé
+    gen(KEYS.BG_APTO_1, 200, 450)
+
+    // bg_apto_2: móveis ao fundo (sofá, quadro)
+    clr()
+    g.fillStyle(0x5566aa); g.fillRect(0, 290, 130, 80)        // sofá
+    g.fillStyle(0x6677bb); g.fillRect(0, 270, 130, 25)        // encosto sofá
+    g.fillStyle(0x778acc); g.fillRect(0, 268, 20, 102)        // braço esq
+    g.fillStyle(0x4455aa); g.fillRect(10, 366, 100, 14)       // pés sofá
+    g.fillStyle(0xc8b890)                                      // quadro na parede
+    g.fillRect(145, 150, 50, 70)
+    g.fillStyle(0x5588cc); g.fillRect(150, 155, 40, 60)       // imagem do quadro
+    g.fillStyle(0xffe090); g.fillCircle(165, 185, 18)         // sol no quadro
+    g.lineStyle(2, 0x8b5c2a); g.strokeRect(145, 150, 50, 70)
+    gen(KEYS.BG_APTO_2, 200, 450)
+
+    // bg_apto_3: chão de madeira + tapete + baseboards
+    clr()
+    g.fillStyle(0xd4a060)
+    for (let bx = 0; bx < 200; bx += 40) {
+      g.fillRect(bx, 360, 38, 90)                              // tábuas de madeira
+    }
+    g.fillStyle(0xc09050)
+    for (let bx = 0; bx < 200; bx += 40) {
+      g.fillRect(bx, 360, 38, 3)                              // separação tábuas
+    }
+    g.fillStyle(0x882222)                                       // tapete
+    g.fillRect(20, 375, 160, 50)
+    g.fillStyle(0xaa3333); g.fillRect(25, 380, 150, 40)        // padrão tapete
+    g.fillStyle(0xcc5555); g.fillRect(30, 390, 50, 20); g.fillRect(120, 390, 50, 20)
+    g.fillStyle(0xffd700); g.fillRect(20, 375, 160, 3)        // borda dourada
+    g.fillStyle(0xffd700); g.fillRect(20, 422, 160, 3)
+    gen(KEYS.BG_APTO_3, 200, 450)
+
+    // bg_apto_boss_1: cozinha — azulejos brancos + janela
+    clr()
+    g.fillStyle(0xf0f0f0); g.fillRect(0, 0, 200, 450)         // parede branca
+    g.fillStyle(0xe0e0e0)
+    for (let ty = 0; ty < 350; ty += 20) {
+      for (let tx = 0; tx < 200; tx += 20) {
+        g.strokeRect(tx, ty, 20, 20)                           // azulejos
+      }
+    }
+    g.fillStyle(0x87ceeb); g.fillRect(130, 30, 60, 80)        // janela cozinha
+    g.fillStyle(0xffffff); g.fillRect(158, 30, 4, 80); g.fillRect(130, 68, 60, 4)
+    g.fillStyle(0xd4d4d4); g.fillRect(125, 110, 70, 5)        // peitoril
+    gen(KEYS.BG_APTO_BOSS_1, 200, 450)
+
+    // bg_apto_boss_2: armários de cozinha + geladeira
+    clr()
+    g.fillStyle(0xd4c090); g.fillRect(0, 0, 200, 140)         // armário superior
+    g.lineStyle(1, 0xaa8a50)
+    for (let cx2 = 0; cx2 < 200; cx2 += 50) {
+      g.strokeRect(cx2 + 2, 2, 46, 136)                       // portas armário
+      g.fillStyle(0xffd700); g.fillCircle(cx2 + 25, 70, 4)   // puxadores
+      g.fillStyle(0xd4c090)
+    }
+    g.fillStyle(0x888888); g.fillRect(0, 140, 200, 8)         // bancada
+    g.fillStyle(0xaaaaaa); g.fillRect(0, 140, 200, 3)
+    g.fillStyle(0xf0f0f0); g.fillRect(0, 280, 55, 170)        // geladeira
+    g.fillStyle(0xdddddd); g.fillRect(0, 280, 55, 80)         // congelador
+    g.lineStyle(1, 0xaaaaaa); g.strokeRect(0, 280, 55, 170)
+    g.strokeRect(0, 280, 55, 80)
+    g.fillStyle(0xaaaaaa); g.fillCircle(48, 320, 3); g.fillCircle(48, 400, 3) // puxadores
+    gen(KEYS.BG_APTO_BOSS_2, 200, 450)
+
+    // bg_apto_boss_3: chão cozinha + rodapé
+    clr()
+    g.fillStyle(0xe8e0c8)
+    for (let ty = 350; ty < 450; ty += 25) {
+      for (let tx = 0; tx < 200; tx += 25) {
+        g.fillRect(tx, ty, 23, 23)
+        g.fillStyle(0xd8d0b8); g.fillRect(tx, ty, 23, 3)      // brilho
+        g.fillStyle(0xe8e0c8)
+      }
+    }
+    g.fillStyle(0xc8c0a8)
+    for (let tx = 0; tx < 200; tx += 25) {
+      g.fillRect(tx, 350, 1, 100); g.fillRect(0, tx + 350, 200, 1)
+    }
+    g.fillStyle(0xb8b0a0); g.fillRect(0, 350, 200, 4)         // rodapé
+    gen(KEYS.BG_APTO_BOSS_3, 200, 450)
 
     // bg_boss_3: metal fence + spikes
     clr()

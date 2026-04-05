@@ -72,13 +72,16 @@ export class MenuScene extends Phaser.Scene {
     })
 
     // ── Paw print accents ───────────────────────────────────────────────
-    const pawPositions = [{ x: 55, y: 240 }, { x: 742, y: 240 }]
+    const pawPositions = [
+      { x: 55, y: 240 }, { x: 742, y: 240 },
+      { x: 30, y: 340 }, { x: 769, y: 340 },
+    ]
     pawPositions.forEach((pos, i) => {
-      const paw = this.add.text(pos.x, pos.y, '🐾', { fontSize: '28px' })
-        .setOrigin(0.5).setAlpha(0.25)
+      const paw = this.add.text(pos.x, pos.y, '🐾', { fontSize: i < 2 ? '28px' : '18px' })
+        .setOrigin(0.5).setAlpha(0.2)
       this.tweens.add({
         targets: paw,
-        alpha: 0.5,
+        alpha: 0.45,
         duration: 1200 + i * 400,
         yoyo: true,
         repeat: -1,
@@ -86,6 +89,20 @@ export class MenuScene extends Phaser.Scene {
         delay: i * 300,
       })
     })
+
+    // ── Hidrante decorativo (baixo-esquerda e baixo-direita) ─────────────
+    const hydrantGfx = this.add.graphics()
+    const drawHydrant = (hx: number) => {
+      hydrantGfx.fillStyle(0xff2200, 0.3)
+      hydrantGfx.fillRect(hx + 3, GAME_HEIGHT - 55, 10, 18)
+      hydrantGfx.fillRect(hx, GAME_HEIGHT - 40, 16, 5)
+      hydrantGfx.fillRect(hx + 5, GAME_HEIGHT - 60, 6, 7)
+      hydrantGfx.fillStyle(0x882200, 0.2)
+      hydrantGfx.fillRect(hx - 3, GAME_HEIGHT - 50, 5, 5)
+      hydrantGfx.fillRect(hx + 14, GAME_HEIGHT - 50, 5, 5)
+    }
+    drawHydrant(22)
+    drawHydrant(GAME_WIDTH - 38)
 
     // ── Character sprites (with bob animation) ──────────────────────────
     const rayaSprite = this.add.sprite(72, 270, KEYS.RAYA, 0).setScale(4).setFlipX(false)
@@ -143,41 +160,48 @@ export class MenuScene extends Phaser.Scene {
     this.tweens.add({ targets: playBtn, alpha: 0.2, duration: 600, yoyo: true, repeat: -1 })
 
     // ── Other buttons ───────────────────────────────────────────────────
-    const galBtn = this.add.text(GAME_WIDTH / 2, 330, '[ G — GALERIA DE OSSOS ]', {
+    const galBtn = this.add.text(GAME_WIDTH / 2, 318, '[ G — GALERIA DE OSSOS ]', {
       fontSize: '18px', color: '#88ccff',
     }).setOrigin(0.5).setInteractive()
 
-    const howBtn = this.add.text(GAME_WIDTH / 2, 370, '[ H — COMO JOGAR ]', {
+    const howBtn = this.add.text(GAME_WIDTH / 2, 354, '[ H — COMO JOGAR ]', {
       fontSize: '18px', color: '#88ffaa',
     }).setOrigin(0.5).setInteractive()
 
+    const enemyBtn = this.add.text(GAME_WIDTH / 2, 389, '[ I — BESTIÁRIO ]', {
+      fontSize: '16px', color: '#ffaa55',
+    }).setOrigin(0.5).setInteractive()
+
     // ── Control hint ────────────────────────────────────────────────────
-    this.add.text(GAME_WIDTH / 2, 415, '← → Mover   ESPAÇO Pular   SHIFT Habilidade   TAB Trocar cachorra', {
-      fontSize: '11px', color: '#555555',
+    this.add.text(GAME_WIDTH / 2, 415, '← → Mover   ESPAÇO Pular   SHIFT Habilidade   TAB Trocar', {
+      fontSize: '10px', color: '#555555',
     }).setOrigin(0.5)
 
-    // ── Mute hint ───────────────────────────────────────────────────────
-    this.add.text(GAME_WIDTH / 2, 430, 'M — ativar/silenciar música', {
+    this.add.text(GAME_WIDTH / 2, 428, 'M — silenciar música   I — bestiário de inimigos', {
       fontSize: '10px', color: '#333355',
     }).setOrigin(0.5)
 
     // ── Actions ─────────────────────────────────────────────────────────
-    const startGame  = () => { gameState.reset(); gameState.currentLevel = '1-1'; this.scene.start(KEYS.INTRO_CRAWL) }
-    const goGallery  = () => { this.scene.start(KEYS.GALLERY) }
+    const startGame   = () => { gameState.reset(); gameState.currentLevel = '0-1'; this.scene.start(KEYS.INTRO_CRAWL) }
+    const goGallery   = () => { this.scene.start(KEYS.GALLERY) }
     const goHowToPlay = () => { this.scene.start(KEYS.HOW_TO_PLAY) }
+    const goEnemies   = () => { this.scene.start(KEYS.ENEMY_INFO) }
 
     const kb = this.input.keyboard!
     kb.on('keydown-ENTER', startGame)
     kb.on('keydown-G', goGallery)
     kb.on('keydown-H', goHowToPlay)
+    kb.on('keydown-I', goEnemies)
     playBtn.on('pointerdown', startGame)
     galBtn.on('pointerdown', goGallery)
     howBtn.on('pointerdown', goHowToPlay)
+    enemyBtn.on('pointerdown', goEnemies)
 
     this.events.once('shutdown', () => {
       kb.off('keydown-ENTER', startGame)
       kb.off('keydown-G', goGallery)
       kb.off('keydown-H', goHowToPlay)
+      kb.off('keydown-I', goEnemies)
       SoundManager.stopBgm()
     })
 

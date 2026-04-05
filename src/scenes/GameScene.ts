@@ -14,6 +14,8 @@ import { PowerUp } from '../items/PowerUp'
 import { Accessory } from '../items/Accessory'
 import { LevelData } from '../levels/LevelData'
 import { WORLD1_LEVELS } from '../levels/World1'
+import { WORLD0_LEVELS } from '../levels/World0'
+import { Aspirador } from '../entities/enemies/Aspirador'
 import { ParallaxBackground } from '../background/ParallaxBackground'
 import { SoundManager } from '../audio/SoundManager'
 
@@ -28,6 +30,7 @@ export class GameScene extends Phaser.Scene {
   private _gameOverPending = false
   private _parallax!: ParallaxBackground
   private _mKey!: Phaser.Input.Keyboard.Key
+  private _iKey!: Phaser.Input.Keyboard.Key
   private _camOffsetX: number = 0
   private _followingSprite: Phaser.Physics.Arcade.Sprite | null = null
   private _cinematicActive: boolean = false
@@ -36,7 +39,8 @@ export class GameScene extends Phaser.Scene {
 
   create(): void {
     this._gameOverPending = false
-    this.currentLevel = WORLD1_LEVELS[gameState.currentLevel] ?? WORLD1_LEVELS['1-1']
+    const ALL_LEVELS = { ...WORLD0_LEVELS, ...WORLD1_LEVELS }
+    this.currentLevel = ALL_LEVELS[gameState.currentLevel] ?? WORLD0_LEVELS['0-1']
     this.cameras.main.setBackgroundColor(this.currentLevel.bgColor)
 
     // Parallax (antes das decorações para ordem de profundidade correta)
@@ -46,8 +50,9 @@ export class GameScene extends Phaser.Scene {
     const bgmKey = this.currentLevel.isBossLevel ? KEYS.BGM_BOSS : KEYS.BGM_WORLD1
     SoundManager.playBgm(bgmKey, this)
 
-    // Tecla de mute
+    // Teclas extras
     this._mKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.M)
+    this._iKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.I)
 
     // Para BGM e destroi sprites de parallax quando a cena encerrar
     this.events.once('shutdown', () => {
@@ -204,10 +209,11 @@ export class GameScene extends Phaser.Scene {
     this.currentLevel.enemies.forEach(spawn => {
       let enemy: Enemy | undefined
       switch (spawn.type) {
-        case 'gato':  enemy = new GatoMalencarado(this, spawn.x, spawn.y); break
-        case 'pombo': enemy = new PomboAgitado(this, spawn.x, spawn.y);    break
-        case 'rato':  enemy = new RatoDeCalcada(this, spawn.x, spawn.y);   break
-        case 'dono':  enemy = new DonoNervoso(this, spawn.x, spawn.y);     break
+        case 'gato':      enemy = new GatoMalencarado(this, spawn.x, spawn.y); break
+        case 'pombo':     enemy = new PomboAgitado(this, spawn.x, spawn.y);    break
+        case 'rato':      enemy = new RatoDeCalcada(this, spawn.x, spawn.y);   break
+        case 'dono':      enemy = new DonoNervoso(this, spawn.x, spawn.y);     break
+        case 'aspirador': enemy = new Aspirador(this, spawn.x, spawn.y);       break
       }
       if (!enemy) return
       this.enemyGroup.add(enemy)
@@ -218,21 +224,34 @@ export class GameScene extends Phaser.Scene {
     })
 
     if (this.currentLevel.isBossLevel) {
-      const boss = new SeuBigodes(this, 480, 360)
-      this.enemyGroup.add(boss)
-      boss.on('died', (b: Enemy) => {
-        gameState.addScore(1000)
-        gameState.collarOfGold = true
-        this._spawnScorePopup(b.x, b.y - 30, '+1000', '#22c55e')
-        this._levelComplete()
-      })
-      boss.on('spawnMinion', (minion: Enemy) => {
-        this.enemyGroup.add(minion)
-        minion.on('died', (e: Enemy) => {
-          gameState.addScore(SCORING.ENEMY_KILL)
-          this._spawnScorePopup(e.x, e.y - 20, '+50', '#f97316')
+      if (this.currentLevel.id === '0-boss') {
+        // Aspirador boss — vacuum robot
+        const mapWidth = this.currentLevel.tileWidthCols * 32
+        const boss = new Aspirador(this, mapWidth / 2, 360)
+        this.enemyGroup.add(boss)
+        boss.on('died', (b: Enemy) => {
+          gameState.addScore(500)
+          this._spawnScorePopup(b.x, b.y - 30, '+500', '#22ccff')
+          this._levelComplete()
         })
-      })
+      } else {
+        // Seu Bigodes boss
+        const boss = new SeuBigodes(this, 480, 360)
+        this.enemyGroup.add(boss)
+        boss.on('died', (b: Enemy) => {
+          gameState.addScore(1000)
+          gameState.collarOfGold = true
+          this._spawnScorePopup(b.x, b.y - 30, '+1000', '#22c55e')
+          this._levelComplete()
+        })
+        boss.on('spawnMinion', (minion: Enemy) => {
+          this.enemyGroup.add(minion)
+          minion.on('died', (e: Enemy) => {
+            gameState.addScore(SCORING.ENEMY_KILL)
+            this._spawnScorePopup(e.x, e.y - 20, '+50', '#f97316')
+          })
+        })
+      }
     }
   }
 
@@ -299,12 +318,34 @@ export class GameScene extends Phaser.Scene {
     })
 
     this.player.cruella.on('bark', (bx: number, by: number) => {
-      (this.enemyGroup.getChildren() as Enemy[]).forEach(e => {
+      // ── Visual shockwave rings ──────────────────────────────────────────
+      for (let ring = 0; ring < 3; ring++) {
+        this.time.delayedCall(ring * 90, () => {
+          if (!this.scene.isActive(KEYS.GAME)) return
+          const wave = this.add.graphics()
+          const lineW = 3 - ring
+          wave.lineStyle(lineW, 0x88ccff, 0.85)
+          wave.strokeCircle(0, 0, PHYSICS.BARK_RADIUS * 0.1)
+          wave.setPosition(bx, by)
+          this.tweens.add({
+            targets: wave,
+            scaleX: 10, scaleY: 10,
+            alpha: 0,
+            duration: 380,
+            ease: 'Quad.easeOut',
+            onComplete: () => { if (wave.active) wave.destroy() },
+          })
+        })
+      }
+
+      // ── Enemy stun ─────────────────────────────────────────────────────
+      ;(this.enemyGroup.getChildren() as Enemy[]).forEach(e => {
         const dist = Phaser.Math.Distance.Between(bx, by, e.x, e.y)
         if (dist <= PHYSICS.BARK_RADIUS) {
           e.stun(500)
           e.setTint(0xffff44)
           this.time.delayedCall(500, () => { if (e.active) e.clearTint() })
+          this._spawnScorePopup(e.x, e.y - 24, 'STUN!', '#ffff44')
         }
       })
     })
@@ -390,6 +431,11 @@ export class GameScene extends Phaser.Scene {
     if (Phaser.Input.Keyboard.JustDown(this.escKey)) {
       this.scene.pause()
       this.scene.launch(KEYS.PAUSE)
+      return
+    }
+    if (Phaser.Input.Keyboard.JustDown(this._iKey)) {
+      this.scene.pause()
+      this.scene.launch(KEYS.ENEMY_INFO, { fromGame: true })
       return
     }
     // Bloqueia todo input (inclusive mute) durante a cinemática do boss — intencional

@@ -10,6 +10,7 @@ import { GalleryScene } from './scenes/GalleryScene'
 import { HowToPlayScene } from './scenes/HowToPlayScene'
 import { IntroCrawlScene } from './scenes/IntroCrawlScene'
 import { CharacterSelectScene } from './scenes/CharacterSelectScene'
+import { EnemyInfoScene } from './scenes/EnemyInfoScene'
 import { GAME_WIDTH, GAME_HEIGHT, PHYSICS } from './constants'
 
 const config: Phaser.Types.Core.GameConfig = {
@@ -36,6 +37,7 @@ const config: Phaser.Types.Core.GameConfig = {
     HowToPlayScene,
     IntroCrawlScene,
     CharacterSelectScene,
+    EnemyInfoScene,
   ],
 }
 

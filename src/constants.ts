@@ -47,11 +47,20 @@ export const KEYS = {
   HOW_TO_PLAY: 'HowToPlayScene',
   INTRO_CRAWL: 'IntroCrawlScene',
   CHARACTER_SELECT: 'CharacterSelectScene',
-  // decorações de cenário
+  ENEMY_INFO: 'EnemyInfoScene',
+  // decorações de cenário — rua
   CASA:   'casa',
   ARVORE: 'arvore',
   LOJA:   'loja',
   POSTE:  'poste',
+  // decorações de cenário — apartamento
+  CADEIRA:  'cadeira',
+  MESA:     'mesa',
+  GRADE:    'grade',
+  VASO:     'vaso',
+  ESTANTE:  'estante',
+  // inimigos world-0
+  ASPIRADOR: 'aspirador',
   // parallax de fundo
   BG_RUA_1:     'bg_rua_1',
   BG_RUA_2:     'bg_rua_2',
@@ -65,6 +74,14 @@ export const KEYS = {
   BG_BOSS_1:    'bg_boss_1',
   BG_BOSS_2:    'bg_boss_2',
   BG_BOSS_3:    'bg_boss_3',
+  // parallax — apartamento
+  BG_APTO_1:    'bg_apto_1',
+  BG_APTO_2:    'bg_apto_2',
+  BG_APTO_3:    'bg_apto_3',
+  // parallax — boss aspirador
+  BG_APTO_BOSS_1: 'bg_apto_boss_1',
+  BG_APTO_BOSS_2: 'bg_apto_boss_2',
+  BG_APTO_BOSS_3: 'bg_apto_boss_3',
   // áudio BGM
   BGM_MENU:    'bgm_menu',
   BGM_WORLD1:  'bgm_world1',
