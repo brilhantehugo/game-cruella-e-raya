@@ -14,6 +14,8 @@ export class UIScene extends Phaser.Scene {
   private _puBar!: Phaser.GameObjects.Rectangle
   private _damageFlash!: Phaser.GameObjects.Rectangle
   private _lastHitAtTracked: number = 0
+  private _cdGraphics!: Phaser.GameObjects.Graphics
+  private _cdIcon!: Phaser.GameObjects.Text
   private timerText!: Phaser.GameObjects.Text
   private _timeRemaining: number = 0
   private _timerActive: boolean = false
@@ -44,6 +46,12 @@ export class UIScene extends Phaser.Scene {
     this.timerText = this.add.text(GAME_WIDTH / 2 + 80, 10, '', {
       fontSize: '14px', color: '#ffffff', fontStyle: 'bold', fontFamily: 'monospace'
     }).setScrollFactor(0)
+
+    // Cooldown visual da habilidade (Shift)
+    this._cdGraphics = this.add.graphics().setScrollFactor(0).setDepth(5)
+    this._cdIcon = this.add.text(292, 22, '⚡', {
+      fontSize: '14px'
+    }).setScrollFactor(0).setDepth(6).setOrigin(0.5)
 
     // Escuta evento de início de timer emitido por GameScene
     this.scene.get(KEYS.GAME).events.on('start-timer', (seconds: number) => {
@@ -126,5 +134,27 @@ export class UIScene extends Phaser.Scene {
     } else {
       this.timerText.setText('')
     }
+
+    // Cooldown arc da habilidade especial
+    const cdFraction = Math.min(1, (now - gameState.abilityUsedAt) / Math.max(1, gameState.abilityCooldownMs))
+    const cx = 292, cy = 22, r = 13
+    this._cdGraphics.clear()
+    // Círculo de fundo
+    this._cdGraphics.fillStyle(0x222222, 0.85)
+    this._cdGraphics.fillCircle(cx, cy, r)
+    // Arco de progresso
+    if (cdFraction >= 1) {
+      this._cdGraphics.fillStyle(0x22c55e, 1)
+      this._cdGraphics.fillCircle(cx, cy, r)
+    } else {
+      this._cdGraphics.fillStyle(0x7c3aed, 0.9)
+      this._cdGraphics.slice(cx, cy, r, -Math.PI / 2, -Math.PI / 2 + cdFraction * Math.PI * 2, false)
+      this._cdGraphics.fillPath()
+    }
+    // Círculo interno (efeito de anel)
+    this._cdGraphics.fillStyle(0x1a1a2e, 1)
+    this._cdGraphics.fillCircle(cx, cy, r - 4)
+    // Ícone muda por cachorra ativa
+    this._cdIcon.setText(gameState.activeDog === 'raya' ? '⚡' : '🔊')
   }
 }
