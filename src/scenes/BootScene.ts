@@ -222,13 +222,22 @@ export class BootScene extends Phaser.Scene {
     // CASA: casa residencial
     clr()
     const cw = 64, ch = 76
-    g.fillStyle(0xb03020); g.fillTriangle(0, 30, 32, 0, 64, 30)      // telhado
+    g.fillStyle(0xcc2200); g.fillTriangle(0, 30, 32, 0, 64, 30)      // telhado (brick red)
     g.fillStyle(0xf5deb3); g.fillRect(2, 28, cw - 4, ch - 28)         // paredes
     g.fillStyle(0xf0d090); g.fillRect(2, 28, cw - 4, 4)               // borda telhado
+    // chaminé no topo-direito do telhado
+    g.fillStyle(0x7a3a1a); g.fillRect(44, 12, 8, 18)                  // chaminé
+    g.fillStyle(0x5a2a0a); g.fillRect(42, 10, 12, 4)                  // topo chaminé
+    // calçada na base
+    g.fillStyle(0xccbbaa); g.fillRect(20, ch - 4, 24, 4)              // caminho/calçada
     g.fillStyle(0x7a4e2c); g.fillRect(25, ch - 24, 14, 24)            // porta
-    g.fillStyle(0xffd700); g.fillCircle(36, ch - 13, 2)               // macaneta
+    g.fillStyle(0xddaa22); g.fillCircle(36, ch - 13, 2)               // macaneta dourada
     g.fillStyle(0x87ceeb)
     g.fillRect(7, 36, 16, 14); g.fillRect(41, 36, 16, 14)             // janelas
+    // cortinas nas janelas
+    g.fillStyle(0xffffcc)
+    g.fillRect(7, 36, 4, 14); g.fillRect(19, 36, 4, 14)               // cortinas janela esq
+    g.fillRect(41, 36, 4, 14); g.fillRect(53, 36, 4, 14)              // cortinas janela dir
     g.fillStyle(0xffffff)
     g.lineBetween(7, 43, 23, 43); g.lineBetween(15, 36, 15, 50)       // cruz janela esq
     g.lineBetween(41, 43, 57, 43); g.lineBetween(49, 36, 49, 50)      // cruz janela dir
@@ -239,27 +248,37 @@ export class BootScene extends Phaser.Scene {
 
     // ARVORE: arvore urbana
     clr()
-    g.fillStyle(0x6b4226); g.fillRect(11, 52, 10, 22)                 // tronco
-    g.fillStyle(0x8b5c2a); g.fillRect(11, 52, 10, 4)
+    // tronco mais largo na base (efeito triangular)
+    g.fillStyle(0x6b4226); g.fillRect(10, 56, 12, 18)                 // tronco base (mais largo)
+    g.fillStyle(0x6b4226); g.fillRect(11, 52, 10, 6)                  // tronco superior
+    g.fillStyle(0x8b5c2a); g.fillRect(10, 56, 12, 4)                  // brilho tronco
     g.fillStyle(0x1e7a1e); g.fillCircle(16, 46, 18)                   // copa base
     g.fillStyle(0x26a026); g.fillCircle(16, 35, 15)                   // copa meio
     g.fillStyle(0x3cc03c); g.fillCircle(16, 26, 12)                   // copa topo
     g.fillStyle(0x55d055); g.fillCircle(12, 22, 6); g.fillCircle(20, 24, 5)  // destaques
+    g.fillStyle(0x6aaa3a); g.fillCircle(10, 38, 5); g.fillCircle(22, 32, 4); g.fillCircle(16, 20, 4)  // highlights camada extra
     gen(KEYS.ARVORE, 32, 74)
 
     // LOJA: loja de bairro
     clr()
     const lw = 80, lh = 68
     g.fillStyle(0xdce8e8); g.fillRect(0, 18, lw, lh - 18)             // fachada
-    // toldo listrado
+    // placa acima do toldo
+    g.fillStyle(0xffffff); g.fillRect(10, 0, 60, 7)                   // placa fundo branco
+    g.lineStyle(2, 0x222222); g.strokeRect(10, 0, 60, 7)              // borda escura placa
+    // toldo listrado (mais vívido)
     for (let i = 0; i < 5; i++) {
-      g.fillStyle(i % 2 === 0 ? 0xdd2222 : 0xffffff)
+      g.fillStyle(i % 2 === 0 ? 0xff2200 : 0xffffff)
       g.fillRect(i * 16, 6, 16, 14)
     }
-    g.fillStyle(0xbb1111); g.fillRect(0, 18, lw, 3)                    // borda toldo
+    g.fillStyle(0xcc0000); g.fillRect(0, 18, lw, 3)                    // borda toldo mais escura
     // vitrine
     g.fillStyle(0xb8e4ff); g.fillRect(8, 26, lw - 16, 22)
     g.fillStyle(0x88ccff); g.fillRect(10, 28, lw - 20, 8)             // reflexo vidro
+    // produtos na vitrine (3 itens coloridos)
+    g.fillStyle(0xff4444); g.fillRect(14, 32, 10, 12)                 // produto 1 (vermelho)
+    g.fillStyle(0x44cc44); g.fillRect(34, 34, 8, 10)                  // produto 2 (verde)
+    g.fillStyle(0x4488ff); g.fillRect(52, 31, 10, 13)                 // produto 3 (azul)
     g.lineStyle(2, 0x4a6a7a); g.strokeRect(8, 26, lw - 16, 22)
     g.lineStyle(1, 0x4a6a7a); g.lineBetween(lw / 2, 26, lw / 2, 48)  // divisor vitrine
     // porta
@@ -398,6 +417,71 @@ export class BootScene extends Phaser.Scene {
     g.fillStyle(0x998855); g.fillRect(0, 52, 80, 4)
     gen(KEYS.BALCAO, 80, 56)
 
+    // ── DECORAÇÕES — RUA (novos props temáticos) ──────────────────────────────
+
+    // LIXEIRA: lixeira cilíndrica verde-escuro — 28×44
+    clr()
+    g.fillStyle(0x2d5a1b); g.fillRect(4, 8, 20, 28)           // corpo
+    g.fillStyle(0x3d7a2a); g.fillEllipse(14, 8, 28, 12)       // tampa
+    g.fillStyle(0x1d4a0b); g.fillRect(2, 34, 24, 4)           // anel base
+    g.fillStyle(0xffffff, 0.12)                                // listras
+    g.fillRect(4, 14, 20, 2); g.fillRect(4, 20, 20, 2); g.fillRect(4, 26, 20, 2)
+    g.fillStyle(0x888888); g.fillRect(2, 11, 3, 4); g.fillRect(23, 11, 3, 4) // alças
+    gen(KEYS.LIXEIRA, 28, 44)
+
+    // BANCO: banco de praça de madeira — 52×36
+    clr()
+    g.fillStyle(0xc8a060); g.fillRect(0, 10, 52, 8)           // assento
+    g.fillStyle(0xd4b070); g.fillRect(2, 10, 48, 3)           // brilho assento
+    g.fillStyle(0xb89050); g.fillRect(4, 0, 44, 6)            // encosto
+    g.fillStyle(0xa07840); g.fillRect(8, 0, 4, 18); g.fillRect(40, 0, 4, 18)  // suportes encosto
+    g.fillStyle(0x8a6428)                                      // pernas
+    g.fillRect(6, 18, 5, 18); g.fillRect(20, 18, 5, 18)
+    g.fillRect(27, 18, 5, 18); g.fillRect(41, 18, 5, 18)
+    g.fillStyle(0xa07840); g.fillRect(6, 28, 40, 3)           // travessa
+    gen(KEYS.BANCO, 52, 36)
+
+    // CANTEIRO: canteiro de flores — 64×30
+    clr()
+    g.fillStyle(0x6b4226); g.fillRect(0, 10, 64, 20)          // moldura solo
+    g.fillStyle(0x8b5a30); g.fillRect(2, 12, 60, 16)          // terra
+    g.fillStyle(0x9b7a4a); g.fillRect(0, 10, 64, 3)           // borda topo
+    ;[[8, 0xdd2222, 0xff6600], [20, 0xffdd00, 0xff6600],
+      [36, 0xdd2222, 0xffff00], [50, 0xffdd00, 0xff6600]].forEach(([fx, pc, cc]) => {
+      g.fillStyle(0x3a7a20); g.fillRect(fx + 2, 8, 2, 8)     // caule
+      g.fillStyle(pc);       g.fillCircle(fx + 3, 8, 4)       // pétalas
+      g.fillStyle(cc);       g.fillCircle(fx + 3, 8, 2)       // centro
+    })
+    gen(KEYS.CANTEIRO, 64, 30)
+
+    // BARRACA: barraca de feira com toldo listrado — 80×56
+    clr()
+    g.fillStyle(0xffffff); g.fillRect(0, 0, 80, 14)           // toldo base branco
+    // listras vermelhas a cada 20px
+    ;[0, 20, 40, 60].forEach(sx => {
+      g.fillStyle(0xdd2222); g.fillRect(sx, 0, 10, 14)
+    })
+    g.fillStyle(0xbb1111); g.fillRect(0, 12, 80, 4)           // borda inferior toldo
+    g.fillStyle(0xc8903a); g.fillRect(0, 14, 80, 10)          // balcão madeira
+    g.fillStyle(0xa07020); g.fillRect(0, 22, 80, 4)           // frente balcão
+    g.fillStyle(0x8a6020)                                      // pernas
+    g.fillRect(4, 26, 8, 30); g.fillRect(36, 26, 8, 30); g.fillRect(68, 26, 8, 30)
+    // "mercadorias" no balcão
+    const goodColors = [0xff8c00, 0x228b22, 0xcc2200, 0xffd700]
+    goodColors.forEach((gc, i) => {
+      g.fillStyle(gc); g.fillRect(6 + i * 12, 16, 6, 6)
+    })
+    gen(KEYS.BARRACA, 80, 56)
+
+    // SACO_LIXO: saco de lixo preto — 32×38
+    clr()
+    g.fillStyle(0x1a1a1a); g.fillRoundedRect(2, 6, 28, 30, 6) // corpo saco
+    g.fillStyle(0x333333); g.fillEllipse(16, 8, 18, 8)        // amarração topo
+    g.fillStyle(0x252525)                                       // volumes
+    g.fillCircle(10, 20, 8); g.fillCircle(22, 22, 7)
+    g.fillStyle(0x3a3a3a); g.fillRect(5, 10, 6, 4)            // brilho
+    gen(KEYS.SACO_LIXO, 32, 38)
+
     // ── PARALLAX BACKGROUNDS ───────────────────────────────────────────────────
 
     // bg_rua_1: blue sky + clouds
@@ -424,7 +508,7 @@ export class BootScene extends Phaser.Scene {
     g.fillRect(62, 158, 10, 7); g.fillRect(76, 158, 10, 7); g.fillRect(90, 158, 10, 7)
     gen(KEYS.BG_RUA_2, 200, 450)
 
-    // bg_rua_3: near houses + tree tops
+    // bg_rua_3: near houses + tree tops (lived-in street)
     clr()
     g.fillStyle(0xd4a57a); g.fillRect(10, 300, 50, 150)
     g.fillStyle(0xc03030); g.fillTriangle(5, 300, 35, 268, 65, 300)
@@ -435,6 +519,15 @@ export class BootScene extends Phaser.Scene {
     g.fillStyle(0x5a3a1a); g.fillRect(155, 310, 8, 100)
     g.fillStyle(0x3a7a2a); g.fillCircle(159, 295, 28)
     g.fillStyle(0x4a9a3a); g.fillCircle(155, 280, 18)
+    // carro estacionado
+    g.fillStyle(0x2244aa); g.fillRect(40, 340, 60, 24)            // corpo do carro
+    g.fillStyle(0x111133); g.fillCircle(50, 364, 8); g.fillCircle(90, 364, 8) // rodas
+    g.fillStyle(0x88aadd); g.fillRect(46, 342, 30, 10)            // janelas carro
+    g.fillStyle(0xdddd44); g.fillRect(40, 347, 5, 6); g.fillRect(95, 347, 5, 6) // farois
+    // caixa de correio/utilidades na calçada
+    g.fillStyle(0x5566aa); g.fillRect(7, 390, 10, 16)             // caixa de correio
+    g.fillStyle(0x3344aa); g.fillRect(5, 388, 14, 4)              // tampa
+    g.fillStyle(0xddddff); g.fillRect(7, 392, 6, 3)               // detalhe
     gen(KEYS.BG_RUA_3, 200, 450)
 
     // bg_praca_1: light blue sky + soft clouds
@@ -459,7 +552,7 @@ export class BootScene extends Phaser.Scene {
     g.fillStyle(0x2a6a20); g.fillCircle(174, 238, 26)
     gen(KEYS.BG_PRACA_2, 200, 450)
 
-    // bg_praca_3: bushes + wooden fence
+    // bg_praca_3: bushes + wooden fence (park style)
     clr()
     g.fillStyle(0xc8a060)
     g.fillRect(0, 350, 200, 8)
@@ -467,10 +560,25 @@ export class BootScene extends Phaser.Scene {
     g.fillRect(70, 338, 10, 30);  g.fillRect(100, 338, 10, 30)
     g.fillRect(130, 338, 10, 30); g.fillRect(160, 338, 10, 30)
     g.fillRect(190, 338, 10, 30)
+    // arbustos variados (múltiplos tons de verde)
     g.fillStyle(0x3a8a2a)
     g.fillEllipse(25, 360, 55, 40); g.fillEllipse(50, 355, 45, 35)
+    g.fillStyle(0x5aaa3a)
     g.fillEllipse(100, 362, 60, 38); g.fillEllipse(125, 357, 48, 33)
+    g.fillStyle(0x3a7a2a)
     g.fillEllipse(170, 360, 50, 36); g.fillEllipse(185, 356, 35, 28)
+    g.fillStyle(0x5aaa3a); g.fillEllipse(10, 368, 30, 24)         // arbusto baixo esq extra
+    g.fillStyle(0x3a8a2a); g.fillEllipse(75, 355, 38, 28)         // arbusto mid extra
+    // canteiro de flores na base
+    g.fillStyle(0x8a4a20); g.fillRect(0, 440, 200, 6)             // terra canteiro
+    // flores pequenas
+    ;[15, 30, 50, 70, 90, 110, 130, 150, 170, 185].forEach(fx => {
+      g.fillStyle(0xff4466); g.fillCircle(fx, 440, 3)             // flores rosas
+    })
+    // fonte d'água (centro-direita)
+    g.fillStyle(0x4499cc); g.fillCircle(155, 390, 16)             // bacia da fonte
+    g.fillStyle(0x66bbee); g.fillCircle(155, 390, 10)             // água interior
+    g.fillStyle(0x3388bb); g.fillRect(152, 374, 6, 16)            // coluna da fonte
     gen(KEYS.BG_PRACA_3, 200, 450)
 
     // bg_mercado_1: sunset sky
@@ -495,7 +603,7 @@ export class BootScene extends Phaser.Scene {
     g.fillStyle(0xff6600); g.fillRect(110, 274, 70, 12)
     gen(KEYS.BG_MERCADO_2, 200, 450)
 
-    // bg_mercado_3: market stalls + crates
+    // bg_mercado_3: market stalls + crates (vibrant market)
     clr()
     g.fillStyle(0xff4444); g.fillRect(0, 300, 90, 20)
     g.fillStyle(0xffffff); g.fillRect(10, 300, 12, 20); g.fillRect(34, 300, 12, 20); g.fillRect(58, 300, 12, 20)
@@ -503,12 +611,29 @@ export class BootScene extends Phaser.Scene {
     g.fillStyle(0x44aaff); g.fillRect(105, 310, 95, 20)
     g.fillStyle(0xffffff); g.fillRect(115, 310, 12, 20); g.fillRect(140, 310, 12, 20); g.fillRect(165, 310, 12, 20)
     g.fillStyle(0x8b6030); g.fillRect(105, 330, 95, 70)
+    // placas de preço nas barracas
+    g.fillStyle(0xffffff); g.fillRect(20, 296, 16, 6)             // placa barraca esq
+    g.fillStyle(0xffffff); g.fillRect(130, 306, 16, 6)            // placa barraca dir
+    // caixotes com etiquetas (mais variados)
     g.fillStyle(0xc8903a)
     g.fillRect(10, 370, 28, 28); g.fillRect(42, 370, 28, 28)
+    g.fillRect(75, 380, 22, 20)                                    // caixote extra
+    g.fillRect(155, 375, 24, 22)                                   // caixote lado direito
     g.lineStyle(1, 0x9a6020)
     g.strokeRect(10, 370, 28, 28); g.strokeRect(42, 370, 28, 28)
+    g.strokeRect(75, 380, 22, 20); g.strokeRect(155, 375, 24, 22)
     g.lineBetween(24, 370, 24, 398); g.lineBetween(10, 384, 38, 384)
     g.lineBetween(56, 370, 56, 398); g.lineBetween(42, 384, 70, 384)
+    g.lineBetween(86, 380, 86, 400); g.lineBetween(75, 390, 97, 390)
+    // etiquetas de cor nos caixotes
+    g.fillStyle(0xff8800); g.fillRect(13, 373, 8, 5)              // etiqueta laranja
+    g.fillStyle(0x33cc33); g.fillRect(46, 373, 8, 5)              // etiqueta verde
+    g.fillStyle(0x4488ff); g.fillRect(77, 383, 7, 4)              // etiqueta azul
+    // bandeirolas entre as barracas (bunting diagonal)
+    const buntingColors = [0xffdd00, 0xff2200, 0x22cc22, 0x2244ff, 0xffdd00, 0xff2200, 0x22cc22, 0x2244ff]
+    buntingColors.forEach((bc, bi) => {
+      g.fillStyle(bc); g.fillRect(20 + bi * 10, 300 - bi * 2, 7, 7)  // bandeirola
+    })
     gen(KEYS.BG_MERCADO_3, 200, 450)
 
     // bg_boss_1: dark purple sky + crescent moon + stars
