@@ -182,12 +182,6 @@ export class LevelCompleteScene extends Phaser.Scene {
     profileManager.saveLevel(levelId, record)
     if (nextLevel) profileManager.unlockLevel(nextLevel)
 
-    // Atualiza currentLevel no gameState para a próxima fase
-    if (nextLevel) {
-      gameState.currentLevel = nextLevel
-      gameState.checkpointReached = false
-    }
-
     // ── Ações ─────────────────────────────────────────────────────────
     let _done = false
 
@@ -201,6 +195,10 @@ export class LevelCompleteScene extends Phaser.Scene {
     const goNext = () => {
       if (_done) return
       _done = true
+      if (nextLevel) {
+        gameState.currentLevel = nextLevel
+        gameState.checkpointReached = false
+      }
       SoundManager.stopBgm()
       if (nextLevel) {
         this.scene.start(KEYS.GAME)

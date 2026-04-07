@@ -343,6 +343,7 @@ export class GameScene extends Phaser.Scene {
 
         boss.on('died', (b: Enemy) => {
           gameState.addScore(500)
+          gameState.sessionEnemiesKilled++
           this._spawnScorePopup(b.x, b.y - 30, '+500', '#22ccff')
           // Revela a saída
           if (this._bossExit) {
@@ -369,6 +370,7 @@ export class GameScene extends Phaser.Scene {
         this.enemyGroup.add(boss)
         boss.on('died', (b: Enemy) => {
           gameState.addScore(1000)
+          gameState.sessionEnemiesKilled++
           gameState.collarOfGold = true
           this._spawnScorePopup(b.x, b.y - 30, '+1000', '#22c55e')
           this._levelComplete()
