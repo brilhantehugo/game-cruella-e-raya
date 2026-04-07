@@ -197,7 +197,7 @@ export class LevelCompleteScene extends Phaser.Scene {
       _done = true
       if (nextLevel) {
         gameState.currentLevel = nextLevel
-        gameState.checkpointReached = false
+        gameState.resetLevel()
       }
       SoundManager.stopBgm()
       if (nextLevel) {
@@ -207,8 +207,8 @@ export class LevelCompleteScene extends Phaser.Scene {
       }
     }
 
-    this.input.keyboard!.on('keydown-ENTER', goNext)
-    this.input.keyboard!.on('keydown-M',     goMap)
+    this.input.keyboard?.on('keydown-ENTER', goNext)
+    this.input.keyboard?.on('keydown-M',     goMap)
     nextBtn.on('pointerdown', goNext)
     mapBtn.on('pointerdown', goMap)
 
