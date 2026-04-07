@@ -23,6 +23,9 @@ export class GameState {
   muted: boolean = false
   abilityUsedAt: number = 0      // timestamp do último uso da habilidade especial
   abilityCooldownMs: number = 800 // duração do cooldown em ms (800 Raya, 1500 Cruella)
+  sessionDeaths: number = 0
+  sessionEnemiesKilled: number = 0
+  sessionStartTime: number = 0
   introSeen: Set<string> = new Set()
 
   canSwap(now: number): boolean {
@@ -121,6 +124,9 @@ export class GameState {
     this.abilityUsedAt = 0
     this.abilityCooldownMs = 800
     this.introSeen = new Set()
+    this.sessionDeaths = 0
+    this.sessionEnemiesKilled = 0
+    this.sessionStartTime = 0
     // muted é uma preferência de UI — persiste intencionalmente entre partidas
   }
 
@@ -142,6 +148,9 @@ export class GameState {
     this.checkpointReached = false
     this.checkpointX = 0
     this.checkpointY = 0
+    this.sessionDeaths = 0
+    this.sessionEnemiesKilled = 0
+    this.sessionStartTime = Date.now()
     // keeps: score, goldenBones, collarOfGold, currentLevel
   }
 }

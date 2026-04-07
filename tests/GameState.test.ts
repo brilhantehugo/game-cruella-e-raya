@@ -173,4 +173,34 @@ describe('GameState', () => {
       expect(state.checkpointReached).toBe(false)
     })
   })
+
+  describe('contadores de sessão', () => {
+    it('começa zerados', () => {
+      expect(state.sessionDeaths).toBe(0)
+      expect(state.sessionEnemiesKilled).toBe(0)
+      expect(state.sessionStartTime).toBe(0)
+    })
+
+    it('resetLevel zera contadores e define sessionStartTime', () => {
+      state.sessionDeaths = 3
+      state.sessionEnemiesKilled = 7
+      const before = Date.now()
+      state.resetLevel()
+      const after = Date.now()
+      expect(state.sessionDeaths).toBe(0)
+      expect(state.sessionEnemiesKilled).toBe(0)
+      expect(state.sessionStartTime).toBeGreaterThanOrEqual(before)
+      expect(state.sessionStartTime).toBeLessThanOrEqual(after)
+    })
+
+    it('reset zera contadores de sessão', () => {
+      state.sessionDeaths = 5
+      state.sessionEnemiesKilled = 10
+      state.sessionStartTime = 999999
+      state.reset()
+      expect(state.sessionDeaths).toBe(0)
+      expect(state.sessionEnemiesKilled).toBe(0)
+      expect(state.sessionStartTime).toBe(0)
+    })
+  })
 })
