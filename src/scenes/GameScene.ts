@@ -37,6 +37,8 @@ export class GameScene extends Phaser.Scene {
   private _camOffsetX: number = 0
   private _followingSprite: Phaser.Physics.Arcade.Sprite | null = null
   private _cinematicActive: boolean = false
+  private _bossExit: Phaser.Physics.Arcade.Image | null = null
+  private _bossProjectileGroup: Phaser.Physics.Arcade.Group | null = null
 
   constructor() { super(KEYS.GAME) }
 
@@ -88,9 +90,10 @@ export class GameScene extends Phaser.Scene {
     this.escKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.ESC)
     this.scene.launch(KEYS.UI)
 
-    // Inicia timer (delayedCall para garantir que UIScene já inicializou)
+    // Inicia timer e emite nome da fase (delayedCall garante UIScene já inicializada)
     this.time.delayedCall(100, () => {
       this.events.emit('start-timer', this.currentLevel.timeLimit)
+      this.events.emit('level-name', this.currentLevel.name)
     })
 
     // Listener para game-over por tempo
@@ -132,6 +135,65 @@ export class GameScene extends Phaser.Scene {
         },
       })
     })
+
+    // Etapa 2.5 (1100ms): fala do boss (fixa na tela via scrollFactor 0)
+    if (this.currentLevel.id === '0-boss') {
+      this.time.delayedCall(1100, () => {
+        if (!this.scene.isActive(KEYS.GAME)) return
+        const header = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2 - 10,
+          '💨 ASPIRADOR 3000 💨', {
+            fontSize: '20px', color: '#22ccff', fontStyle: 'bold',
+            stroke: '#003355', strokeThickness: 4,
+            backgroundColor: '#000000ee', padding: { x: 16, y: 8 },
+          }).setOrigin(0.5).setScrollFactor(0).setDepth(20).setAlpha(0)
+        const speech = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2 + 32,
+          '"Ninguém sai daqui sem passar por mim!"', {
+            fontSize: '14px', color: '#aaeeff', fontStyle: 'italic',
+            stroke: '#000000', strokeThickness: 3,
+            backgroundColor: '#000000cc', padding: { x: 12, y: 6 },
+          }).setOrigin(0.5).setScrollFactor(0).setDepth(20).setAlpha(0)
+        this.tweens.add({ targets: [header, speech], alpha: 1, duration: 300 })
+        this.time.delayedCall(3000, () => {
+          if (!this.scene.isActive(KEYS.GAME)) return
+          this.tweens.add({
+            targets: [header, speech], alpha: 0, duration: 400,
+            onComplete: () => {
+              if (header.active) header.destroy()
+              if (speech.active) speech.destroy()
+            },
+          })
+        })
+      })
+    }
+
+    if (this.currentLevel.id === '1-boss') {
+      this.time.delayedCall(1100, () => {
+        if (!this.scene.isActive(KEYS.GAME)) return
+        const header = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2 - 10,
+          '🐱 SEU BIGODES 🐱', {
+            fontSize: '20px', color: '#ff8800', fontStyle: 'bold',
+            stroke: '#2a1a00', strokeThickness: 4,
+            backgroundColor: '#000000ee', padding: { x: 16, y: 8 },
+          }).setOrigin(0.5).setScrollFactor(0).setDepth(20).setAlpha(0)
+        const speech = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2 + 32,
+          '"Meu território, minha lixeira! Não vão a lugar algum!"', {
+            fontSize: '14px', color: '#ffcc88', fontStyle: 'italic',
+            stroke: '#000000', strokeThickness: 3,
+            backgroundColor: '#000000cc', padding: { x: 12, y: 6 },
+          }).setOrigin(0.5).setScrollFactor(0).setDepth(20).setAlpha(0)
+        this.tweens.add({ targets: [header, speech], alpha: 1, duration: 300 })
+        this.time.delayedCall(3000, () => {
+          if (!this.scene.isActive(KEYS.GAME)) return
+          this.tweens.add({
+            targets: [header, speech], alpha: 0, duration: 400,
+            onComplete: () => {
+              if (header.active) header.destroy()
+              if (speech.active) speech.destroy()
+            },
+          })
+        })
+      })
+    }
 
     // Etapa 3 (1500–2000ms): volta ao player, restaura zoom, libera controle
     this.time.delayedCall(1500, () => {
@@ -223,6 +285,12 @@ export class GameScene extends Phaser.Scene {
     exit.setOrigin(0.5, 1).refreshBody()
     exit.setData('type', 'exit')
     this.itemGroup.add(exit)
+    // Em fases de boss a saída fica oculta até o boss ser derrotado
+    if (this.currentLevel.isBossLevel) {
+      exit.setVisible(false)
+      ;(exit.body as Phaser.Physics.Arcade.StaticBody).enable = false
+      this._bossExit = exit
+    }
   }
 
   private _spawnPlayer(): void {
@@ -248,6 +316,7 @@ export class GameScene extends Phaser.Scene {
       this.enemyGroup.add(enemy)
       enemy.on('died', (e: Enemy) => {
         gameState.addScore(50)
+        gameState.sessionEnemiesKilled++
         this._spawnScorePopup(e.x, e.y - 20, '+50', '#f97316')
       })
     })
@@ -258,10 +327,41 @@ export class GameScene extends Phaser.Scene {
         const mapWidth = this.currentLevel.tileWidthCols * 32
         const boss = new Aspirador(this, mapWidth / 2, 360)
         this.enemyGroup.add(boss)
+
+        // Grupo de projéteis do Aspirador
+        this._bossProjectileGroup = this.physics.add.group()
+        boss.on('spawnProjectile', (data: { x: number; y: number; vx: number; vy: number }) => {
+          if (!this._bossProjectileGroup || !this.scene.isActive(KEYS.GAME)) return
+          const proj = this.physics.add.image(data.x, data.y, KEYS.DIRT_BALL)
+          proj.setDepth(5)
+          const body = proj.body as Phaser.Physics.Arcade.Body
+          body.setVelocity(data.vx, data.vy)
+          body.setGravityY(600)
+          this._bossProjectileGroup.add(proj)
+          this.time.delayedCall(3000, () => { if (proj.active) proj.destroy() })
+        })
+
         boss.on('died', (b: Enemy) => {
           gameState.addScore(500)
           this._spawnScorePopup(b.x, b.y - 30, '+500', '#22ccff')
-          this._levelComplete()
+          // Revela a saída
+          if (this._bossExit) {
+            this._bossExit.setVisible(true)
+            ;(this._bossExit.body as Phaser.Physics.Arcade.StaticBody).enable = true
+            this._bossExit.refreshBody()
+            this.cameras.main.shake(200, 0.006)
+          }
+          const msg = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2,
+            '✓ Caminho livre! Vá para a saída!', {
+            fontSize: '18px', color: '#22ffcc', fontStyle: 'bold',
+            stroke: '#000000', strokeThickness: 3,
+            backgroundColor: '#000000aa', padding: { x: 14, y: 8 },
+          }).setOrigin(0.5).setScrollFactor(0).setDepth(20).setAlpha(0)
+          this.tweens.add({ targets: msg, alpha: 1, duration: 300 })
+          this.time.delayedCall(3000, () => {
+            if (msg.active) this.tweens.add({ targets: msg, alpha: 0, duration: 500,
+              onComplete: () => { if (msg.active) msg.destroy() } })
+          })
         })
       } else {
         // Seu Bigodes boss
@@ -277,6 +377,7 @@ export class GameScene extends Phaser.Scene {
           this.enemyGroup.add(minion)
           minion.on('died', (e: Enemy) => {
             gameState.addScore(SCORING.ENEMY_KILL)
+            gameState.sessionEnemiesKilled++
             this._spawnScorePopup(e.x, e.y - 20, '+50', '#f97316')
           })
         })
@@ -316,7 +417,10 @@ export class GameScene extends Phaser.Scene {
     if (this.decorationLayer.getLength() > 0) {
       this.physics.add.collider(this.player.raya,   this.decorationLayer)
       this.physics.add.collider(this.player.cruella, this.decorationLayer)
-      this.physics.add.collider(this.enemyGroup,     this.decorationLayer)
+      // Boss não colide com decorações para não ficar preso entre os móveis
+      if (!this.currentLevel.isBossLevel) {
+        this.physics.add.collider(this.enemyGroup, this.decorationLayer)
+      }
     }
 
     playerSprites.forEach(sprite => {
@@ -411,6 +515,21 @@ export class GameScene extends Phaser.Scene {
       })
     })
 
+    // Projéteis do boss Aspirador — colidem com chão e danificam jogador
+    if (this._bossProjectileGroup) {
+      this.physics.add.collider(this._bossProjectileGroup, this.groundLayer, (proj) => {
+        ;(proj as Phaser.Physics.Arcade.Image).destroy()
+      })
+      playerSprites.forEach(sprite => {
+        this.physics.add.overlap(sprite, this._bossProjectileGroup!, (_s, proj) => {
+          ;(proj as Phaser.Physics.Arcade.Image).destroy()
+          this.player.takeDamage()
+          SoundManager.play('damage')
+          if (gameState.isDead()) this._gameOver()
+        })
+      })
+    }
+
     // Dash de Raya causa dano em inimigos durante o movimento
     this.physics.add.overlap(this.player.raya, this.enemyGroup, (_r, enemy) => {
       const e = enemy as Enemy
@@ -471,19 +590,28 @@ export class GameScene extends Phaser.Scene {
 
   private _levelComplete(): void {
     this.scene.stop(KEYS.UI)
-    if (this.currentLevel.nextLevel) {
-      gameState.currentLevel = this.currentLevel.nextLevel
-      gameState.checkpointReached = false
-    }
+    const levelId = this.currentLevel.id
+    const nextLevel = this.currentLevel.nextLevel
+    const goldenBones = (gameState.goldenBones as Record<string, boolean[]>)[levelId] ?? [false, false, false]
+    const elapsedMs = gameState.sessionStartTime > 0
+      ? Date.now() - gameState.sessionStartTime
+      : 0
+
     this.scene.start(KEYS.LEVEL_COMPLETE, {
-      score: gameState.score,
-      bones: Object.values(gameState.goldenBones).flat().filter(Boolean).length,
+      score:         gameState.score,
+      time:          elapsedMs,
+      goldenBones,
+      deaths:        gameState.sessionDeaths,
+      enemiesKilled: gameState.sessionEnemiesKilled,
+      levelId,
+      nextLevel,
     })
   }
 
   private _gameOver(): void {
     if (this._gameOverPending) return
     this._gameOverPending = true
+    gameState.sessionDeaths++
     this.scene.stop(KEYS.UI)
     this.scene.start(KEYS.GAME_OVER)
   }
@@ -522,6 +650,7 @@ export class GameScene extends Phaser.Scene {
     enemies.forEach(e => {
       e.update(time, delta)
       if (e instanceof DonoNervoso) e.setTarget(this.player.x)
+      if (e instanceof Aspirador) e.setPlayerPos(this.player.x, this.player.y)
     })
   }
 }
