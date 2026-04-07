@@ -12,6 +12,7 @@ import { IntroCrawlScene } from './scenes/IntroCrawlScene'
 import { CharacterSelectScene } from './scenes/CharacterSelectScene'
 import { EnemyInfoScene } from './scenes/EnemyInfoScene'
 import { LevelIntroScene } from './scenes/LevelIntroScene'
+import { ProfileSelectScene } from './scenes/ProfileSelectScene'
 import { GAME_WIDTH, GAME_HEIGHT, PHYSICS } from './constants'
 import { SoundManager } from './audio/SoundManager'
 import { gameState } from './GameState'
@@ -47,6 +48,7 @@ const config: Phaser.Types.Core.GameConfig = {
     CharacterSelectScene,
     EnemyInfoScene,
     LevelIntroScene,
+    ProfileSelectScene,
   ],
 }
 

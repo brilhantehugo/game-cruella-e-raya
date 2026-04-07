@@ -1,6 +1,7 @@
 import Phaser from 'phaser'
 import { KEYS, TILE_SIZE } from '../constants'
 import { CompiledSprite, RAYA_SPRITE, CRUELLA_SPRITE, GATO_SPRITE, POMBO_SPRITE, RATO_SPRITE, DONO_SPRITE, BIGODES_SPRITE } from '../sprites/SpriteData'
+import { profileManager } from '../storage/ProfileManager'
 
 export class BootScene extends Phaser.Scene {
   constructor() { super(KEYS.BOOT) }
@@ -482,6 +483,38 @@ export class BootScene extends Phaser.Scene {
     g.fillStyle(0x3a3a3a); g.fillRect(5, 10, 6, 4)            // brilho
     gen(KEYS.SACO_LIXO, 32, 38)
 
+    // CARRO: carro estacionado, vista lateral — 80×44
+    clr()
+    // Cabine / teto
+    g.fillStyle(0x3355aa); g.fillRect(16, 2, 48, 14)              // teto cabine
+    g.fillStyle(0x4466cc); g.fillRect(18, 4, 44, 8)               // brilho teto
+    // Janelas
+    g.fillStyle(0x99ccff, 0.55)
+    g.fillRect(20, 5, 18, 9)    // janela esq
+    g.fillRect(42, 5, 18, 9)    // janela dir
+    // Carroceria (corpo)
+    g.fillStyle(0x2244aa); g.fillRect(6, 14, 68, 18)              // corpo
+    g.fillStyle(0x3355bb); g.fillRect(6, 14, 68, 4)               // reflexo lateral
+    // Detalhes carroceria
+    g.fillStyle(0x7788aa); g.fillRect(6, 28, 68, 4)               // friso inferior
+    // Faróis / lanternas
+    g.fillStyle(0xffffcc); g.fillRect(4, 17, 6, 7)                // farol frente
+    g.fillStyle(0xff3333); g.fillRect(70, 17, 6, 7)               // lanterna traseira
+    // Para-choques
+    g.fillStyle(0x888899); g.fillRect(4, 24, 4, 8); g.fillRect(72, 24, 4, 8)
+    // Rodas (pneu + aro + cubo)
+    g.fillStyle(0x1a1a1a); g.fillCircle(20, 37, 9); g.fillCircle(60, 37, 9)  // pneu
+    g.fillStyle(0x555566); g.fillCircle(20, 37, 6); g.fillCircle(60, 37, 6)  // aro
+    g.fillStyle(0x9999aa); g.fillCircle(20, 37, 2); g.fillCircle(60, 37, 2)  // cubo
+    gen(KEYS.CARRO, 80, 46)
+
+    // DIRT_BALL: projétil do Aspirador — torrão de terra 12×12
+    clr()
+    g.fillStyle(0x5a3a1a); g.fillCircle(6, 6, 6)
+    g.fillStyle(0x7a5a2a); g.fillCircle(4, 4, 3)
+    g.fillStyle(0x3a2010); g.fillCircle(8, 8, 2)
+    gen(KEYS.DIRT_BALL, 12, 12)
+
     // ── PARALLAX BACKGROUNDS ───────────────────────────────────────────────────
 
     // bg_rua_1: blue sky + clouds
@@ -508,26 +541,17 @@ export class BootScene extends Phaser.Scene {
     g.fillRect(62, 158, 10, 7); g.fillRect(76, 158, 10, 7); g.fillRect(90, 158, 10, 7)
     gen(KEYS.BG_RUA_2, 200, 450)
 
-    // bg_rua_3: near houses + tree tops (lived-in street)
+    // bg_rua_3: near houses + tree tops — tons dessaturados para separar do foreground
     clr()
-    g.fillStyle(0xd4a57a); g.fillRect(10, 300, 50, 150)
-    g.fillStyle(0xc03030); g.fillTriangle(5, 300, 35, 268, 65, 300)
-    g.fillStyle(0x87ceeb); g.fillRect(18, 315, 14, 10); g.fillRect(37, 315, 14, 10)
-    g.fillStyle(0xe8c090); g.fillRect(80, 320, 60, 130)
-    g.fillStyle(0x902020); g.fillTriangle(75, 320, 110, 285, 145, 320)
-    g.fillStyle(0x87ceeb); g.fillRect(88, 334, 16, 12); g.fillRect(112, 334, 16, 12)
-    g.fillStyle(0x5a3a1a); g.fillRect(155, 310, 8, 100)
-    g.fillStyle(0x3a7a2a); g.fillCircle(159, 295, 28)
-    g.fillStyle(0x4a9a3a); g.fillCircle(155, 280, 18)
-    // carro estacionado
-    g.fillStyle(0x2244aa); g.fillRect(40, 340, 60, 24)            // corpo do carro
-    g.fillStyle(0x111133); g.fillCircle(50, 364, 8); g.fillCircle(90, 364, 8) // rodas
-    g.fillStyle(0x88aadd); g.fillRect(46, 342, 30, 10)            // janelas carro
-    g.fillStyle(0xdddd44); g.fillRect(40, 347, 5, 6); g.fillRect(95, 347, 5, 6) // farois
-    // caixa de correio/utilidades na calçada
-    g.fillStyle(0x5566aa); g.fillRect(7, 390, 10, 16)             // caixa de correio
-    g.fillStyle(0x3344aa); g.fillRect(5, 388, 14, 4)              // tampa
-    g.fillStyle(0xddddff); g.fillRect(7, 392, 6, 3)               // detalhe
+    g.fillStyle(0xb0a090); g.fillRect(10, 300, 50, 150)           // casa 1 (cinza-bege)
+    g.fillStyle(0x907070); g.fillTriangle(5, 300, 35, 268, 65, 300) // telhado 1 (cinza-verm)
+    g.fillStyle(0x7aacb8, 0.5); g.fillRect(18, 315, 14, 10); g.fillRect(37, 315, 14, 10)
+    g.fillStyle(0xb8a888); g.fillRect(80, 320, 60, 130)           // casa 2 (cinza-bege)
+    g.fillStyle(0x806060); g.fillTriangle(75, 320, 110, 285, 145, 320) // telhado 2
+    g.fillStyle(0x7aacb8, 0.5); g.fillRect(88, 334, 16, 12); g.fillRect(112, 334, 16, 12)
+    g.fillStyle(0x5a3a1a); g.fillRect(155, 310, 8, 100)           // tronco
+    g.fillStyle(0x5a6a50); g.fillCircle(159, 295, 28)             // copa (dessaturada)
+    g.fillStyle(0x6a7860); g.fillCircle(155, 280, 18)             // topo copa
     gen(KEYS.BG_RUA_3, 200, 450)
 
     // bg_praca_1: light blue sky + soft clouds
@@ -890,7 +914,11 @@ export class BootScene extends Phaser.Scene {
     gen(KEYS.HANNAH, 16, 42)
 
     g.destroy()
-    this.scene.start(KEYS.MENU)
+    if (profileManager.getActive() === null) {
+      this.scene.start(KEYS.PROFILE_SELECT)
+    } else {
+      this.scene.start(KEYS.MENU)
+    }
   }
 
   private _makePixelSprite(key: string, sprite: CompiledSprite): void {
