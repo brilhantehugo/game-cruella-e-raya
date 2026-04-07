@@ -43,9 +43,13 @@ export class ProfileManager {
   }
 
   getActive(): PlayerProfile | null {
-    const id = localStorage.getItem(ACTIVE_KEY)
-    if (!id) return null
-    return this.getAll().find(p => p.id === id) ?? null
+    try {
+      const id = localStorage.getItem(ACTIVE_KEY)
+      if (!id) return null
+      return this.getAll().find(p => p.id === id) ?? null
+    } catch {
+      return null
+    }
   }
 
   // ── Gestão de perfis ─────────────────────────────────────────────────
@@ -76,7 +80,11 @@ export class ProfileManager {
   }
 
   setActive(id: string): void {
-    localStorage.setItem(ACTIVE_KEY, id)
+    try {
+      localStorage.setItem(ACTIVE_KEY, id)
+    } catch {
+      // Silently ignore storage errors
+    }
     // Atualiza lastPlayedAt
     const all = this.getAll()
     const idx = all.findIndex(p => p.id === id)
@@ -91,7 +99,11 @@ export class ProfileManager {
     this._persist(all)
     // Se era o ativo, limpa
     if (localStorage.getItem(ACTIVE_KEY) === id) {
-      localStorage.removeItem(ACTIVE_KEY)
+      try {
+        localStorage.removeItem(ACTIVE_KEY)
+      } catch {
+        // Silently ignore storage errors
+      }
     }
   }
 
@@ -120,7 +132,7 @@ export class ProfileManager {
       playCount:          (existing?.playCount ?? 0) + 1,
     }
     all[idx].levels[levelId] = merged
-    all[idx].totalScore      = Math.max(all[idx].totalScore, record.bestScore)
+    all[idx].totalScore      = Object.values(all[idx].levels).reduce((sum, l) => sum + l.bestScore, 0)
     all[idx].currentLevel    = levelId
     all[idx].lastPlayedAt    = Date.now()
     this._persist(all)
@@ -176,7 +188,7 @@ export class ProfileManager {
   }
 
   private _bestMedal(a: Medal | null, b: Medal | null): Medal | null {
-    const rank: Record<string, number> = { gold: 3, silver: 2, bronze: 1 }
+    const rank: Record<Medal, number> = { gold: 3, silver: 2, bronze: 1 }
     if (!a && !b) return null
     if (!a) return b
     if (!b) return a
@@ -184,7 +196,11 @@ export class ProfileManager {
   }
 
   private _persist(profiles: PlayerProfile[]): void {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(profiles))
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(profiles))
+    } catch {
+      // Silently ignore storage errors (private browsing, quota exceeded)
+    }
   }
 }
 
