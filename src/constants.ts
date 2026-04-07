@@ -49,6 +49,12 @@ export const KEYS = {
   CHARACTER_SELECT: 'CharacterSelectScene',
   ENEMY_INFO: 'EnemyInfoScene',
   LEVEL_INTRO: 'LevelIntroScene',
+  PROFILE_SELECT: 'ProfileSelectScene',
+  WORLD_MAP:      'WorldMapScene',
+  // projéteis de boss
+  DIRT_BALL: 'dirt_ball',
+  // decorações de cenário — estacionamento
+  CARRO:     'carro',
   // decorações de cenário — rua
   CASA:      'casa',
   ARVORE:    'arvore',
@@ -123,3 +129,16 @@ export const SCORING = {
   GOLDEN_BONE: 500,
   BOSS_KILL: 1000,
 } as const
+
+/**
+ * Score máximo teórico por fase (inimigos × 50 + ossos × 10 + golden bones × 500).
+ * Usado por ProfileManager.calcMedal() para determinar medalha de ouro/prata.
+ */
+export const MEDAL_THRESHOLDS: Record<string, number> = {
+  '0-1':    1690,  // 3 inimigos×50 + 4 ossos×10 + 3 golden×500
+  '0-boss':  500,  // boss Aspirador apenas
+  '1-1':    1950,  // 7 inimigos×50 + 5 ossos×10 + 3 golden×500
+  '1-2':    1950,  // 8 inimigos×50 + 5 ossos×10 + 3 golden×500
+  '1-3':    2050,  // 9 inimigos×50 + 5 ossos×10 + 3 golden×500
+  '1-boss': 1200,  // boss Seu Bigodes + minions estimados
+}
