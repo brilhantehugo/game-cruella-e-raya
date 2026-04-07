@@ -228,25 +228,30 @@ export class ProfileSelectScene extends Phaser.Scene {
       fontSize: '16px', color: '#aaaaaa',
     }).setOrigin(0.5).setDepth(11).setInteractive()
 
-    const cleanup = () => {
-      overlay.destroy(); yesBtn.destroy(); noBtn.destroy()
-      confirmTxt.destroy()
-    }
     const confirmTxt = this.add.text(cx, 180, '', {}).setDepth(11) // placeholder
 
-    yesBtn.on('pointerdown', () => {
-      cleanup()
+    const kb = this.input.keyboard!
+    let closed = false
+    const doCleanup = () => {
+      if (closed) return
+      closed = true
+      overlay.destroy()
+      yesBtn.destroy()
+      noBtn.destroy()
+      confirmTxt.destroy()
+      kb.off('keydown-S', onDelete)
+      kb.off('keydown-N', doCleanup)
+    }
+    const onDelete = () => {
+      doCleanup()
       profileManager.delete(profile.id)
       this._profiles = profileManager.getAll()
       this._renderSlots()
-    })
-    noBtn.on('pointerdown', cleanup)
-
-    const kb = this.input.keyboard!
-    const onS = () => { cleanup(); profileManager.delete(profile.id); this._profiles = profileManager.getAll(); this._renderSlots() }
-    const onN = () => cleanup()
-    kb.once('keydown-S', onS)
-    kb.once('keydown-N', onN)
+    }
+    kb.once('keydown-S', onDelete)
+    kb.once('keydown-N', doCleanup)
+    yesBtn.on('pointerdown', onDelete)
+    noBtn.on('pointerdown', doCleanup)
   }
 
   private _setupKeyboard(): void {

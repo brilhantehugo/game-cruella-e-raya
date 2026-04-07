@@ -131,7 +131,7 @@ export class WorldMapScene extends Phaser.Scene {
           const hitArea = this.add.circle(nx + 20, ny + 20, 22, 0, 0).setInteractive()
           hitArea.on('pointerover', () => {
             this.input.setDefaultCursor('pointer')
-            circle.setAlpha(1.4)
+            circle.setAlpha(0.7)
           })
           hitArea.on('pointerout', () => {
             this.input.setDefaultCursor('default')
@@ -169,6 +169,7 @@ export class WorldMapScene extends Phaser.Scene {
     }
     gameState.reset()
     gameState.currentLevel = levelId
+    gameState.sessionStartTime = Date.now()
     SoundManager.stopBgm()
     this.scene.start(KEYS.GAME)
   }

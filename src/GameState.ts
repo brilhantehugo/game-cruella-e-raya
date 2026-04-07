@@ -40,7 +40,7 @@ export class GameState {
   }
 
   takeDamage(now: number): boolean {
-    if (now - this.lastHitAt < 1200) return false  // invincibility frames
+    if (this.lastHitAt > 0 && now - this.lastHitAt < 1200) return false  // invincibility frames
     if (this.equippedAccessory === 'laco') {
       this.equippedAccessory = null
       this.lastHitAt = now
