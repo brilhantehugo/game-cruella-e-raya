@@ -100,7 +100,7 @@ export class GameOverScene extends Phaser.Scene {
 
     const enterBtn = mkBtn(300, '[ ENTER — retomar do checkpoint ]', '#ffffff')
     const rBtn     = mkBtn(342, '[ R — recomeçar a fase ]',          '#aaaaaa')
-    const escTxt   = this.add.text(cx, 388, 'ESC — voltar ao menu',  {
+    const escTxt   = this.add.text(cx, 388, 'ESC — mapa do mundo',  {
       fontSize: '13px', color: '#555555',
     }).setOrigin(0.5)
 
@@ -128,7 +128,7 @@ export class GameOverScene extends Phaser.Scene {
       if (_done) return
       _done = true
       SoundManager.stopBgm()
-      this.scene.start(KEYS.MENU)
+      this.scene.start(KEYS.WORLD_MAP)
     }
 
     const kb = this.input.keyboard!

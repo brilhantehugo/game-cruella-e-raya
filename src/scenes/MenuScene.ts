@@ -172,36 +172,44 @@ export class MenuScene extends Phaser.Scene {
       fontSize: '16px', color: '#ffaa55',
     }).setOrigin(0.5).setInteractive()
 
+    const profileBtn = this.add.text(GAME_WIDTH / 2, 415, '[ P — TROCAR PERFIL ]', {
+      fontSize: '14px', color: '#7766aa',
+    }).setOrigin(0.5).setInteractive()
+
     // ── Control hint ────────────────────────────────────────────────────
-    this.add.text(GAME_WIDTH / 2, 415, '← → Mover   ESPAÇO Pular   SHIFT Habilidade   TAB Trocar', {
+    this.add.text(GAME_WIDTH / 2, 438, '← → Mover   ESPAÇO Pular   SHIFT Habilidade   TAB Trocar', {
       fontSize: '10px', color: '#555555',
     }).setOrigin(0.5)
 
-    this.add.text(GAME_WIDTH / 2, 428, 'M — silenciar música   I — guia de personagens', {
+    this.add.text(GAME_WIDTH / 2, 451, 'M — silenciar música   I — guia de personagens', {
       fontSize: '10px', color: '#333355',
     }).setOrigin(0.5)
 
     // ── Actions ─────────────────────────────────────────────────────────
-    const startGame   = () => { gameState.reset(); gameState.currentLevel = '0-1'; this.scene.start(KEYS.INTRO_CRAWL) }
+    const startGame   = () => { this.scene.start(KEYS.WORLD_MAP) }
     const goGallery   = () => { this.scene.start(KEYS.GALLERY) }
     const goHowToPlay = () => { this.scene.start(KEYS.HOW_TO_PLAY) }
     const goEnemies   = () => { this.scene.start(KEYS.ENEMY_INFO) }
+    const goProfile   = () => { this.scene.start(KEYS.PROFILE_SELECT) }
 
     const kb = this.input.keyboard!
     kb.on('keydown-ENTER', startGame)
     kb.on('keydown-G', goGallery)
     kb.on('keydown-H', goHowToPlay)
     kb.on('keydown-I', goEnemies)
+    kb.on('keydown-P', goProfile)
     playBtn.on('pointerdown', startGame)
     galBtn.on('pointerdown', goGallery)
     howBtn.on('pointerdown', goHowToPlay)
     enemyBtn.on('pointerdown', goEnemies)
+    profileBtn.on('pointerdown', goProfile)
 
     this.events.once('shutdown', () => {
       kb.off('keydown-ENTER', startGame)
       kb.off('keydown-G', goGallery)
       kb.off('keydown-H', goHowToPlay)
       kb.off('keydown-I', goEnemies)
+      kb.off('keydown-P', goProfile)
       SoundManager.stopBgm()
     })
 
