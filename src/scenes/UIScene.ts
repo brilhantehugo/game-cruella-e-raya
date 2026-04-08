@@ -6,6 +6,7 @@ export class UIScene extends Phaser.Scene {
   private heartImages: Phaser.GameObjects.Image[] = []
   private scoreText!: Phaser.GameObjects.Text
   private dogText!: Phaser.GameObjects.Text
+  private _levelNameText!: Phaser.GameObjects.Text
   private cooldownBar!: Phaser.GameObjects.Rectangle
   private cooldownBg!: Phaser.GameObjects.Rectangle
   private accessoryText!: Phaser.GameObjects.Text
@@ -59,10 +60,28 @@ export class UIScene extends Phaser.Scene {
       fontSize: '12px', color: '#aaaaaa',
     }).setOrigin(1, 0).setScrollFactor(0).setDepth(5).setAlpha(0.7)
 
+    // Nome da fase — aparece no topo com fade-in e some para transparência
+    this._levelNameText = this.add.text(GAME_WIDTH / 2, 8, '', {
+      fontSize: '11px', color: '#ffffff', fontStyle: 'bold',
+      stroke: '#000000', strokeThickness: 2,
+    }).setOrigin(0.5, 0).setScrollFactor(0).setDepth(6).setAlpha(0)
+
     // Escuta evento de início de timer emitido por GameScene
-    this.scene.get(KEYS.GAME).events.on('start-timer', (seconds: number) => {
+    const gameScene = this.scene.get(KEYS.GAME)
+    gameScene.events.on('start-timer', (seconds: number) => {
       this._timeRemaining = seconds
       this._timerActive = seconds > 0
+    })
+    gameScene.events.on('level-name', (name: string) => {
+      this._levelNameText.setText(name)
+      this.tweens.add({
+        targets: this._levelNameText, alpha: 0.85, duration: 600,
+        onComplete: () => {
+          this.time.delayedCall(2500, () => {
+            this.tweens.add({ targets: this._levelNameText, alpha: 0.3, duration: 1200 })
+          })
+        },
+      })
     })
   }
 

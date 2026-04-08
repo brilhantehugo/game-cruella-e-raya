@@ -41,12 +41,12 @@ export class LevelIntroScene extends Phaser.Scene {
     const [worldNum] = this._levelData.id.split('-')
     const worldLabel = `Mundo ${worldNum}`
 
-    this.add.text(cx, 26, worldLabel, {
+    this.add.text(cx, 22, worldLabel, {
       fontSize: '11px', color: '#888899', letterSpacing: 3,
     }).setOrigin(0.5)
 
-    this.add.text(cx, 46, this._levelData.name, {
-      fontSize: '26px', color: '#ffcc44', fontStyle: 'bold',
+    this.add.text(cx, 40, this._levelData.name, {
+      fontSize: '24px', color: '#ffcc44', fontStyle: 'bold',
       stroke: '#000000', strokeThickness: 3,
     }).setOrigin(0.5)
 
@@ -62,8 +62,8 @@ export class LevelIntroScene extends Phaser.Scene {
       3: '#ff6b6b',
     }
     const comp = intro.complexity
-    this.add.text(cx, 80, starLabels[comp], {
-      fontSize: '16px',
+    this.add.text(cx, 72, starLabels[comp], {
+      fontSize: '15px',
       color: starColors[comp],
       fontStyle: 'bold',
       stroke: '#000000',
@@ -73,12 +73,12 @@ export class LevelIntroScene extends Phaser.Scene {
     // ── Horizontal divider ────────────────────────────────────────────────
     const div = this.add.graphics()
     div.lineStyle(1, 0x333355, 0.6)
-    div.strokeLineShape(new Phaser.Geom.Line(40, 100, GAME_WIDTH - 40, 100))
+    div.strokeLineShape(new Phaser.Geom.Line(40, 92, GAME_WIDTH - 40, 92))
 
     // ── Speech bubbles ────────────────────────────────────────────────────
-    const BUBBLE_Y    = 130
+    const BUBBLE_Y    = 106
     const BUBBLE_W    = 340
-    const BUBBLE_H    = 140
+    const BUBBLE_H    = 160
     const BUBBLE_PAD  = 12
     const LEFT_CX     = cx - BUBBLE_W / 2 - 6
     const RIGHT_CX    = cx + BUBBLE_W / 2 + 6
@@ -112,10 +112,10 @@ export class LevelIntroScene extends Phaser.Scene {
     // ── Divider above button area ─────────────────────────────────────────
     const div2 = this.add.graphics()
     div2.lineStyle(1, 0x333355, 0.6)
-    div2.strokeLineShape(new Phaser.Geom.Line(40, BUBBLE_Y + BUBBLE_H + 16, GAME_WIDTH - 40, BUBBLE_Y + BUBBLE_H + 16))
+    div2.strokeLineShape(new Phaser.Geom.Line(40, BUBBLE_Y + BUBBLE_H + 14, GAME_WIDTH - 40, BUBBLE_Y + BUBBLE_H + 14))
 
     // ── Action button (sem auto-avanço — jogador deve pressionar) ────────
-    const BTN_Y = GAME_HEIGHT - 22
+    const BTN_Y = BUBBLE_Y + BUBBLE_H + 32
     const btn = this.add.text(cx, BTN_Y, '[ ENTER / ESPAÇO — começar ]', {
       fontSize: '14px', color: '#ffcc44', fontStyle: 'bold',
       stroke: '#000000', strokeThickness: 2,
@@ -165,24 +165,24 @@ export class LevelIntroScene extends Phaser.Scene {
     bg.fillStyle(tintColor, 0.6)
     bg.fillRoundedRect(left, topY, width, 3, { tl: 10, tr: 10, bl: 0, br: 0 })
 
-    // Character portrait sprite
-    const spriteX = left + 28
+    // Character portrait sprite (scale 2 keeps 32px/28px frames within bubble bounds)
+    const spriteX = left + 38
     const spriteY = topY + height / 2 - 4
     this.add.sprite(spriteX, spriteY, spriteKey, 0)
-      .setScale(3)
+      .setScale(2)
       .setTint(tintColor)
 
     // Character name label
     const nameColor = `#${tintColor.toString(16).padStart(6, '0')}`
-    this.add.text(left + 60, topY + pad + 2, charName, {
+    this.add.text(left + 76, topY + pad + 2, charName, {
       fontSize: '12px', color: nameColor, fontStyle: 'bold',
     })
 
     // Dialogue text — word-wrap inside bubble
-    this.add.text(left + 60, topY + pad + 20, text, {
+    this.add.text(left + 76, topY + pad + 20, text, {
       fontSize: '12px',
       color: '#ddddee',
-      wordWrap: { width: width - 70 },
+      wordWrap: { width: width - 84 },
       lineSpacing: 4,
     })
   }

@@ -10,6 +10,9 @@ export class Aspirador extends Enemy {
   private actionTimer: number = 0
   private _isDying = false
   private _chargeDir: number = 1
+  private _playerX: number = 400
+  private _playerY: number = 360
+  private _throwTimer: number = 2500
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y, KEYS.ASPIRADOR, 8, 70)
@@ -26,6 +29,11 @@ export class Aspirador extends Enemy {
   takeDamage(amount: number = 1): void {
     if (this._isDying) return
     super.takeDamage(Math.min(amount, 2))
+  }
+
+  setPlayerPos(px: number, py: number): void {
+    this._playerX = px
+    this._playerY = py
   }
 
   update(time: number, _delta: number): void {
@@ -50,6 +58,17 @@ export class Aspirador extends Enemy {
         case 3: this._charge();      this._vacuumPulse(); this.actionTimer = time + 1500; break
       }
     }
+
+    // Lança projéteis de sujeira em direção ao jogador (independente do timer principal)
+    if (time > this._throwTimer) {
+      const count = this.phase === 3 ? 3 : this.phase === 2 ? 2 : 1
+      for (let i = 0; i < count; i++) {
+        this.scene.time.delayedCall(i * 250, () => {
+          if (this.active) this._throwDirt()
+        })
+      }
+      this._throwTimer = time + (this.phase === 3 ? 1500 : this.phase === 2 ? 2000 : 2800)
+    }
   }
 
   private _checkPhaseTransition(): void {
@@ -63,6 +82,18 @@ export class Aspirador extends Enemy {
       this.speed = 120
       this.setTint(0xff8800)
     }
+  }
+
+  /** Lança projétil de sujeira em direção ao jogador — emite evento para GameScene criar o body */
+  private _throwDirt(): void {
+    if (!this.scene || !this.active) return
+    const dx = this._playerX - this.x
+    const dy = this._playerY - this.y
+    const dist = Math.sqrt(dx * dx + dy * dy) || 1
+    const speed = 280
+    const vx = (dx / dist) * speed
+    const vy = Math.min(-80, (dy / dist) * speed - 180) // arco para cima
+    this.emit('spawnProjectile', { x: this.x, y: this.y - 12, vx, vy })
   }
 
   /** Visual vacuum pulse — expands circle ring */
