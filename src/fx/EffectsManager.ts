@@ -1,4 +1,6 @@
 export class EffectsManager {
+  private static readonly PARTICLE_DEPTH = 100
+
   constructor(private scene: Phaser.Scene) {}
 
   /** Poeira nos pés (pulo = 'small', aterrissagem = 'large') */
@@ -17,7 +19,7 @@ export class EffectsManager {
       g.fillStyle(color, 0.8)
       g.fillCircle(0, 0, r)
       g.setPosition(x, y)
-      g.setDepth(100)
+      g.setDepth(EffectsManager.PARTICLE_DEPTH)
       this.scene.tweens.add({
         targets: g,
         x: tx,
@@ -48,76 +50,18 @@ export class EffectsManager {
 
   /** Burst de partículas laranja/amarelas ao matar inimigo */
   enemyDeathBurst(x: number, y: number): void {
-    const colors = [0xff6600, 0xffaa00, 0xffdd00]
-    for (let i = 0; i < 6; i++) {
-      const angle = (Math.PI * 2 / 6) * i
-      const dist = Phaser.Math.Between(20, 50)
-      const tx = x + Math.cos(angle) * dist
-      const ty = y + Math.sin(angle) * dist
-      const g = this.scene.add.graphics()
-      g.fillStyle(Phaser.Math.RND.pick(colors), 1)
-      g.fillCircle(0, 0, Phaser.Math.Between(3, 7))
-      g.setPosition(x, y)
-      g.setDepth(100)
-      this.scene.tweens.add({
-        targets: g,
-        x: tx,
-        y: ty,
-        alpha: 0,
-        duration: 250,
-        ease: 'Quad.easeOut',
-        onComplete: () => g.destroy(),
-      })
-    }
+    this._burst(x, y, 6, [0xff6600, 0xffaa00, 0xffdd00], 20, 50, 3, 7, 250)
   }
 
   /** 4 partículas amarelas ao coletar bone regular */
   boneSpark(x: number, y: number): void {
-    for (let i = 0; i < 4; i++) {
-      const angle = (Math.PI * 2 / 4) * i
-      const dist = Phaser.Math.Between(10, 25)
-      const tx = x + Math.cos(angle) * dist
-      const ty = y + Math.sin(angle) * dist
-      const g = this.scene.add.graphics()
-      g.fillStyle(0xffff00, 1)
-      g.fillCircle(0, 0, Phaser.Math.Between(2, 4))
-      g.setPosition(x, y)
-      g.setDepth(100)
-      this.scene.tweens.add({
-        targets: g,
-        x: tx,
-        y: ty,
-        alpha: 0,
-        duration: 200,
-        ease: 'Quad.easeOut',
-        onComplete: () => g.destroy(),
-      })
-    }
+    this._burst(x, y, 4, 0xffff00, 10, 25, 2, 4, 200)
   }
 
   /** 8 partículas douradas + flash de câmera ao coletar golden bone */
   goldenBoneBurst(x: number, y: number): void {
     this.scene.cameras.main.flash(80, 255, 215, 0)
-    for (let i = 0; i < 8; i++) {
-      const angle = (Math.PI * 2 / 8) * i
-      const dist = Phaser.Math.Between(30, 70)
-      const tx = x + Math.cos(angle) * dist
-      const ty = y + Math.sin(angle) * dist
-      const g = this.scene.add.graphics()
-      g.fillStyle(0xffd700, 1)
-      g.fillCircle(0, 0, Phaser.Math.Between(3, 8))
-      g.setPosition(x, y)
-      g.setDepth(100)
-      this.scene.tweens.add({
-        targets: g,
-        x: tx,
-        y: ty,
-        alpha: 0,
-        duration: 300,
-        ease: 'Quad.easeOut',
-        onComplete: () => g.destroy(),
-      })
-    }
+    this._burst(x, y, 8, 0xffd700, 30, 70, 3, 8, 300)
   }
 
   /** Score popup animado com bounce (scale 0.5→1.2→1.0 em 120ms, depois sobe e some) */
@@ -163,28 +107,9 @@ export class EffectsManager {
     })
   }
 
-  /** 8 partículas brancas em arco ao ativar checkpoint */
+  /** 8 partículas brancas em círculo completo ao ativar checkpoint */
   checkpointSparkle(x: number, y: number): void {
-    for (let i = 0; i < 8; i++) {
-      const angle = (Math.PI * 2 / 8) * i - Math.PI / 2
-      const dist = Phaser.Math.Between(20, 40)
-      const tx = x + Math.cos(angle) * dist
-      const ty = y + Math.sin(angle) * dist
-      const g = this.scene.add.graphics()
-      g.fillStyle(0xffffff, 1)
-      g.fillCircle(0, 0, Phaser.Math.Between(2, 5))
-      g.setPosition(x, y)
-      g.setDepth(100)
-      this.scene.tweens.add({
-        targets: g,
-        x: tx,
-        y: ty,
-        alpha: 0,
-        duration: 500,
-        ease: 'Quad.easeOut',
-        onComplete: () => g.destroy(),
-      })
-    }
+    this._burst(x, y, 8, 0xffffff, 20, 40, 2, 5, 500, -Math.PI / 2)
   }
 
   /** 10 partículas coloridas ao coletar power-up (cor por tipo) */
@@ -195,47 +120,37 @@ export class EffectsManager {
       petisco:   0xff8800,
     }
     const color = colorMap[type] ?? 0x00ccff
-    for (let i = 0; i < 10; i++) {
-      const angle = (Math.PI * 2 / 10) * i
-      const dist = Phaser.Math.Between(20, 60)
-      const tx = x + Math.cos(angle) * dist
-      const ty = y + Math.sin(angle) * dist
-      const g = this.scene.add.graphics()
-      g.fillStyle(color, 1)
-      g.fillCircle(0, 0, Phaser.Math.Between(3, 7))
-      g.setPosition(x, y)
-      g.setDepth(100)
-      this.scene.tweens.add({
-        targets: g,
-        x: tx,
-        y: ty,
-        alpha: 0,
-        duration: 350,
-        ease: 'Quad.easeOut',
-        onComplete: () => g.destroy(),
-      })
-    }
+    this._burst(x, y, 10, color, 20, 60, 3, 7, 350)
   }
 
   /** 4 partículas ciano ao stunar inimigo com bark */
   barkImpact(x: number, y: number): void {
-    for (let i = 0; i < 4; i++) {
-      const angle = (Math.PI * 2 / 4) * i
-      const dist = Phaser.Math.Between(10, 20)
+    this._burst(x, y, 4, 0x00ccff, 10, 20, 2, 4, 200)
+  }
+
+  private _burst(
+    x: number, y: number,
+    count: number,
+    colors: number | number[],
+    distMin: number, distMax: number,
+    radiusMin: number, radiusMax: number,
+    duration: number,
+    angleOffset: number = 0,
+  ): void {
+    for (let i = 0; i < count; i++) {
+      const angle = (Math.PI * 2 / count) * i + angleOffset
+      const dist = Phaser.Math.Between(distMin, distMax)
       const tx = x + Math.cos(angle) * dist
       const ty = y + Math.sin(angle) * dist
+      const color = Array.isArray(colors) ? Phaser.Math.RND.pick(colors) : colors
       const g = this.scene.add.graphics()
-      g.fillStyle(0x00ccff, 1)
-      g.fillCircle(0, 0, Phaser.Math.Between(2, 4))
+      g.fillStyle(color, 1)
+      g.fillCircle(0, 0, Phaser.Math.Between(radiusMin, radiusMax))
       g.setPosition(x, y)
-      g.setDepth(100)
+      g.setDepth(EffectsManager.PARTICLE_DEPTH)
       this.scene.tweens.add({
-        targets: g,
-        x: tx,
-        y: ty,
-        alpha: 0,
-        duration: 200,
-        ease: 'Quad.easeOut',
+        targets: g, x: tx, y: ty, alpha: 0,
+        duration, ease: 'Quad.easeOut',
         onComplete: () => g.destroy(),
       })
     }
