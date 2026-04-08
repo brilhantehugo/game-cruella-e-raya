@@ -556,6 +556,7 @@ export class GameScene extends Phaser.Scene {
         if (!gameState.checkpointReached) {
           gameState.setCheckpoint(item.x, item.y)
           SoundManager.play('checkpoint')
+          this._fx.checkpointSparkle(item.x, item.y)
         }
         return // don't destroy
       case 'exit':
@@ -585,6 +586,7 @@ export class GameScene extends Phaser.Scene {
       default:
         gameState.applyPowerUp(type, now)
         SoundManager.play('powerUp')
+        this._fx.powerUpBurst(this.player.x, this.player.y, type)
         this._spawnScorePopup(item.x, item.y - 16, '✨', '#00ffff')
     }
     item.destroy()
