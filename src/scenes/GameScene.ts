@@ -20,6 +20,7 @@ import { Hugo } from '../entities/npc/Hugo'
 import { Hannah } from '../entities/npc/Hannah'
 import { ParallaxBackground } from '../background/ParallaxBackground'
 import { SoundManager } from '../audio/SoundManager'
+import { EffectsManager } from '../fx/EffectsManager'
 
 export class GameScene extends Phaser.Scene {
   private player!: Player
@@ -39,6 +40,8 @@ export class GameScene extends Phaser.Scene {
   private _cinematicActive: boolean = false
   private _bossExit: Phaser.Physics.Arcade.Image | null = null
   private _bossProjectileGroup: Phaser.Physics.Arcade.Group | null = null
+  private _fx!: EffectsManager
+  private _lastTrailAt: number = 0
 
   constructor() { super(KEYS.GAME) }
 
@@ -76,6 +79,16 @@ export class GameScene extends Phaser.Scene {
     this._buildDecorations()
     this._buildTilemap()
     this._spawnPlayer()
+    this._fx = new EffectsManager(this)
+    // Efeitos de dust no pulo e aterrissagem
+    this.player.raya.on('jumped', () => {
+      const body = this.player.raya.body as Phaser.Physics.Arcade.Body
+      this._fx.dustPuff(this.player.raya.x, body.bottom, 'small')
+    })
+    this.player.raya.on('landed', () => {
+      const body = this.player.raya.body as Phaser.Physics.Arcade.Body
+      this._fx.dustPuff(this.player.raya.x, body.bottom, 'large')
+    })
     this._spawnEnemies()
     this._spawnItems()
     this._setupCollisions()
@@ -654,5 +667,13 @@ export class GameScene extends Phaser.Scene {
       if (e instanceof DonoNervoso) e.setTarget(this.player.x)
       if (e instanceof Aspirador) e.setPlayerPos(this.player.x, this.player.y)
     })
+    // Ghost trail no dash
+    if (this.player.raya.getIsDashing()) {
+      const now = this.time.now
+      if (now - this._lastTrailAt >= 80) {
+        this._fx.ghostTrail(this.player.raya)
+        this._lastTrailAt = now
+      }
+    }
   }
 }
