@@ -230,19 +230,8 @@ export class GameScene extends Phaser.Scene {
     })
   }
 
-  _spawnScorePopup(x: number, y: number, text: string, color: string = '#ffffff'): void {
-    const popup = this.add.text(x, y, text, {
-      fontSize: '16px', color, fontStyle: 'bold',
-      stroke: '#000000', strokeThickness: 3,
-    }).setDepth(10)
-    this.tweens.add({
-      targets: popup,
-      y: y - 48,
-      alpha: 0,
-      duration: 800,
-      ease: 'Quad.easeOut',
-      onComplete: () => popup.destroy(),
-    })
+  private _spawnScorePopup(x: number, y: number, text: string, color: string = '#ffffff'): void {
+    this._fx.scorePopupBounce(text, x, y, color)
   }
 
   private _buildDecorations(): void {
@@ -330,6 +319,7 @@ export class GameScene extends Phaser.Scene {
       enemy.on('died', (e: Enemy) => {
         gameState.addScore(50)
         gameState.sessionEnemiesKilled++
+        this._fx.enemyDeathBurst(e.x, e.y)
         this._spawnScorePopup(e.x, e.y - 20, '+50', '#f97316')
       })
     })
@@ -357,6 +347,7 @@ export class GameScene extends Phaser.Scene {
         boss.on('died', (b: Enemy) => {
           gameState.addScore(500)
           gameState.sessionEnemiesKilled++
+          this._fx.enemyDeathBurst(b.x, b.y)
           this._spawnScorePopup(b.x, b.y - 30, '+500', '#22ccff')
           // Revela a saída
           if (this._bossExit) {
@@ -385,6 +376,7 @@ export class GameScene extends Phaser.Scene {
           gameState.addScore(1000)
           gameState.sessionEnemiesKilled++
           gameState.collarOfGold = true
+          this._fx.enemyDeathBurst(b.x, b.y)
           this._spawnScorePopup(b.x, b.y - 30, '+1000', '#22c55e')
           this._levelComplete()
         })
@@ -393,6 +385,7 @@ export class GameScene extends Phaser.Scene {
           minion.on('died', (e: Enemy) => {
             gameState.addScore(SCORING.ENEMY_KILL)
             gameState.sessionEnemiesKilled++
+            this._fx.enemyDeathBurst(e.x, e.y)
             this._spawnScorePopup(e.x, e.y - 20, '+50', '#f97316')
           })
         })
@@ -525,6 +518,7 @@ export class GameScene extends Phaser.Scene {
         const dist = Phaser.Math.Distance.Between(bx, by, e.x, e.y)
         if (dist <= PHYSICS.BARK_RADIUS) {
           e.stun(2000)
+          this._fx.barkImpact(e.x, e.y)
           this._spawnScorePopup(e.x, e.y - 24, 'STUN!', '#ffdd00')
         }
       })
@@ -570,12 +564,14 @@ export class GameScene extends Phaser.Scene {
       case 'bone':
         gameState.addScore(10)
         SoundManager.play('collectBone')
-        this._spawnScorePopup(item.x, item.y - 16, '+10')
+        this._fx.boneSpark(item.x, item.y)
+        this._spawnScorePopup(item.x, item.y - 16, '+10', '#ffff00')
         break
       case 'golden_bone':
         gameState.collectGoldenBone(gameState.currentLevel, (item as GoldenBone).boneIndex)
         gameState.addScore(500)
         SoundManager.play('collectGolden')
+        this._fx.goldenBoneBurst(item.x, item.y)
         this._spawnScorePopup(item.x, item.y - 16, '+500', '#ffd700')
         break
       case 'pizza':
