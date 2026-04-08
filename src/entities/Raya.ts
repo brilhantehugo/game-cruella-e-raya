@@ -41,6 +41,7 @@ export class Raya extends Phaser.Physics.Arcade.Sprite {
     // Edge detection: just landed → reset double jump
     if (onGround && !this.wasGrounded) {
       this.jumpsLeft = 2
+      this.emit('landed')
     }
     this.wasGrounded = onGround
 
@@ -66,6 +67,7 @@ export class Raya extends Phaser.Physics.Arcade.Sprite {
       this.setVelocityY(jumpVel)
       this.jumpsLeft--
       SoundManager.play(this.jumpsLeft === 0 ? 'doubleJump' : 'jump')
+      this.emit('jumped')
     }
 
     if (Phaser.Input.Keyboard.JustDown(this.shiftKey) && !this.dashCooldown) {
