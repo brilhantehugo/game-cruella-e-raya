@@ -78,8 +78,10 @@ export const KEYS = {
   // inimigos world-0
   ASPIRADOR: 'aspirador',
   // NPCs world-0
-  HUGO:   'hugo',
-  HANNAH: 'hannah',
+  HUGO:    'hugo',
+  HANNAH:  'hannah',
+  ZELADOR: 'zelador',
+  MORADOR: 'morador',
   // parallax de fundo
   BG_RUA_1:     'bg_rua_1',
   BG_RUA_2:     'bg_rua_2',
