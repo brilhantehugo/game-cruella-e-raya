@@ -18,6 +18,9 @@ import { WORLD0_LEVELS } from '../levels/World0'
 import { Aspirador } from '../entities/enemies/Aspirador'
 import { Hugo } from '../entities/npc/Hugo'
 import { Hannah } from '../entities/npc/Hannah'
+import { HumanEnemy } from '../entities/enemies/HumanEnemy'
+import { Zelador } from '../entities/enemies/Zelador'
+import { Morador } from '../entities/enemies/Morador'
 import { ParallaxBackground } from '../background/ParallaxBackground'
 import { SoundManager } from '../audio/SoundManager'
 import { EffectsManager } from '../fx/EffectsManager'
@@ -313,9 +316,21 @@ export class GameScene extends Phaser.Scene {
         case 'aspirador': enemy = new Aspirador(this, spawn.x, spawn.y);       break
         case 'hugo':      enemy = new Hugo(this, spawn.x, spawn.y);            break
         case 'hannah':    enemy = new Hannah(this, spawn.x, spawn.y);          break
+        case 'zelador':   enemy = new Zelador(this, spawn.x, spawn.y);         break
+        case 'morador':   enemy = new Morador(this, spawn.x, spawn.y);         break
       }
       if (!enemy) return
       this.enemyGroup.add(enemy)
+      if (enemy instanceof HumanEnemy) {
+        enemy.on('grabPlayer', (knockbackDir: number) => {
+          this.player.takeDamage()
+          SoundManager.play('damage')
+          const activeBody = this.player.active.body as Phaser.Physics.Arcade.Body
+          activeBody.setVelocityX(knockbackDir * 180)
+          activeBody.setVelocityY(-200)
+          if (gameState.isDead()) this._gameOver()
+        })
+      }
       enemy.on('died', (e: Enemy) => {
         gameState.addScore(50)
         gameState.sessionEnemiesKilled++
@@ -440,8 +455,12 @@ export class GameScene extends Phaser.Scene {
         // Stomp: player falling and centre above enemy centre
         if (pBody.velocity.y > 50 && pBody.bottom <= eBody.top + 12) {
           if (!e.isNPC) {
+            const stompCountered = (e as any).tryCounter?.('raya', 'jump') ?? false
             e.takeDamage(999)
             SoundManager.play('stomp')
+            if (stompCountered) {
+              this._spawnScorePopup(e.x, e.y - 28, 'COUNTER!', '#22ccff')
+            }
             // Hit stop: pausa física por 80ms para dar peso ao golpe
             this.physics.pause()
             this.time.delayedCall(80, () => this.physics.resume())
@@ -513,13 +532,23 @@ export class GameScene extends Phaser.Scene {
       // ── Camera shake ───────────────────────────────────────────────────
       this.cameras.main.shake(150, 0.007)
 
-      // ── Enemy stun ─────────────────────────────────────────────────────
+      // ── Enemy reactions ao bark ────────────────────────────────────────────
       ;(this.enemyGroup.getChildren() as Enemy[]).forEach(e => {
         const dist = Phaser.Math.Distance.Between(bx, by, e.x, e.y)
-        if (dist <= PHYSICS.BARK_RADIUS) {
-          e.stun(2000)
-          this._fx.barkImpact(e.x, e.y)
-          this._spawnScorePopup(e.x, e.y - 24, 'STUN!', '#ffdd00')
+        if (e instanceof HumanEnemy) {
+          // Humanos: reagem com máquina de estados (hearingRadius próprio)
+          e.onBarkHeard(dist)
+        } else if (dist <= PHYSICS.BARK_RADIUS) {
+          // Animais: verifica counter window primeiro
+          const countered = (e as any).tryCounter?.('cruella', 'bark') ?? false
+          if (countered) {
+            this._fx.enemyDeathBurst(e.x, e.y)
+            this._spawnScorePopup(e.x, e.y - 24, 'COUNTER!', '#22ccff')
+          } else {
+            e.stun(2000)
+            this._fx.barkImpact(e.x, e.y)
+            this._spawnScorePopup(e.x, e.y - 24, 'STUN!', '#ffdd00')
+          }
         }
       })
     })
@@ -539,13 +568,17 @@ export class GameScene extends Phaser.Scene {
       })
     }
 
-    // Dash de Raya causa dano em inimigos durante o movimento
+    // Dash de Raya causa dano + verifica counter window
     this.physics.add.overlap(this.player.raya, this.enemyGroup, (_r, enemy) => {
       const e = enemy as Enemy
-      if (this.player.raya.getIsDashing()) {
-        e.takeDamage(1)
-        this._spawnScorePopup(e.x, e.y - 20, '+50', '#f97316')
+      if (!this.player.raya.getIsDashing()) return
+      const countered = (e as any).tryCounter?.('raya', 'dash') ?? false
+      if (countered) {
+        this._fx.enemyDeathBurst(e.x, e.y)
+        this._spawnScorePopup(e.x, e.y - 24, 'COUNTER!', '#f97316')
       }
+      e.takeDamage(1)
+      if (!countered) this._spawnScorePopup(e.x, e.y - 20, '+50', '#f97316')
     })
   }
 
@@ -664,6 +697,10 @@ export class GameScene extends Phaser.Scene {
       e.update(time, delta)
       if (e instanceof DonoNervoso) e.setTarget(this.player.x)
       if (e instanceof Aspirador) e.setPlayerPos(this.player.x, this.player.y)
+      if (e instanceof HumanEnemy) e.setPlayerPos(this.player.x, this.player.y)
+      if ((e as any).setPlayerPos && !(e instanceof HumanEnemy) && !(e instanceof Aspirador)) {
+        ;(e as any).setPlayerPos(this.player.x, this.player.y)
+      }
     })
     // Ghost trail no dash
     if (this.player.raya.getIsDashing()) {
