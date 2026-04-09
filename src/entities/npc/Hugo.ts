@@ -10,7 +10,7 @@ export class Hugo extends Enemy {
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y, KEYS.HUGO, 999, 55)
-    this.setScale(2)
+    this.setScale(1.6)
     this.patrolLeft  = x - 180
     this.patrolRight = x + 180
     this.setVelocityX(this.speed)
