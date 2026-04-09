@@ -83,13 +83,12 @@ export const LEVEL_0_2: LevelData = {
   spawnX: 64, spawnY: 350, exitX: 1984, exitY: 370,
   checkpointX: 1024, checkpointY: 380,
   enemies: [
-    { type: 'hugo',   x: 400,  y: 390 },   // zelador (Hugo patrulha a entrada)
-    { type: 'gato',   x: 620,  y: 390 },
-    { type: 'hannah', x: 900,  y: 390 },   // porteira (Hannah de plantão)
-    { type: 'rato',   x: 1100, y: 390 },
-    { type: 'gato',   x: 1350, y: 390 },
-    { type: 'hugo',   x: 1600, y: 390 },   // zelador (Hugo novamente, mais fundo)
-    { type: 'hannah', x: 1800, y: 390 },   // Hannah próxima ao portão
+    { type: 'gato',    x: 400,  y: 390 },  // gato sozinho — zona de ensino do pounce
+    { type: 'zelador', x: 700,  y: 390 },  // zelador — patrulha central
+    { type: 'gato',    x: 1000, y: 390 },  // segundo gato após aprender
+    { type: 'morador', x: 1200, y: 390 },  // morador tranquilo
+    { type: 'zelador', x: 1500, y: 390 },  // zelador mais fundo
+    { type: 'gato',    x: 1750, y: 390 },  // gato próximo do portão
   ],
   items: [
     { type: 'bone',    x: 160,  y: 380 },

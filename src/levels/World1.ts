@@ -20,10 +20,13 @@ export const LEVEL_1_1: LevelData = {
   spawnX: 64, spawnY: 300, exitX: 2496, exitY: 370,
   checkpointX: 1280, checkpointY: 380,
   enemies: [
-    { type: 'gato',  x: 320,  y: 390 }, { type: 'pombo', x: 640,  y: 200 },
-    { type: 'gato',  x: 960,  y: 390 }, { type: 'rato',  x: 1280, y: 390 },
-    { type: 'pombo', x: 1600, y: 180 }, { type: 'dono',  x: 1920, y: 390 },
-    { type: 'gato',  x: 2200, y: 390 },
+    { type: 'rato',    x: 320,  y: 390 },  // rato sozinho — zona de ensino do dash
+    { type: 'morador', x: 600,  y: 390 },  // morador tranquilo
+    { type: 'rato',    x: 900,  y: 390 },  // segundo rato
+    { type: 'morador', x: 1200, y: 390 },  // morador
+    { type: 'rato',    x: 1500, y: 390 },  // rato + morador combinados
+    { type: 'dono',    x: 1900, y: 390 },  // dono nervoso no final
+    { type: 'rato',    x: 2200, y: 390 },
   ],
   items: [
     { type: 'bone', x: 160, y: 380 }, { type: 'bone', x: 352, y: 380 },
@@ -68,10 +71,13 @@ export const LEVEL_1_2: LevelData = {
   spawnX: 64, spawnY: 300, exitX: 2496, exitY: 370,
   checkpointX: 1200, checkpointY: 380,
   enemies: [
-    { type: 'gato',  x: 400,  y: 390 }, { type: 'rato',  x: 700,  y: 390 },
-    { type: 'pombo', x: 900,  y: 150 }, { type: 'gato',  x: 1100, y: 390 },
-    { type: 'dono',  x: 1400, y: 390 }, { type: 'pombo', x: 1700, y: 180 },
-    { type: 'rato',  x: 2000, y: 390 }, { type: 'gato',  x: 2300, y: 390 },
+    { type: 'pombo',   x: 400,  y: 160 },  // pombo sozinho — zona de ensino do swoop
+    { type: 'morador', x: 700,  y: 390 },
+    { type: 'pombo',   x: 1000, y: 140 },  // segundo pombo
+    { type: 'rato',    x: 1300, y: 390 },  // rato + pombo simultaneamente
+    { type: 'pombo',   x: 1600, y: 150 },
+    { type: 'dono',    x: 1900, y: 390 },
+    { type: 'gato',    x: 2200, y: 390 },
   ],
   items: [
     { type: 'bone', x: 200, y: 380 }, { type: 'bone', x: 500, y: 380 },
@@ -115,11 +121,10 @@ export const LEVEL_1_3: LevelData = {
   spawnX: 64, spawnY: 300, exitX: 2496, exitY: 370,
   checkpointX: 1150, checkpointY: 380,
   enemies: [
-    { type: 'rato',  x: 300,  y: 390 }, { type: 'gato',  x: 600,  y: 390 },
-    { type: 'rato',  x: 800,  y: 390 }, { type: 'pombo', x: 1000, y: 120 },
-    { type: 'dono',  x: 1200, y: 390 }, { type: 'rato',  x: 1500, y: 390 },
-    { type: 'gato',  x: 1700, y: 390 }, { type: 'pombo', x: 1900, y: 150 },
-    { type: 'dono',  x: 2200, y: 390 },
+    { type: 'rato',    x: 300,  y: 390 }, { type: 'morador', x: 600,  y: 390 },
+    { type: 'rato',    x: 900,  y: 390 }, { type: 'pombo',   x: 1100, y: 120 },
+    { type: 'dono',    x: 1400, y: 390 }, { type: 'rato',    x: 1700, y: 390 },
+    { type: 'gato',    x: 2000, y: 390 }, { type: 'morador', x: 2100, y: 390 },
   ],
   items: [
     { type: 'bone', x: 160, y: 380 }, { type: 'petisco', x: 400, y: 380 },
