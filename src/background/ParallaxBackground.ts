@@ -7,12 +7,13 @@ interface LayerConfig {
   speed: number
   y: number
   height: number
+  alpha?: number
 }
 
 const THEME_LAYERS: Record<BackgroundTheme, LayerConfig[]> = {
   rua: [
     { key: KEYS.BG_RUA_1,     speed: 0.05, y: 0, height: 450 },
-    { key: KEYS.BG_RUA_2,     speed: 0.2,  y: 0, height: 450 },
+    { key: KEYS.BG_RUA_2,     speed: 0.2,  y: 0, height: 450, alpha: 0.7 },
     { key: KEYS.BG_RUA_3,     speed: 0.5,  y: 0, height: 450 },
   ],
   praca: [
@@ -53,6 +54,9 @@ export class ParallaxBackground {
       const sprite = scene.add.tileSprite(0, cfg.y, GAME_WIDTH, cfg.height, cfg.key)
       sprite.setOrigin(0, 0)
       sprite.setDepth(depth)
+      if (cfg.alpha !== undefined) {
+        sprite.setAlpha(cfg.alpha)
+      }
       this.layers.push({ sprite, speed: cfg.speed })
     })
   }
