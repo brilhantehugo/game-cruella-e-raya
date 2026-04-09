@@ -125,9 +125,9 @@ export abstract class HumanEnemy extends Enemy {
 
   private _doChase(body: Phaser.Physics.Arcade.Body): void {
     this.direction = this._playerX > this.x ? 1 : -1
-    this.setVelocityX(this.direction * this._config.chaseSpeed)
     if (body.blocked.left)  this.direction = 1
     if (body.blocked.right) this.direction = -1
+    this.setVelocityX(this.direction * this._config.chaseSpeed)
   }
 
   private _doSearch(body: Phaser.Physics.Arcade.Body): void {
@@ -185,13 +185,7 @@ export abstract class HumanEnemy extends Enemy {
     this.scene.tweens.add({
       targets: this._detectIcon,
       y: this._detectIcon.y - 6,
-      duration: 200, yoyo: true, repeat: 1,
-      onComplete: () => {
-        if (this._detectIcon?.active) {
-          this._detectIcon.destroy()
-          this._detectIcon = null
-        }
-      },
+      duration: 200, yoyo: true, repeat: -1,
     })
   }
 
