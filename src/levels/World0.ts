@@ -57,7 +57,7 @@ export const LEVEL_0_1: LevelData = {
     { type: 'cadeira', x: 180,  y: G, blocking: true },
     { type: 'mesa',    x: 380,  y: G, blocking: true },
     { type: 'vaso',    x: 580,  y: G, blocking: true },
-    { type: 'estante', x: 800,  y: G, blocking: true },
+    { type: 'balcao',  x: 800,  y: G, blocking: true },
     // Cozinha — balcão, fogão, geladeira
     { type: 'balcao',    x: 1080, y: G, blocking: true },
     { type: 'fogao',     x: 1280, y: G, blocking: true },
