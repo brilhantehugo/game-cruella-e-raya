@@ -62,7 +62,7 @@ export const LEVEL_0_1: LevelData = {
     { x: 1760, y: 80 },
     { x: 2700, y: 80 },
   ],
-  nextLevel: '0-boss',
+  nextLevel: '0-2',
   intro: {
     complexity: 1,
     dialogue: [
@@ -135,7 +135,7 @@ export const LEVEL_0_2: LevelData = {
     { x: 1760, y: 64 },
     { x: 2650, y: 64 },
   ],
-  nextLevel: '1-1',
+  nextLevel: '0-boss',
   intro: {
     complexity: 2,
     dialogue: [
@@ -190,7 +190,7 @@ export const LEVEL_0_BOSS: LevelData = {
   spawnX: 64, spawnY: 300, exitX: 1856, exitY: 370,
   checkpointX: 80, checkpointY: 300,
   enemies: [], items: [], goldenBones: [],
-  nextLevel: '0-2', isBossLevel: true,
+  nextLevel: '1-1', isBossLevel: true,
   intro: {
     complexity: 3,
     dialogue: [

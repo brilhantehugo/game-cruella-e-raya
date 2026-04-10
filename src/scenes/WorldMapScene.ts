@@ -15,8 +15,9 @@ interface MapNode {
 // Definição dos nós do mapa em ordem de mundo
 const MAP_NODES: MapNode[] = [
   // World 0
-  { levelId: '0-1',    label: 'Sala',      world: 'Mundo 0 — Apartamento', x: 80,  y: 0 },
-  { levelId: '0-boss', label: 'Wall-E', world: 'Mundo 0 — Apartamento', x: 200, y: 0 },
+  { levelId: '0-1',    label: 'Sala',        world: 'Mundo 0 — Apartamento', x: 80,  y: 0 },
+  { levelId: '0-2',    label: 'Estacion.',   world: 'Mundo 0 — Apartamento', x: 200, y: 0 },
+  { levelId: '0-boss', label: 'Wall-E',      world: 'Mundo 0 — Apartamento', x: 320, y: 0 },
   // World 1
   { levelId: '1-1',    label: 'Rua',       world: 'Mundo 1 — Cidade',       x: 80,  y: 0 },
   { levelId: '1-2',    label: 'Praça',     world: 'Mundo 1 — Cidade',       x: 200, y: 0 },
