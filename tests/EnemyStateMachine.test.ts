@@ -3,6 +3,7 @@ import {
   computeNextHumanState,
   onBarkHeardNextState,
   isInCone,
+  EnemyStateMachine,
   type HumanState,
   type HumanConfig,
 } from '../src/entities/enemies/EnemyStateMachine'
@@ -125,5 +126,21 @@ describe('isInCone', () => {
 
   it('player dentro do range mas fora do ângulo → false', () => {
     expect(isInCone(0, 0, true, 100, 100, 180, 20)).toBe(false)
+  })
+})
+
+describe('EnemyStateMachine class', () => {
+  it('timeInState() retorna ~0 imediatamente após construção', () => {
+    let fakeNow = 1500  // simula scene.time.now > 0 ao criar
+    const sm = new EnemyStateMachine(() => fakeNow)
+    expect(sm.timeInState()).toBeLessThan(5)
+  })
+
+  it('timeInState() acumula tempo após transição', () => {
+    let fakeNow = 1500
+    const sm = new EnemyStateMachine(() => fakeNow)
+    sm.transition('DETECT')
+    fakeNow = 1800
+    expect(sm.timeInState()).toBeCloseTo(300, -1)
   })
 })

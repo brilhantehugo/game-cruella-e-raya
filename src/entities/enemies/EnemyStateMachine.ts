@@ -107,6 +107,7 @@ export class EnemyStateMachine {
 
   constructor(getNow: () => number) {
     this._getNow = getNow
+    this._stateEnteredAt = this._getNow()
   }
 
   get state(): HumanState { return this._state }
