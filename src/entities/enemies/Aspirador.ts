@@ -13,6 +13,7 @@ export class Aspirador extends Enemy {
   private _playerX: number = 400
   private _playerY: number = 360
   private _throwTimer: number = 2500
+  private _bladeTimer: number = 5000
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y, KEYS.ASPIRADOR, 8, 70)
@@ -59,25 +60,32 @@ export class Aspirador extends Enemy {
       }
     }
 
-    // Lança projéteis de sujeira em direção ao jogador (independente do timer principal)
+    // Lança projétil de sujeira (arco alto) em todas as fases
     if (time > this._throwTimer) {
-      const count = this.phase === 3 ? 3 : this.phase === 2 ? 2 : 1
-      for (let i = 0; i < count; i++) {
-        this.scene.time.delayedCall(i * 250, () => {
-          if (this.active) this._throwDirt()
-        })
+      this._throwDirt()
+      this._throwTimer = time + (this.phase === 3 ? 2000 : 2500)
+    }
+
+    // Lança pá giratória (blade, tiro reto) nas fases 2 e 3
+    if (this.phase >= 2 && time > this._bladeTimer) {
+      if (this.phase === 3) {
+        // 2 blades em ângulos ligeiramente diferentes
+        this._throwBlade(0)
+        this.scene.time.delayedCall(200, () => { if (this.active) this._throwBlade(-12) })
+      } else {
+        this._throwBlade(0)
       }
-      this._throwTimer = time + (this.phase === 3 ? 1500 : this.phase === 2 ? 2000 : 2800)
+      this._bladeTimer = time + (this.phase === 3 ? 2500 : 3000)
     }
   }
 
   private _checkPhaseTransition(): void {
     const hpPct = this.hp / this.MAX_HP
-    if (hpPct <= 0.25 && this.phase < 3) {
+    if (hpPct <= 0.34 && this.phase < 3) {
       this.phase = 3
       this.speed = 160
       this.setTint(0xff4444)
-    } else if (hpPct <= 0.5 && this.phase < 2) {
+    } else if (hpPct <= 0.67 && this.phase < 2) {
       this.phase = 2
       this.speed = 120
       this.setTint(0xff8800)
@@ -94,6 +102,20 @@ export class Aspirador extends Enemy {
     const vx = (dx / dist) * speed
     const vy = Math.min(-80, (dy / dist) * speed - 180) // arco para cima
     this.emit('spawnProjectile', { x: this.x, y: this.y - 12, vx, vy })
+  }
+
+  /** Lança pá giratória em direção ao jogador (tiro reto + spin visual) */
+  private _throwBlade(angleOffsetDeg: number = 0): void {
+    if (!this.scene || !this.active) return
+    const dx = this._playerX - this.x
+    const dy = this._playerY - this.y
+    const dist = Math.sqrt(dx * dx + dy * dy) || 1
+    const speed = this.phase === 3 ? 280 : 220
+    const baseAngle = Math.atan2(dy, dx)
+    const angle = baseAngle + (angleOffsetDeg * Math.PI / 180)
+    const vx = Math.cos(angle) * speed
+    const vy = Math.sin(angle) * speed
+    this.emit('spawnBlade', { x: this.x, y: this.y - 12, vx, vy })
   }
 
   /** Visual vacuum pulse — expands circle ring */
