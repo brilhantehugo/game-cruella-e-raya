@@ -53,6 +53,7 @@ export const KEYS = {
   WORLD_MAP:      'WorldMapScene',
   // projéteis de boss
   DIRT_BALL: 'dirt_ball',
+  BLADE:     'blade',
   // decorações de cenário — estacionamento
   CARRO:     'carro',
   // decorações de cenário — rua

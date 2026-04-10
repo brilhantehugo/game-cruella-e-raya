@@ -515,6 +515,16 @@ export class BootScene extends Phaser.Scene {
     g.fillStyle(0x3a2010); g.fillCircle(8, 8, 2)
     gen(KEYS.DIRT_BALL, 12, 12)
 
+    // BLADE: pá giratória do Wall-E — cruz ciana 12×12
+    clr()
+    g.lineStyle(2.5, 0x22ccff, 1)
+    g.beginPath(); g.moveTo(2, 6); g.lineTo(10, 6); g.strokePath()   // linha horizontal
+    g.beginPath(); g.moveTo(6, 2); g.lineTo(6, 10);  g.strokePath()  // linha vertical
+    g.lineStyle(1, 0x88eeff, 0.7)
+    g.beginPath(); g.moveTo(3, 3); g.lineTo(9, 9);   g.strokePath()  // diagonal
+    g.beginPath(); g.moveTo(9, 3); g.lineTo(3, 9);   g.strokePath()  // diagonal
+    gen(KEYS.BLADE, 12, 12)
+
     // ── PARALLAX BACKGROUNDS ───────────────────────────────────────────────────
 
     // bg_rua_1: blue sky + clouds
