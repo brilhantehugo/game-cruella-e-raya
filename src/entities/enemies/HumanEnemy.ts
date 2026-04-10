@@ -36,6 +36,7 @@ export abstract class HumanEnemy extends Enemy {
     this._patrolLeft  = x - config.patrolRange
     this._patrolRight = x + config.patrolRange
     this.setScale(1.6)
+    this.setDepth(3)
     this.setVelocityX(this.speed)
   }
 
