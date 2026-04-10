@@ -104,6 +104,23 @@ export const KEYS = {
   BG_APTO_BOSS_1: 'bg_apto_boss_1',
   BG_APTO_BOSS_2: 'bg_apto_boss_2',
   BG_APTO_BOSS_3: 'bg_apto_boss_3',
+  // parallax — exterior do prédio
+  BG_EXT_1:       'bg_ext_1',
+  BG_EXT_2:       'bg_ext_2',
+  BG_EXT_3:       'bg_ext_3',
+  // parallax — pátio interior
+  BG_PATIO_1:     'bg_patio_1',
+  BG_PATIO_2:     'bg_patio_2',
+  BG_PATIO_3:     'bg_patio_3',
+  // parallax — telhado
+  BG_TELHADO_1:   'bg_telhado_1',
+  BG_TELHADO_2:   'bg_telhado_2',
+  BG_TELHADO_3:   'bg_telhado_3',
+  // projéteis do boss Drone
+  BOMB:  'bomb',
+  LASER: 'laser',
+  // boss Drone sprite
+  DRONE: 'drone',
   // áudio BGM
   BGM_MENU:    'bgm_menu',
   BGM_WORLD1:  'bgm_world1',
@@ -145,4 +162,8 @@ export const MEDAL_THRESHOLDS: Record<string, number> = {
   '1-2':    2750,  // 11 inimigos×50 + 8 ossos×10 + 4 golden×500 (100 cols)
   '1-3':    3000,  // 15 inimigos×50 + 9 ossos×10 + 4 golden×500 (110 cols)
   '1-boss': 1200,  // boss Seu Bigodes + minions estimados
+  '2-1':    1900,  // 7 inimigos×50 + 6 ossos×10 + 3 golden×500
+  '2-2':    2850,  // 11 inimigos×50 + 8 ossos×10 + 4 golden×500
+  '2-3':    3150,  // 14 inimigos×50 + 9 ossos×10 + 4 golden×500
+  '2-boss':  500,  // boss Drone apenas
 }

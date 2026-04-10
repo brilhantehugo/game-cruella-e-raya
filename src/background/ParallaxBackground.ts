@@ -41,6 +41,21 @@ const THEME_LAYERS: Record<BackgroundTheme, LayerConfig[]> = {
     { key: KEYS.BG_APTO_BOSS_2, speed: 0.1,  y: 0, height: 450 },
     { key: KEYS.BG_APTO_BOSS_3, speed: 0.35, y: 0, height: 450 },
   ],
+  exterior: [
+    { key: KEYS.BG_EXT_1,       speed: 0.05, y: 0, height: 450 },
+    { key: KEYS.BG_EXT_2,       speed: 0.2,  y: 0, height: 450 },
+    { key: KEYS.BG_EXT_3,       speed: 0.5,  y: 0, height: 450 },
+  ],
+  patio: [
+    { key: KEYS.BG_PATIO_1,     speed: 0.05, y: 0, height: 450 },
+    { key: KEYS.BG_PATIO_2,     speed: 0.2,  y: 0, height: 450 },
+    { key: KEYS.BG_PATIO_3,     speed: 0.5,  y: 0, height: 450 },
+  ],
+  telhado: [
+    { key: KEYS.BG_TELHADO_1,   speed: 0.05, y: 0, height: 450 },
+    { key: KEYS.BG_TELHADO_2,   speed: 0.2,  y: 0, height: 450 },
+    { key: KEYS.BG_TELHADO_3,   speed: 0.5,  y: 0, height: 450 },
+  ],
 }
 
 export class ParallaxBackground {

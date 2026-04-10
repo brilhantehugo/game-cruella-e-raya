@@ -12,6 +12,7 @@ export interface EnemySpawn { type: EnemyType; x: number; y: number }
 export interface ItemSpawn  { type: ItemType;  x: number; y: number }
 
 export type BackgroundTheme = 'rua' | 'praca' | 'mercado' | 'boss' | 'apartamento' | 'apto_boss'
+  | 'exterior' | 'patio' | 'telhado'
 
 export interface LevelData {
   id: string
