@@ -525,6 +525,21 @@ export class BootScene extends Phaser.Scene {
     g.beginPath(); g.moveTo(9, 3); g.lineTo(3, 9);   g.strokePath()  // diagonal
     gen(KEYS.BLADE, 12, 12)
 
+    // BOMB: projétil do Drone — círculo preto com faísca laranja 10×10
+    clr()
+    g.fillStyle(0x111111); g.fillCircle(5, 5, 5)
+    g.lineStyle(1, 0x333333); g.strokeCircle(5, 5, 5)
+    g.fillStyle(0xff8800); g.fillTriangle(7, 0, 10, 4, 5, 2)
+    g.fillStyle(0xffcc00); g.fillTriangle(8, 1, 10, 3, 7, 1)
+    gen(KEYS.BOMB, 10, 10)
+
+    // LASER: projétil do Drone — linha vermelha fina 16×4
+    clr()
+    g.fillStyle(0xff0000); g.fillRect(0, 1, 16, 2)
+    g.fillStyle(0xff6666); g.fillRect(0, 1, 4, 2)
+    g.fillStyle(0xffaaaa); g.fillRect(0, 1, 2, 2)
+    gen(KEYS.LASER, 16, 4)
+
     // ── PARALLAX BACKGROUNDS ───────────────────────────────────────────────────
 
     // bg_rua_1: blue sky + clouds
@@ -792,6 +807,135 @@ export class BootScene extends Phaser.Scene {
     g.fillStyle(0xb8b0a0); g.fillRect(0, 350, 200, 4)         // rodapé
     gen(KEYS.BG_APTO_BOSS_3, 200, 450)
 
+    // ── BACKGROUNDS — EXTERIOR DO PRÉDIO ──────────────────────────────────────
+    // BG_EXT_1: céu noturno azul escuro com estrelas e lua
+    clr()
+    g.fillStyle(0x0a0a2a); g.fillRect(0, 0, 480, 450)
+    g.fillStyle(0xffffff)
+    g.fillCircle(60,  40, 1);  g.fillCircle(120, 20, 1); g.fillCircle(200, 50, 1)
+    g.fillCircle(300, 30, 1);  g.fillCircle(380, 60, 1); g.fillCircle(440, 25, 1)
+    g.fillCircle(80,  80, 1);  g.fillCircle(240, 10, 1); g.fillCircle(350, 80, 1)
+    g.fillStyle(0xffffcc); g.fillCircle(420, 45, 14)
+    g.fillStyle(0x0a0a2a); g.fillCircle(430, 38, 11)
+    gen(KEYS.BG_EXT_1, 480, 450)
+
+    // BG_EXT_2: fachada do prédio com janelas iluminadas
+    clr()
+    g.fillStyle(0x1a1a3a); g.fillRect(0, 0, 480, 450)
+    g.fillStyle(0x2a2a4a)
+    g.fillRect(40, 100, 80, 350); g.fillRect(180, 60, 120, 390); g.fillRect(360, 120, 100, 330)
+    g.fillStyle(0xffee88)
+    g.fillRect(55, 115, 14, 18);  g.fillRect(80, 115, 14, 18)
+    g.fillRect(55, 157, 14, 18);  g.fillRect(80, 157, 14, 18)
+    g.fillRect(55, 199, 14, 18);  g.fillRect(80, 199, 14, 18)
+    g.fillRect(195, 75, 14, 18);  g.fillRect(235, 75, 14, 18); g.fillRect(270, 75, 14, 18)
+    g.fillRect(195, 117, 14, 18); g.fillRect(270, 117, 14, 18)
+    g.fillRect(235, 159, 14, 18); g.fillRect(270, 159, 14, 18)
+    g.fillRect(375, 130, 14, 18); g.fillRect(420, 130, 14, 18)
+    g.fillRect(420, 172, 14, 18)
+    g.fillStyle(0x555577); g.fillRect(0, 380, 480, 70)
+    gen(KEYS.BG_EXT_2, 480, 450)
+
+    // BG_EXT_3: primeiro plano — arbustos e grades
+    clr()
+    g.fillStyle(0x1a3a1a); g.fillEllipse(60,  400, 80, 40); g.fillEllipse(160, 405, 60, 35)
+    g.fillStyle(0x2a4a2a); g.fillEllipse(220, 398, 70, 38); g.fillEllipse(340, 403, 90, 42)
+    g.fillStyle(0x1a4a1a); g.fillEllipse(420, 400, 60, 36)
+    g.fillStyle(0x555566)
+    for (let gx = 270; gx < 330; gx += 10) { g.fillRect(gx, 360, 3, 60) }
+    g.fillRect(268, 358, 64, 4); g.fillRect(268, 418, 64, 4)
+    gen(KEYS.BG_EXT_3, 480, 450)
+
+    // ── BACKGROUNDS — PÁTIO INTERIOR ─────────────────────────────────────────
+    // BG_PATIO_1: muro de tijolo escuro ao fundo
+    clr()
+    g.fillStyle(0x1a0f08); g.fillRect(0, 0, 480, 450)
+    g.fillStyle(0x2a1810); g.fillRect(0, 50, 480, 400)
+    g.fillStyle(0x1a1008)
+    for (let row = 0; row < 12; row++) {
+      const offset = (row % 2) * 30
+      for (let col = -1; col < 9; col++) {
+        g.fillRect(col * 60 + offset, 50 + row * 32, 58, 30)
+      }
+    }
+    g.fillStyle(0x0a0806)
+    for (let row = 0; row <= 12; row++) { g.fillRect(0, 50 + row * 32, 480, 2) }
+    gen(KEYS.BG_PATIO_1, 480, 450)
+
+    // BG_PATIO_2: varal de roupa
+    clr()
+    g.fillStyle(0x2a1810); g.fillRect(0, 0, 480, 450)
+    g.lineStyle(2, 0x6a4a30); g.lineBetween(0, 180, 480, 200)
+    g.lineStyle(2, 0x6a4a30); g.lineBetween(0, 280, 480, 260)
+    g.fillStyle(0xff6644); g.fillRect(40,  180, 22, 34)
+    g.fillStyle(0x4488cc); g.fillRect(110, 180, 18, 40)
+    g.fillStyle(0xffee66); g.fillRect(180, 180, 22, 34)
+    g.fillStyle(0x44cc88); g.fillRect(260, 180, 18, 40)
+    g.fillStyle(0xee88aa); g.fillRect(340, 180, 22, 34)
+    g.fillStyle(0x4488cc); g.fillRect(400, 180, 18, 40)
+    g.fillStyle(0x888888)
+    g.fillRect(49, 176, 2, 6); g.fillRect(119, 176, 2, 6); g.fillRect(189, 176, 2, 6)
+    g.fillRect(269, 176, 2, 6); g.fillRect(349, 176, 2, 6); g.fillRect(409, 176, 2, 6)
+    gen(KEYS.BG_PATIO_2, 480, 450)
+
+    // BG_PATIO_3: chão de paralelepípedo cinza
+    clr()
+    g.fillStyle(0x2a2a2a); g.fillRect(0, 360, 480, 90)
+    g.fillStyle(0x383838)
+    for (let row = 0; row < 3; row++) {
+      const offset = (row % 2) * 20
+      for (let col = -1; col < 13; col++) {
+        g.fillRect(col * 40 + offset, 360 + row * 28, 38, 26)
+      }
+    }
+    g.fillStyle(0x1a1a1a)
+    for (let row = 0; row <= 3; row++) { g.fillRect(0, 360 + row * 28, 480, 2) }
+    gen(KEYS.BG_PATIO_3, 480, 450)
+
+    // ── BACKGROUNDS — TELHADO ────────────────────────────────────────────────
+    // BG_TELHADO_1: céu noturno com estrelas e nuvens
+    clr()
+    g.fillStyle(0x05050f); g.fillRect(0, 0, 480, 450)
+    g.fillStyle(0xffffff)
+    g.fillCircle(24,  18, 1); g.fillCircle(73,  44, 1); g.fillCircle(145, 12, 1)
+    g.fillCircle(198, 55, 1); g.fillCircle(267, 28, 1); g.fillCircle(319, 67, 1)
+    g.fillCircle(374, 15, 1); g.fillCircle(421, 48, 1); g.fillCircle(456, 31, 1)
+    g.fillCircle(48,  90, 1); g.fillCircle(112, 78, 1); g.fillCircle(231, 95, 1)
+    g.fillCircle(308, 83, 1); g.fillCircle(389, 102, 1); g.fillCircle(464, 88, 1)
+    g.fillCircle(88, 130, 2); g.fillCircle(240, 60, 2); g.fillCircle(410, 110, 2)
+    g.fillStyle(0x1a1a30); g.fillEllipse(80, 120, 140, 50)
+    g.fillStyle(0x141428); g.fillEllipse(320, 90, 160, 60)
+    gen(KEYS.BG_TELHADO_1, 480, 450)
+
+    // BG_TELHADO_2: antenas e caixas d'água
+    clr()
+    g.fillStyle(0x0a0a1a); g.fillRect(0, 0, 480, 450)
+    g.fillStyle(0x333344)
+    g.fillRect(60,  200, 4, 160); g.fillRect(55, 196, 14, 4)
+    g.fillRect(58,  200, 2, 60);  g.fillRect(64, 200, 2, 60)
+    g.fillRect(250, 210, 4, 150); g.fillRect(245, 206, 14, 4)
+    g.fillRect(400, 190, 4, 170); g.fillRect(395, 186, 14, 4)
+    g.fillStyle(0x2a2a3a)
+    g.fillRect(120, 270, 50, 40); g.fillRect(115, 266, 60, 6)
+    g.fillRect(122, 310, 8, 20);  g.fillRect(136, 310, 8, 20)
+    g.fillRect(320, 260, 60, 45); g.fillRect(315, 256, 70, 6)
+    g.fillRect(326, 305, 10, 25); g.fillRect(354, 305, 10, 25)
+    gen(KEYS.BG_TELHADO_2, 480, 450)
+
+    // BG_TELHADO_3: superfície do telhado com telhas
+    clr()
+    g.fillStyle(0x1a1a24); g.fillRect(0, 350, 480, 100)
+    g.fillStyle(0x2a2a36)
+    for (let row = 0; row < 4; row++) {
+      const offset = (row % 2) * 24
+      for (let col = -1; col < 11; col++) {
+        g.fillRect(col * 48 + offset, 350 + row * 24, 46, 22)
+      }
+    }
+    g.fillStyle(0x0f0f1a)
+    for (let row = 0; row <= 4; row++) { g.fillRect(0, 350 + row * 24, 480, 2) }
+    gen(KEYS.BG_TELHADO_3, 480, 450)
+
     // bg_boss_3: metal fence + spikes
     clr()
     g.fillStyle(0x3a3a4a)
@@ -857,6 +1001,16 @@ export class BootScene extends Phaser.Scene {
     g.lineStyle(1, 0xaaaaaa, 0.6)
     g.strokeEllipse(AW / 2, AH / 2 - 1, AW - 2, AH - 6)
     gen(KEYS.ASPIRADOR, AW, AH)
+
+    // DRONE: robô voador — corpo cinza escuro com câmera ciana 32×18
+    clr()
+    g.fillStyle(0x333344); g.fillRect(2, 6, 28, 10)
+    g.fillStyle(0x444455); g.fillRect(4, 7, 24, 8)
+    g.fillStyle(0x22ccff); g.fillRect(13, 8, 6, 6)
+    g.fillStyle(0x222233); g.fillRect(0, 4, 6, 4)
+    g.fillStyle(0x222233); g.fillRect(26, 4, 6, 4)
+    g.lineStyle(1, 0x5555aa); g.strokeRect(2, 6, 28, 10)
+    gen(KEYS.DRONE, 32, 18)
 
     // ── NPCs — HUGO (homem, camisa azul) ─────────────────────────────────────
     clr()
