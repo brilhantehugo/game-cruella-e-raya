@@ -109,7 +109,6 @@ export class Aspirador extends Enemy {
     if (!this.scene || !this.active) return
     const dx = this._playerX - this.x
     const dy = this._playerY - this.y
-    const dist = Math.sqrt(dx * dx + dy * dy) || 1
     const speed = this.phase === 3 ? 280 : 220
     const baseAngle = Math.atan2(dy, dx)
     const angle = baseAngle + (angleOffsetDeg * Math.PI / 180)
