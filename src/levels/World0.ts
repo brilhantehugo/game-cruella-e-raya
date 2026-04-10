@@ -131,29 +131,50 @@ export const LEVEL_0_2: LevelData = {
   ],
 }
 
-// ── 0-boss: Cozinha — batalha contra o Aspirador ─────────────────────────────
+// ── 0-boss: Cozinha — batalha contra o Wall-E ────────────────────────────────
 export const LEVEL_0_BOSS: LevelData = {
-  id: '0-boss', name: 'Cozinha — O Aspirador Ataca!', bgColor: 0xf0f0e8,
-  backgroundTheme: 'apto_boss' as const, timeLimit: 0, tileWidthCols: 26,
-  tiles: [
-    Array(26).fill(0), Array(26).fill(0), Array(26).fill(0),
-    // Prateleiras da cozinha para saltar
-    [...Array(4).fill(0), ...Array(4).fill(2), ...Array(6).fill(0),
-     ...Array(4).fill(2), ...Array(8).fill(0)],
-    Array(26).fill(0), Array(26).fill(0), Array(26).fill(0),
-    // Central platform (bancada da cozinha)
-    [...Array(8).fill(0), ...Array(10).fill(2), ...Array(8).fill(0)],
-    Array(26).fill(0), Array(26).fill(0), Array(26).fill(0),
-    Array(26).fill(0), Array(26).fill(0), Array(26).fill(1),
-  ],
-  spawnX: 64, spawnY: 300, exitX: 768, exitY: 370,
+  id: '0-boss', name: 'Cozinha — Wall-E Ataca!', bgColor: 0xf0f0e8,
+  backgroundTheme: 'apto_boss' as const, timeLimit: 0, tileWidthCols: 60,
+  tiles: (() => {
+    const BC = 60
+    const be = (): number[] => Array(BC).fill(0)
+    const bg = (): number[] => Array(BC).fill(1)
+    const bpm = (...ranges: [number, number][]): number[] => {
+      const r = be()
+      for (const [x, len] of ranges) for (let i = x; i < x + len; i++) r[i] = 2
+      return r
+    }
+    return [
+      be(), be(), be(),
+      bpm([4,4], [18,4], [33,4], [48,4]),  // row 3: 4 prateleiras altas
+      be(),
+      bpm([11,4], [25,4], [40,4], [54,4]), // row 5: 4 prateleiras médias (offset das altas)
+      be(), be(), be(), be(),
+      bpm([7,6], [32,6]),                   // row 10: 2 bancadas longas de cozinha
+      be(), be(), bg(),
+    ]
+  })(),
+  spawnX: 64, spawnY: 300, exitX: 1856, exitY: 370,
   checkpointX: 80, checkpointY: 300,
   enemies: [], items: [], goldenBones: [],
   nextLevel: '0-2', isBossLevel: true,
+  intro: {
+    complexity: 3,
+    dialogue: [
+      'Cuidado — esse robô de limpeza virou selvagem!',
+      'Wall-E?! Eu preferia um Roomba com melhor gosto.',
+    ],
+  },
   decorations: [
-    { type: 'mesa',   x: 200, y: G, blocking: true },   // bancada da cozinha
-    { type: 'cadeira', x: 430, y: G, blocking: true },  // cadeira da cozinha
-    { type: 'balcao',  x: 680, y: G, blocking: true },  // balcão de cozinha
+    { type: 'balcao',    x: 150,  y: G, blocking: true },
+    { type: 'mesa',      x: 400,  y: G, blocking: true },
+    { type: 'fogao',     x: 650,  y: G, blocking: true },
+    { type: 'geladeira', x: 900,  y: G, blocking: true },
+    { type: 'balcao',    x: 1100, y: G, blocking: true },
+    { type: 'mesa',      x: 1350, y: G, blocking: true },
+    { type: 'fogao',     x: 1550, y: G, blocking: true },
+    { type: 'geladeira', x: 1750, y: G, blocking: true },
+    { type: 'balcao',    x: 1900, y: G, blocking: true },
   ],
 }
 
