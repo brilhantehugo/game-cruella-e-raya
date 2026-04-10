@@ -359,6 +359,18 @@ export class GameScene extends Phaser.Scene {
           this.time.delayedCall(3000, () => { if (proj.active) proj.destroy() })
         })
 
+        boss.on('spawnBlade', (data: { x: number; y: number; vx: number; vy: number }) => {
+          if (!this._bossProjectileGroup || !this.scene.isActive(KEYS.GAME)) return
+          const blade = this.physics.add.image(data.x, data.y, KEYS.BLADE)
+          blade.setDepth(5)
+          const body = blade.body as Phaser.Physics.Arcade.Body
+          body.setVelocity(data.vx, data.vy)
+          body.setGravityY(-300)   // cancela gravidade para tiro reto
+          body.angularVelocity = 480
+          this._bossProjectileGroup.add(blade)
+          this.time.delayedCall(4000, () => { if (blade.active) blade.destroy() })
+        })
+
         boss.on('died', (b: Enemy) => {
           gameState.addScore(500)
           gameState.sessionEnemiesKilled++
