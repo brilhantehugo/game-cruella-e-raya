@@ -61,9 +61,9 @@ export class UIScene extends Phaser.Scene {
     }).setOrigin(1, 0).setScrollFactor(0).setDepth(5).setAlpha(0.7)
 
     // Nome da fase — aparece no topo com fade-in e some para transparência
-    this._levelNameText = this.add.text(GAME_WIDTH / 2, 8, '', {
-      fontSize: '11px', color: '#ffffff', fontStyle: 'bold',
-      stroke: '#000000', strokeThickness: 2,
+    this._levelNameText = this.add.text(GAME_WIDTH / 2, 30, '', {
+      fontSize: '10px', color: '#aaaaaa',
+      stroke: '#000000', strokeThickness: 1,
     }).setOrigin(0.5, 0).setScrollFactor(0).setDepth(6).setAlpha(0)
 
     // Escuta evento de início de timer emitido por GameScene
