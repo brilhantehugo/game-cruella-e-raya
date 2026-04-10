@@ -52,7 +52,7 @@ const CHARACTERS: CharCard[] = [
   },
   // ── Chefes (batalhas especiais) ───────────────────────────────────────
   {
-    key: KEYS.ASPIRADOR, name: 'Aspirador', category: 'chefe', phases: 'Fase 0-boss',
+    key: KEYS.ASPIRADOR, name: 'Wall-E', category: 'chefe', phases: 'Fase 0-boss',
     desc: '8 HP · 3 fases: patrulha,\ncharge laranja, vermelho veloz.',
     weakness: 'Pisão ou Dash (máx 2/golpe)', tip: '💡 Suba nas plataformas!', col: 0x22ccff,
   },
