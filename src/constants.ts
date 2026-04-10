@@ -141,8 +141,8 @@ export const MEDAL_THRESHOLDS: Record<string, number> = {
   '0-1':    2600,  // 7 inimigos×50 + 10 ossos×10 + 4 golden×500 (expandido)
   '0-2':    2350,  // 10 inimigos×50 + 8 ossos×10 + 4 golden×500 (expandido)
   '0-boss':  500,  // boss Wall-E apenas
-  '1-1':    1950,  // 7 inimigos×50 + 5 ossos×10 + 3 golden×500
-  '1-2':    1950,  // 8 inimigos×50 + 5 ossos×10 + 3 golden×500
-  '1-3':    2050,  // 9 inimigos×50 + 5 ossos×10 + 3 golden×500
+  '1-1':    2200,  // 10 inimigos×50 + 7 ossos×10 + 3 golden×500 (densificado)
+  '1-2':    2750,  // 11 inimigos×50 + 8 ossos×10 + 4 golden×500 (100 cols)
+  '1-3':    3000,  // 15 inimigos×50 + 9 ossos×10 + 4 golden×500 (110 cols)
   '1-boss': 1200,  // boss Seu Bigodes + minions estimados
 }
