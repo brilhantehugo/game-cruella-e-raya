@@ -138,7 +138,8 @@ export const SCORING = {
  * Usado por ProfileManager.calcMedal() para determinar medalha de ouro/prata.
  */
 export const MEDAL_THRESHOLDS: Record<string, number> = {
-  '0-1':    1690,  // 3 inimigos×50 + 4 ossos×10 + 3 golden×500
+  '0-1':    2600,  // 7 inimigos×50 + 10 ossos×10 + 4 golden×500 (expandido)
+  '0-2':    2350,  // 10 inimigos×50 + 8 ossos×10 + 4 golden×500 (expandido)
   '0-boss':  500,  // boss Wall-E apenas
   '1-1':    1950,  // 7 inimigos×50 + 5 ossos×10 + 3 golden×500
   '1-2':    1950,  // 8 inimigos×50 + 5 ossos×10 + 3 golden×500
