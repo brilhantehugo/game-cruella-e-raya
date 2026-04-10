@@ -365,8 +365,8 @@ export class GameScene extends Phaser.Scene {
           blade.setDepth(5)
           const body = blade.body as Phaser.Physics.Arcade.Body
           body.setVelocity(data.vx, data.vy)
-          body.setGravityY(-300)   // cancela gravidade para tiro reto
-          body.angularVelocity = 480
+          body.setGravityY(-800)   // cancela gravidade do mundo (800 px/s²) para tiro reto
+          blade.setAngularVelocity(480)
           this._bossProjectileGroup.add(blade)
           this.time.delayedCall(4000, () => { if (blade.active) blade.destroy() })
         })
