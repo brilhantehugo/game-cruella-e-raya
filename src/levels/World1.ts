@@ -56,7 +56,7 @@ export const LEVEL_1_1: LevelData = {
     { type: 'bone', x: 1400, y: 380 }, { type: 'laco', x: 1600, y: 380 },
     { type: 'bone', x: 1800, y: 380 }, { type: 'bone', x: 2100, y: 380 },
     { type: 'pizza',   x: 2300, y: 380 },
-    { type: 'bone',    x: 1600, y: 380 },
+    { type: 'bone',    x: 1650, y: 380 },
     { type: 'petisco', x: 2050, y: 380 },
     { type: 'bone',    x: 2350, y: 380 },
   ],
