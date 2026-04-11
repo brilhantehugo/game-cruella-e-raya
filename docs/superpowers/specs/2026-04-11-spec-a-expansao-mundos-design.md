@@ -72,7 +72,13 @@ Cadeia: `2-1 → 2-2 → 2-3 → 2-4 → 2-5 → 2-boss → null`
 
 ### Compatibilidade de perfis
 
-Adicionar constante `SAVE_VERSION = 2` ao `ProfileManager`. Na função de carregamento, verificar a versão do perfil guardado — se `version < 2` ou ausente, apagar o perfil e recomeçar limpo. Mostrar mensagem ao utilizador: `"Actualização do jogo detectada — o teu progresso foi reposto."`.
+`SAVE_VERSION` é um conceito novo — não existe actualmente no `ProfileManager`. Adicionar:
+
+```typescript
+const SAVE_VERSION = 2  // versão 1 = legado (sem campo version)
+```
+
+Na função de carregamento, verificar o campo `version` do perfil guardado — se ausente ou `< 2`, apagar o perfil e recomeçar limpo. Mostrar mensagem ao utilizador: `"Actualização do jogo detectada — o teu progresso foi reposto."`. Novos perfis gravados incluem `version: SAVE_VERSION`.
 
 ---
 
@@ -97,7 +103,7 @@ miniBoss?: {
 1. Se `currentLevel.miniBoss` existe, criar zona de trigger invisível (Phaser Zone) em `triggerX`
 2. Quando o jogador entra na zona:
    - Spawn do `Aspirador` em `(spawnX, spawnY)`
-   - Colocar 2 sprites de grade (`GATE`) em `leftBarrierX` e `rightBarrierX` com physics estática
+   - Colocar 2 sprites de grade (`KEYS.EXIT_GATE`) em `leftBarrierX` e `rightBarrierX` com physics estática (staticGroup)
    - Emitir evento para UIScene mostrar barra de mini-boss
    - Trocar BGM para tema de boss
 3. `Aspirador` emite `died`:
@@ -106,9 +112,23 @@ miniBoss?: {
    - Restaurar BGM da fase
    - Atribuir 500 pontos ao jogador
 
+#### Valores concretos para 0-1 (Sala de Estar)
+
+A fase 0-1 tem 80 colunas (largura 2560px). O encontro ocorre a meio da fase:
+
+```typescript
+miniBoss: {
+  triggerX:      1280,   // col 40 — zona central da sala
+  spawnX:        1600,   // col 50 — Wall-E surge à frente do jogador
+  spawnY:        352,    // chão (row 11 × 32)
+  leftBarrierX:  1056,   // col 33 — bloqueia recuo
+  rightBarrierX: 1984,   // col 62 — bloqueia avanço
+}
+```
+
 #### Adição à UIScene
 
-Barra de mini-boss: posicionada no topo do ecrã, menor que a barra de boss principal (largura: 200px, altura: 12px). Mostra ícone do Wall-E à esquerda e barra vermelha. Oculta por padrão; visível apenas durante encontro mini-boss.
+Barra de mini-boss: posicionada no topo do ecrã, menor que a barra de boss principal (largura: 200px, altura: 12px). Mostra ícone do Wall-E (`KEYS.ASPIRADOR`) à esquerda e barra vermelha. Oculta por padrão; visível apenas durante encontro mini-boss.
 
 ---
 
@@ -286,7 +306,7 @@ Subsolo do prédio, rampas descendentes e ascendentes, caixotes de entrega como 
 | Decorações | 13 |
 | Medal threshold (Ouro) | 1900 |
 
-Subida pela fachada exterior do prédio saltando de varanda em varanda. Plataformas curtas e elevadas. Pombos atacam do ar constantemente. Moradores surgem das janelas. Fase mais vertical do Mundo 2.
+Subida pela fachada exterior do prédio saltando de varanda em varanda. Plataformas curtas e elevadas. Pombos atacam do ar constantemente. Moradores (`KEYS.MORADOR` — tipo já existente) surgem das janelas. Fase mais vertical do Mundo 2.
 
 ---
 
