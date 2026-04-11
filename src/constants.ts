@@ -158,18 +158,18 @@ export const SCORING = {
  */
 export const MEDAL_THRESHOLDS: Record<string, number> = {
   '0-1':    2600,  // 7 inimigos×50 + 10 ossos×10 + 4 golden×500 (expandido)
-  '0-2':     800,
-  '0-4':    1400,
-  '0-5':    1700,
+  '0-2':     800,  // Corredor    — 5 inimigos×50 + 8 ossos×10 = 330; ouro ≈ 800
+  '0-4':    1400,  // Est. N1     — 8 inimigos×50 + 10 ossos×10 = 500; ouro ≈ 1400
+  '0-5':    1700,  // Est. N2     — 10 inimigos×50 + 11 ossos×10 = 610; ouro ≈ 1700
   '0-boss':  500,  // boss Wall-E apenas
   '1-1':    2200,  // 10 inimigos×50 + 7 ossos×10 + 3 golden×500 (densificado)
-  '1-2':    1200,
+  '1-2':    1200,  // Beco Escuro — 8 inimigos×50 + 9 ossos×10 = 490; ouro ≈ 1200
   '1-3':    3000,  // 15 inimigos×50 + 9 ossos×10 + 4 golden×500 (110 cols)
-  '1-4':    1500,
+  '1-4':    1500,  // Parque      — 9 inimigos×50 + 11 ossos×10 = 560; ouro ≈ 1500
   '1-boss': 1200,  // boss Seu Bigodes + minions estimados
   '2-1':    1900,  // 7 inimigos×50 + 6 ossos×10 + 3 golden×500
   '2-2':    2850,  // 11 inimigos×50 + 8 ossos×10 + 4 golden×500
-  '2-3':    1400,
-  '2-5':    1900,
+  '2-3':    1400,  // Garagem     — 9 inimigos×50 + 10 ossos×10 = 550; ouro ≈ 1400
+  '2-5':    1900,  // Varandas    — 12 inimigos×50 + 12 ossos×10 = 720; ouro ≈ 1900
   '2-boss':  500,  // boss Drone apenas
 }
