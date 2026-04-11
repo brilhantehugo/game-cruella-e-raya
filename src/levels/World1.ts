@@ -252,7 +252,7 @@ export const LEVEL_1_BOSS: LevelData = {
   spawnX: 64, spawnY: 300, exitX: 896, exitY: 370,
   checkpointX: 80, checkpointY: 300,
   enemies: [], items: [], goldenBones: [],
-  nextLevel: null, isBossLevel: true,
+  nextLevel: '2-1', isBossLevel: true,
   decorations: [
     { type: 'saco_lixo', x: 120, y: G },
     { type: 'lixeira',   x: 280, y: G },

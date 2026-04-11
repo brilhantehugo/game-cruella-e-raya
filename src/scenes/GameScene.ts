@@ -15,7 +15,9 @@ import { Accessory } from '../items/Accessory'
 import { LevelData } from '../levels/LevelData'
 import { WORLD1_LEVELS } from '../levels/World1'
 import { WORLD0_LEVELS } from '../levels/World0'
+import { WORLD2_LEVELS } from '../levels/World2'
 import { Aspirador } from '../entities/enemies/Aspirador'
+import { Drone } from '../entities/enemies/Drone'
 import { Hugo } from '../entities/npc/Hugo'
 import { Hannah } from '../entities/npc/Hannah'
 import { HumanEnemy } from '../entities/enemies/HumanEnemy'
@@ -50,7 +52,7 @@ export class GameScene extends Phaser.Scene {
 
   create(): void {
     this._gameOverPending = false
-    const ALL_LEVELS = { ...WORLD0_LEVELS, ...WORLD1_LEVELS }
+    const ALL_LEVELS = { ...WORLD0_LEVELS, ...WORLD1_LEVELS, ...WORLD2_LEVELS }
     this.currentLevel = ALL_LEVELS[gameState.currentLevel] ?? WORLD0_LEVELS['0-1']
 
     // Show level intro screen for non-boss levels that have intro data
@@ -394,6 +396,49 @@ export class GameScene extends Phaser.Scene {
             if (msg.active) this.tweens.add({ targets: msg, alpha: 0, duration: 500,
               onComplete: () => { if (msg.active) msg.destroy() } })
           })
+        })
+      } else if (this.currentLevel.id === '2-boss') {
+        // Drone boss
+        const mapWidth = this.currentLevel.tileWidthCols * 32
+        const boss = new Drone(this, mapWidth / 2, 180)
+        this.enemyGroup.add(boss)
+
+        this._bossProjectileGroup = this.physics.add.group()
+
+        boss.on('spawnBomb', (data: { x: number; y: number; vx: number; vy: number }) => {
+          if (!this._bossProjectileGroup || !this.scene.isActive(KEYS.GAME)) return
+          const bomb = this.physics.add.image(data.x, data.y, KEYS.BOMB)
+          bomb.setDepth(5)
+          const body = bomb.body as Phaser.Physics.Arcade.Body
+          body.setVelocity(data.vx, data.vy)
+          // gravidade normal → projétil cai em parábola
+          this._bossProjectileGroup.add(bomb)
+          this.time.delayedCall(4000, () => { if (bomb.active) bomb.destroy() })
+        })
+
+        boss.on('spawnLaser', (data: { x: number; y: number; vx: number; vy: number }) => {
+          if (!this._bossProjectileGroup || !this.scene.isActive(KEYS.GAME)) return
+          const laser = this.physics.add.image(data.x, data.y, KEYS.LASER)
+          laser.setDepth(5)
+          const body = laser.body as Phaser.Physics.Arcade.Body
+          body.setVelocity(data.vx, data.vy)
+          body.setGravityY(-800)   // tiro reto horizontal
+          this._bossProjectileGroup.add(laser)
+          this.time.delayedCall(3000, () => { if (laser.active) laser.destroy() })
+        })
+
+        boss.on('died', (b: Enemy) => {
+          gameState.addScore(500)
+          gameState.sessionEnemiesKilled++
+          this._fx.enemyDeathBurst(b.x, b.y)
+          this._spawnScorePopup(b.x, b.y - 30, '+500', '#ff4444')
+          this._levelComplete()
+        })
+
+        this.time.addEvent({
+          delay: 100, loop: true, callback: () => {
+            if (boss.active && this.player) boss.setPlayerPos(this.player.x, this.player.y)
+          },
         })
       } else {
         // Seu Bigodes boss
