@@ -121,6 +121,8 @@ export const KEYS = {
   LASER: 'laser',
   // boss Drone sprite
   DRONE: 'drone',
+  ZELADOR_BOSS: 'zelador_boss',
+  CHAVE:        'chave',
   // áudio BGM
   BGM_MENU:    'bgm_menu',
   BGM_WORLD1:  'bgm_world1',
@@ -156,14 +158,18 @@ export const SCORING = {
  */
 export const MEDAL_THRESHOLDS: Record<string, number> = {
   '0-1':    2600,  // 7 inimigos×50 + 10 ossos×10 + 4 golden×500 (expandido)
-  '0-2':    2350,  // 10 inimigos×50 + 8 ossos×10 + 4 golden×500 (expandido)
+  '0-2':     800,
+  '0-4':    1400,
+  '0-5':    1700,
   '0-boss':  500,  // boss Wall-E apenas
   '1-1':    2200,  // 10 inimigos×50 + 7 ossos×10 + 3 golden×500 (densificado)
-  '1-2':    2750,  // 11 inimigos×50 + 8 ossos×10 + 4 golden×500 (100 cols)
+  '1-2':    1200,
   '1-3':    3000,  // 15 inimigos×50 + 9 ossos×10 + 4 golden×500 (110 cols)
+  '1-4':    1500,
   '1-boss': 1200,  // boss Seu Bigodes + minions estimados
   '2-1':    1900,  // 7 inimigos×50 + 6 ossos×10 + 3 golden×500
   '2-2':    2850,  // 11 inimigos×50 + 8 ossos×10 + 4 golden×500
-  '2-3':    3150,  // 14 inimigos×50 + 9 ossos×10 + 4 golden×500
+  '2-3':    1400,
+  '2-5':    1900,
   '2-boss':  500,  // boss Drone apenas
 }
