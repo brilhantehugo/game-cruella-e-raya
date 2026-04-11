@@ -12,12 +12,13 @@ import { Bone } from '../items/Bone'
 import { GoldenBone } from '../items/GoldenBone'
 import { PowerUp } from '../items/PowerUp'
 import { Accessory } from '../items/Accessory'
-import { LevelData } from '../levels/LevelData'
+import { LevelData, MiniBossConfig } from '../levels/LevelData'
 import { WORLD1_LEVELS } from '../levels/World1'
 import { WORLD0_LEVELS } from '../levels/World0'
 import { WORLD2_LEVELS } from '../levels/World2'
 import { Aspirador } from '../entities/enemies/Aspirador'
 import { Drone } from '../entities/enemies/Drone'
+import { ZeladorBoss } from '../entities/enemies/ZeladorBoss'
 import { Hugo } from '../entities/npc/Hugo'
 import { Hannah } from '../entities/npc/Hannah'
 import { HumanEnemy } from '../entities/enemies/HumanEnemy'
@@ -45,6 +46,8 @@ export class GameScene extends Phaser.Scene {
   private _cinematicActive: boolean = false
   private _bossExit: Phaser.Physics.Arcade.Image | null = null
   private _bossProjectileGroup: Phaser.Physics.Arcade.Group | null = null
+  private _miniBossBarriers: Phaser.Physics.Arcade.StaticGroup | null = null
+  private _miniBossTriggerFired = false
   private _fx!: EffectsManager
   private _lastTrailAt: number = 0
 
@@ -95,6 +98,7 @@ export class GameScene extends Phaser.Scene {
       this._fx.dustPuff(this.player.raya.x, body.bottom, 'large')
     })
     this._spawnEnemies()
+    this._setupMiniBoss()
     this._spawnItems()
     this._setupCollisions()
     this._setupCamera()
@@ -159,13 +163,13 @@ export class GameScene extends Phaser.Scene {
       this.time.delayedCall(1100, () => {
         if (!this.scene.isActive(KEYS.GAME)) return
         const header = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2 - 10,
-          '💨 ASPIRADOR 3000 💨', {
-            fontSize: '20px', color: '#22ccff', fontStyle: 'bold',
-            stroke: '#003355', strokeThickness: 4,
+          '🧹 ZELADOR DO PRÉDIO 🧹', {
+            fontSize: '20px', color: '#ffa040', fontStyle: 'bold',
+            stroke: '#331500', strokeThickness: 4,
             backgroundColor: '#000000ee', padding: { x: 16, y: 8 },
           }).setOrigin(0.5).setScrollFactor(0).setDepth(20).setAlpha(0)
         const speech = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2 + 32,
-          '"Ninguém sai daqui sem passar por mim!"', {
+          '"Ninguém passa enquanto eu estiver de guarda!"', {
             fontSize: '14px', color: '#aaeeff', fontStyle: 'italic',
             stroke: '#000000', strokeThickness: 3,
             backgroundColor: '#000000cc', padding: { x: 12, y: 6 },
@@ -343,42 +347,39 @@ export class GameScene extends Phaser.Scene {
 
     if (this.currentLevel.isBossLevel) {
       if (this.currentLevel.id === '0-boss') {
-        // Aspirador boss — vacuum robot
+        // ZeladorBoss — Zelador do Prédio
         const mapWidth = this.currentLevel.tileWidthCols * 32
-        const boss = new Aspirador(this, mapWidth / 2, 360)
+        const boss = new ZeladorBoss(this, mapWidth / 2, 352)
         this.enemyGroup.add(boss)
 
-        // Grupo de projéteis do Aspirador
         this._bossProjectileGroup = this.physics.add.group()
-        boss.on('spawnProjectile', (data: { x: number; y: number; vx: number; vy: number }) => {
+
+        boss.on('spawnChave', (data: { x: number; y: number; vx: number; vy: number }) => {
           if (!this._bossProjectileGroup || !this.scene.isActive(KEYS.GAME)) return
-          const proj = this.physics.add.image(data.x, data.y, KEYS.DIRT_BALL)
-          proj.setDepth(5)
-          const body = proj.body as Phaser.Physics.Arcade.Body
+          const chave = this.physics.add.image(data.x, data.y, KEYS.CHAVE)
+          chave.setDepth(5)
+          const body = chave.body as Phaser.Physics.Arcade.Body
           body.setVelocity(data.vx, data.vy)
-          body.setGravityY(600)
-          this._bossProjectileGroup.add(proj)
-          this.time.delayedCall(3000, () => { if (proj.active) proj.destroy() })
+          this._bossProjectileGroup.add(chave)
+          this.time.delayedCall(4000, () => { if (chave.active) chave.destroy() })
         })
 
-        boss.on('spawnBlade', (data: { x: number; y: number; vx: number; vy: number }) => {
-          if (!this._bossProjectileGroup || !this.scene.isActive(KEYS.GAME)) return
-          const blade = this.physics.add.image(data.x, data.y, KEYS.BLADE)
-          blade.setDepth(5)
-          const body = blade.body as Phaser.Physics.Arcade.Body
-          body.setVelocity(data.vx, data.vy)
-          body.setGravityY(-800)   // cancela gravidade do mundo (800 px/s²) para tiro reto
-          blade.setAngularVelocity(480)
-          this._bossProjectileGroup.add(blade)
-          this.time.delayedCall(4000, () => { if (blade.active) blade.destroy() })
+        boss.on('spawnMinion', (data: { x: number; y: number }) => {
+          const minion = new Zelador(this, data.x, data.y)
+          this.enemyGroup.add(minion)
+          minion.on('died', (e: Enemy) => {
+            gameState.addScore(SCORING.ENEMY_KILL)
+            gameState.sessionEnemiesKilled++
+            this._fx.enemyDeathBurst(e.x, e.y)
+            this._spawnScorePopup(e.x, e.y - 20, '+50', '#f97316')
+          })
         })
 
         boss.on('died', (b: Enemy) => {
-          gameState.addScore(500)
+          gameState.addScore(1000)
           gameState.sessionEnemiesKilled++
           this._fx.enemyDeathBurst(b.x, b.y)
-          this._spawnScorePopup(b.x, b.y - 30, '+500', '#22ccff')
-          // Revela a saída
+          this._spawnScorePopup(b.x, b.y - 30, '+1000', '#22ccff')
           if (this._bossExit) {
             this._bossExit.setVisible(true)
             ;(this._bossExit.body as Phaser.Physics.Arcade.StaticBody).enable = true
@@ -396,6 +397,12 @@ export class GameScene extends Phaser.Scene {
             if (msg.active) this.tweens.add({ targets: msg, alpha: 0, duration: 500,
               onComplete: () => { if (msg.active) msg.destroy() } })
           })
+        })
+
+        this.time.addEvent({
+          delay: 100, loop: true, callback: () => {
+            if (boss.active && this.player) boss.setPlayerPos(this.player.x, this.player.y)
+          },
         })
       } else if (this.currentLevel.id === '2-boss') {
         // Drone boss
@@ -463,6 +470,71 @@ export class GameScene extends Phaser.Scene {
         })
       }
     }
+  }
+
+  private _setupMiniBoss(): void {
+    const cfg = this.currentLevel.miniBoss
+    if (!cfg) return
+    this._miniBossTriggerFired = false
+
+    const zone = this.add.zone(cfg.triggerX, GAME_HEIGHT / 2, 16, GAME_HEIGHT)
+    this.physics.world.enable(zone)
+    const zoneBody = zone.body as Phaser.Physics.Arcade.Body
+    zoneBody.setAllowGravity(false).setImmovable(true)
+
+    const trigger = () => {
+      if (this._miniBossTriggerFired) return
+      this._miniBossTriggerFired = true
+      zone.destroy()
+      this._startMiniBossEncounter(cfg)
+    }
+
+    this.physics.add.overlap(this.player.raya,   zone, trigger)
+    this.physics.add.overlap(this.player.cruella, zone, trigger)
+  }
+
+  private _startMiniBossEncounter(cfg: MiniBossConfig): void {
+    // Spawn Aspirador como mini-boss
+    const boss = new Aspirador(this, cfg.spawnX, cfg.spawnY)
+    this.enemyGroup.add(boss)
+    const maxHp = boss.getHp()
+
+    // Barreiras estáticas
+    this._miniBossBarriers = this.physics.add.staticGroup()
+    const leftGate  = this.physics.add.staticImage(cfg.leftBarrierX,  cfg.spawnY, KEYS.EXIT_GATE)
+    const rightGate = this.physics.add.staticImage(cfg.rightBarrierX, cfg.spawnY, KEYS.EXIT_GATE)
+    leftGate.setOrigin(0.5).refreshBody()
+    rightGate.setOrigin(0.5).refreshBody()
+    this._miniBossBarriers.add(leftGate)
+    this._miniBossBarriers.add(rightGate)
+    this.physics.add.collider(this.player.raya,   this._miniBossBarriers)
+    this.physics.add.collider(this.player.cruella, this._miniBossBarriers)
+
+    // BGM de boss + barra de mini-boss
+    SoundManager.playBgm(KEYS.BGM_BOSS, this)
+    this.events.emit('showMiniBossBar')
+
+    // Polling para actualizar barra de HP
+    const hpPoller = this.time.addEvent({
+      delay: 100, loop: true, callback: () => {
+        if (!boss.active) { hpPoller.destroy(); return }
+        this.events.emit('updateMiniBossBar', boss.getHp() / maxHp)
+      },
+    })
+
+    boss.on('died', (b: Enemy) => {
+      hpPoller.destroy()
+      if (this._miniBossBarriers) {
+        this._miniBossBarriers.clear(true, true)
+        this._miniBossBarriers = null
+      }
+      this.events.emit('hideMiniBossBar')
+      SoundManager.playBgm(KEYS.BGM_WORLD1, this)
+      gameState.addScore(500)
+      gameState.sessionEnemiesKilled++
+      this._fx.enemyDeathBurst(b.x, b.y)
+      this._spawnScorePopup(b.x, b.y - 30, '+500', '#22ccff')
+    })
   }
 
   private _spawnItems(): void {

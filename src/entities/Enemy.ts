@@ -73,6 +73,8 @@ export abstract class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.destroy()
   }
 
+  getHp(): number { return this.hp }
+
   isStunned(): boolean {
     return this.scene.time.now < this.stunUntil
   }
