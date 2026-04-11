@@ -62,14 +62,15 @@ export class Drone extends Enemy {
 
   private _checkPhaseTransition(): void {
     const hpPct = this.hp / this.MAX_HP
+    if (hpPct <= 0.67 && this.phase < 2) {
+      this.phase = 2
+      this.speed = 140
+      this.setTint(0xff8800)
+    }
     if (hpPct <= 0.34 && this.phase < 3) {
       this.phase = 3
       this.speed = 180
       this.setTint(0xff4444)
-    } else if (hpPct <= 0.67 && this.phase < 2) {
-      this.phase = 2
-      this.speed = 140
-      this.setTint(0xff8800)
     }
   }
 
@@ -94,8 +95,7 @@ export class Drone extends Enemy {
   protected onDeath(): void {
     this._isDying = true
     const body = this.body as Phaser.Physics.Arcade.Body
-    body.setEnable(false)
-    body.setGravityY(0)  // deixa cair naturalmente
+    body.setEnable(false)  // para colisões — drone encolhe no lugar
     this.setTint(0xff4444)
     this.scene.tweens.add({
       targets: this,
