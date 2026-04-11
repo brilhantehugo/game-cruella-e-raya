@@ -22,6 +22,7 @@ export interface PlayerProfile {
   currentLevel: string
   totalScore: number
   levels: Record<string, LevelRecord>
+  version?: number          // SAVE_VERSION for migrations
 }
 
 const STORAGE_KEY        = 'rcgame_profiles'
@@ -29,6 +30,7 @@ const ACTIVE_KEY         = 'rcgame_active_profile'
 const MAX_PROFILES       = 3
 const DEFAULT_LEVEL      = '0-1'
 const STARTING_LEVELS    = ['0-1', '1-1']
+const SAVE_VERSION       = 2
 
 export class ProfileManager {
   // ── Leitura ──────────────────────────────────────────────────────────
@@ -36,7 +38,8 @@ export class ProfileManager {
   getAll(): PlayerProfile[] {
     try {
       const raw = localStorage.getItem(STORAGE_KEY)
-      return raw ? (JSON.parse(raw) as PlayerProfile[]) : []
+      const profiles = raw ? (JSON.parse(raw) as PlayerProfile[]) : []
+      return profiles.filter(p => (p.version ?? 0) >= SAVE_VERSION)
     } catch {
       return []
     }
@@ -68,6 +71,7 @@ export class ProfileManager {
       currentLevel: DEFAULT_LEVEL,
       totalScore: 0,
       levels: {},
+      version: SAVE_VERSION,
     }
     // Desbloqueia fases iniciais
     STARTING_LEVELS.forEach(lv => {
