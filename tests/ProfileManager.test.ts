@@ -113,6 +113,38 @@ describe('ProfileManager', () => {
   })
 })
 
+describe('SAVE_VERSION migration', () => {
+  beforeEach(() => {
+    localStorageMock.clear()
+  })
+
+  it('perfil legado sem version é descartado no load', () => {
+    const legacyProfile = { name: 'Teste', dogType: 'raya', levels: {}, totalScore: 500 }
+    localStorage.setItem('rcgame_profiles', JSON.stringify([legacyProfile]))
+    localStorage.setItem('rcgame_active_profile', '0')
+    const pm = new ProfileManager()
+    expect(pm.getAll()).toHaveLength(0)
+  })
+
+  it('perfil com version correta é preservado', () => {
+    const validProfile = {
+      name: 'Valido', dogType: 'cruella', levels: {}, totalScore: 200, version: 2,
+    }
+    localStorage.setItem('rcgame_profiles', JSON.stringify([validProfile]))
+    localStorage.setItem('rcgame_active_profile', '0')
+    const pm = new ProfileManager()
+    expect(pm.getAll()).toHaveLength(1)
+    expect(pm.getAll()[0].name).toBe('Valido')
+  })
+
+  it('novo perfil gravado inclui version: 2', () => {
+    const pm = new ProfileManager()
+    pm.create('NovoPerfil', 'raya')
+    const raw = JSON.parse(localStorage.getItem('rcgame_profiles') ?? '[]')
+    expect(raw[0].version).toBe(2)
+  })
+})
+
 describe('ProfileManager.calcMedal', () => {
   it('ouro: 3 bones + score≥80% + 0 mortes', () => {
     expect(ProfileManager.calcMedal(1600, [true,true,true], 0, 2000)).toBe('gold')
