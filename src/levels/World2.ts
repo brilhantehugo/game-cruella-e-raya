@@ -9,7 +9,6 @@ function platformRow(x: number, len: number): number[] {
   const row = emptyRow(); for (let i = x; i < x + len; i++) row[i] = 2; return row
 }
 
-// Helpers para fases expandidas
 function mkHelpers(cols: number) {
   const e = (): number[] => Array(cols).fill(0)
   const g = (): number[] => Array(cols).fill(1)
@@ -23,8 +22,11 @@ function mkHelpers(cols: number) {
   }
   return { e, g, p, mp }
 }
-const r22 = mkHelpers(100)   // LEVEL_2_2: 100 cols = 3200px
-const r23 = mkHelpers(110)   // LEVEL_2_3: 110 cols = 3520px
+
+const r22 = mkHelpers(100)  // Pátio      (2-2): 100 cols = 3200px
+const c90 = mkHelpers(90)   // Garagem    (2-3): 90 cols  = 2880px  🆕
+const r23 = mkHelpers(110)  // Escadas    (2-4, era 2-3): 110 cols = 3520px
+// Varandas (2-5) reuses r22 (100 cols = 3200px)                    🆕
 
 export const LEVEL_2_1: LevelData = {
   id: '2-1', name: 'Passeio Público', bgColor: 0x1a1a3a,
@@ -161,8 +163,67 @@ export const LEVEL_2_2: LevelData = {
   ],
 }
 
+// ── 2-3: Garagem de Serviço 🆕 ────────────────────────────────────────────────
 export const LEVEL_2_3: LevelData = {
-  id: '2-3', name: 'Escadas de Emergência', bgColor: 0x0a0a1a,
+  id: '2-3', name: 'Garagem de Serviço', bgColor: 0x0e0e1e,
+  backgroundTheme: 'exterior' as const, timeLimit: 200, tileWidthCols: 90,
+  tiles: [
+    c90.e(), c90.e(), c90.e(),
+    c90.mp([8,4], [32,4], [60,4], [82,4]), c90.e(),
+    c90.mp([18,5], [45,4], [72,3]), c90.e(),
+    c90.mp([28,4], [55,5]), c90.e(),
+    c90.e(), c90.e(), c90.e(), c90.e(),
+    c90.g(),
+  ],
+  spawnX: 64, spawnY: 350, exitX: 2816, exitY: 370,
+  checkpointX: 1440, checkpointY: 380,
+  enemies: [
+    { type: 'zelador', x: 350,  y: 390 },
+    { type: 'rato',    x: 650,  y: 390 },
+    { type: 'zelador', x: 950,  y: 390 },
+    { type: 'rato',    x: 1200, y: 390 },
+    { type: 'zelador', x: 1500, y: 390 },
+    { type: 'rato',    x: 1750, y: 390 },
+    { type: 'zelador', x: 2050, y: 390 },
+    { type: 'rato',    x: 2350, y: 390 },
+    { type: 'pombo',   x: 2600, y: 140 },
+  ],
+  items: [
+    { type: 'bone',           x: 200,  y: 380 },
+    { type: 'bone',           x: 500,  y: 380 },
+    { type: 'petisco',        x: 800,  y: 380 },
+    { type: 'bone',           x: 1100, y: 380 },
+    { type: 'bone',           x: 1400, y: 380 },
+    { type: 'surprise_block', x: 1550, y: 310 },
+    { type: 'bone',           x: 1700, y: 380 },
+    { type: 'bone',           x: 2000, y: 380 },
+    { type: 'petisco',        x: 2300, y: 380 },
+    { type: 'bone',           x: 2600, y: 380 },
+  ],
+  goldenBones: [
+    { x: 350,  y: 80 },
+    { x: 1440, y: 80 },
+    { x: 2500, y: 80 },
+  ],
+  nextLevel: '2-4',
+  decorations: [
+    { type: 'carro',     x: 200,  y: G, blocking: true },
+    { type: 'lixeira',   x: 450,  y: G },
+    { type: 'carro',     x: 650,  y: G, blocking: true },
+    { type: 'saco_lixo', x: 900,  y: G },
+    { type: 'carro',     x: 1100, y: G, blocking: true },
+    { type: 'poste',     x: 1350, y: G },
+    { type: 'carro',     x: 1550, y: G, blocking: true },
+    { type: 'lixeira',   x: 1800, y: G },
+    { type: 'carro',     x: 2000, y: G, blocking: true },
+    { type: 'saco_lixo', x: 2250, y: G },
+    { type: 'carro',     x: 2500, y: G, blocking: true },
+  ],
+}
+
+// ── 2-4: Escadas de Emergência (era 2-3) ──────────────────────────────────────
+export const LEVEL_2_4: LevelData = {
+  id: '2-4', name: 'Escadas de Emergência', bgColor: 0x0a0a1a,
   backgroundTheme: 'exterior' as const, timeLimit: 200, tileWidthCols: 110,
   tiles: [
     r23.e(), r23.e(),
@@ -215,7 +276,7 @@ export const LEVEL_2_3: LevelData = {
     { x: 2560, y: 192 },
     { x: 3200, y: 64 },
   ],
-  nextLevel: '2-boss',
+  nextLevel: '2-5',
   intro: {
     complexity: 3,
     dialogue: [
@@ -240,6 +301,75 @@ export const LEVEL_2_3: LevelData = {
     { type: 'placa',    x: 2900, y: G },
     { type: 'lixeira',  x: 3000, y: G },
     { type: 'grade',    x: 3100, y: G },
+  ],
+}
+
+// ── 2-5: Varandas / Fachada 🆕 ────────────────────────────────────────────────
+export const LEVEL_2_5: LevelData = {
+  id: '2-5', name: 'Varandas / Fachada', bgColor: 0x0a0a18,
+  backgroundTheme: 'exterior' as const, timeLimit: 200, tileWidthCols: 100,
+  tiles: [
+    r22.e(), r22.e(),
+    r22.mp([8,5], [35,5], [62,5], [88,5]),
+    r22.e(),
+    r22.mp([15,4], [42,4], [69,4], [93,4]),
+    r22.e(),
+    r22.mp([22,5], [50,5], [76,4]),
+    r22.e(),
+    r22.mp([30,4], [57,4], [83,5]),
+    r22.e(), r22.e(), r22.e(), r22.e(),
+    r22.g(),
+  ],
+  spawnX: 64, spawnY: 300, exitX: 3136, exitY: 370,
+  checkpointX: 1600, checkpointY: 380,
+  enemies: [
+    { type: 'pombo',   x: 300,  y: 120 },
+    { type: 'rato',    x: 550,  y: 390 },
+    { type: 'morador', x: 800,  y: 390 },
+    { type: 'pombo',   x: 1050, y: 130 },
+    { type: 'rato',    x: 1300, y: 390 },
+    { type: 'morador', x: 1550, y: 390 },
+    { type: 'pombo',   x: 1800, y: 120 },
+    { type: 'rato',    x: 2050, y: 390 },
+    { type: 'morador', x: 2300, y: 390 },
+    { type: 'pombo',   x: 2550, y: 130 },
+    { type: 'morador', x: 2800, y: 390 },
+    { type: 'pombo',   x: 3050, y: 120 },
+  ],
+  items: [
+    { type: 'bone',           x: 200,  y: 380 },
+    { type: 'bone',           x: 480,  y: 380 },
+    { type: 'petisco',        x: 750,  y: 380 },
+    { type: 'bone',           x: 1000, y: 380 },
+    { type: 'bone',           x: 1250, y: 380 },
+    { type: 'surprise_block', x: 1450, y: 300 },
+    { type: 'coleira',        x: 1650, y: 380 },
+    { type: 'bone',           x: 1900, y: 380 },
+    { type: 'bone',           x: 2150, y: 380 },
+    { type: 'petisco',        x: 2400, y: 380 },
+    { type: 'bone',           x: 2650, y: 380 },
+    { type: 'bone',           x: 2950, y: 380 },
+  ],
+  goldenBones: [
+    { x: 420,  y: 80 },
+    { x: 1600, y: 80 },
+    { x: 2900, y: 80 },
+  ],
+  nextLevel: '2-boss',
+  decorations: [
+    { type: 'grade',     x: 150,  y: G, blocking: true },
+    { type: 'poste',     x: 350,  y: G },
+    { type: 'grade',     x: 600,  y: G, blocking: true },
+    { type: 'lixeira',   x: 850,  y: G },
+    { type: 'grade',     x: 1050, y: G, blocking: true },
+    { type: 'poste',     x: 1300, y: G },
+    { type: 'grade',     x: 1500, y: G, blocking: true },
+    { type: 'lixeira',   x: 1750, y: G },
+    { type: 'grade',     x: 1950, y: G, blocking: true },
+    { type: 'poste',     x: 2200, y: G },
+    { type: 'grade',     x: 2400, y: G, blocking: true },
+    { type: 'lixeira',   x: 2650, y: G },
+    { type: 'grade',     x: 2900, y: G, blocking: true },
   ],
 }
 
@@ -279,5 +409,6 @@ export const LEVEL_2_BOSS: LevelData = {
 }
 
 export const WORLD2_LEVELS: Record<string, LevelData> = {
-  '2-1': LEVEL_2_1, '2-2': LEVEL_2_2, '2-3': LEVEL_2_3, '2-boss': LEVEL_2_BOSS,
+  '2-1': LEVEL_2_1, '2-2': LEVEL_2_2, '2-3': LEVEL_2_3,
+  '2-4': LEVEL_2_4, '2-5': LEVEL_2_5, '2-boss': LEVEL_2_BOSS,
 }

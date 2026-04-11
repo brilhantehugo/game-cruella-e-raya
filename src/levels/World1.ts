@@ -9,7 +9,6 @@ function platformRow(x: number, len: number): number[] {
   const row = emptyRow(); for (let i = x; i < x + len; i++) row[i] = 2; return row
 }
 
-// Helpers para fases expandidas
 function mkHelpers(cols: number) {
   const e = (): number[] => Array(cols).fill(0)
   const g = (): number[] => Array(cols).fill(1)
@@ -23,8 +22,11 @@ function mkHelpers(cols: number) {
   }
   return { e, g, p, mp }
 }
-const r12 = mkHelpers(100)   // LEVEL_1_2: 100 cols = 3200px
-const r13 = mkHelpers(110)   // LEVEL_1_3: 110 cols = 3520px
+
+const r80 = mkHelpers(80)    // Beco Escuro  (1-2): 80 cols  = 2560px
+const r12  = mkHelpers(100)  // Praça        (1-3, era 1-2): 100 cols = 3200px
+const r95  = mkHelpers(95)   // Parque       (1-4): 95 cols  = 3040px
+const r13  = mkHelpers(110)  // Mercado      (1-5, era 1-3): 110 cols = 3520px
 
 export const LEVEL_1_1: LevelData = {
   id: '1-1', name: 'Rua Residencial', bgColor: 0x87CEEB, backgroundTheme: 'rua' as const, timeLimit: 200, tileWidthCols: COLS,
@@ -44,7 +46,6 @@ export const LEVEL_1_1: LevelData = {
     { type: 'rato',    x: 1500, y: 390 },
     { type: 'dono',    x: 1900, y: 390 },
     { type: 'rato',    x: 2200, y: 390 },
-    // 2ª metade densificada
     { type: 'morador', x: 1700, y: 390 },
     { type: 'morador', x: 2000, y: 390 },
     { type: 'dono',    x: 2400, y: 390 },
@@ -66,7 +67,7 @@ export const LEVEL_1_1: LevelData = {
     complexity: 2,
     dialogue: [
       'A rua está cheia de gatos e pombos hoje. Cuidado!',
-      'Hm, que odor terrível... Vamos logo antes que eu desmaiee!',
+      'Hm, que odor terrível... Vamos logo antes que eu desmaie!',
     ],
   },
   decorations: [
@@ -84,8 +85,65 @@ export const LEVEL_1_1: LevelData = {
   ],
 }
 
+// ── 1-2: Beco Escuro 🆕 ──────────────────────────────────────────────────────
 export const LEVEL_1_2: LevelData = {
-  id: '1-2', name: 'Praça com Jardim', bgColor: 0x90EE90,
+  id: '1-2', name: 'Beco Escuro', bgColor: 0x1a1030,
+  backgroundTheme: 'rua' as const, timeLimit: 200, tileWidthCols: 80,
+  tiles: [
+    r80.e(), r80.e(),
+    r80.mp([5,4], [28,4], [55,4]),
+    r80.e(),
+    r80.mp([12,5], [38,4], [62,4]),
+    r80.e(),
+    r80.mp([20,4], [48,5], [70,4]),
+    r80.e(), r80.e(), r80.e(), r80.e(), r80.e(), r80.e(),
+    r80.g(),
+  ],
+  spawnX: 64, spawnY: 300, exitX: 2496, exitY: 370,
+  checkpointX: 1280, checkpointY: 380,
+  enemies: [
+    { type: 'rato',  x: 350,  y: 390 },
+    { type: 'gato',  x: 650,  y: 390 },
+    { type: 'rato',  x: 900,  y: 390 },
+    { type: 'rato',  x: 1150, y: 390 },
+    { type: 'gato',  x: 1400, y: 390 },
+    { type: 'rato',  x: 1700, y: 390 },
+    { type: 'pombo', x: 2000, y: 140 },
+    { type: 'gato',  x: 2200, y: 390 },
+  ],
+  items: [
+    { type: 'bone',           x: 200,  y: 380 },
+    { type: 'bone',           x: 500,  y: 380 },
+    { type: 'petisco',        x: 750,  y: 380 },
+    { type: 'bone',           x: 1000, y: 380 },
+    { type: 'surprise_block', x: 1200, y: 310 },
+    { type: 'bone',           x: 1450, y: 380 },
+    { type: 'bone',           x: 1700, y: 380 },
+    { type: 'bone',           x: 1950, y: 380 },
+    { type: 'bone',           x: 2250, y: 380 },
+  ],
+  goldenBones: [
+    { x: 420,  y: 80 },
+    { x: 2100, y: 80 },
+  ],
+  nextLevel: '1-3',
+  decorations: [
+    { type: 'lixeira',   x: 150,  y: G },
+    { type: 'saco_lixo', x: 350,  y: G },
+    { type: 'grade',     x: 550,  y: G, blocking: true },
+    { type: 'lixeira',   x: 750,  y: G },
+    { type: 'saco_lixo', x: 950,  y: G },
+    { type: 'grade',     x: 1150, y: G, blocking: true },
+    { type: 'lixeira',   x: 1350, y: G },
+    { type: 'saco_lixo', x: 1550, y: G },
+    { type: 'grade',     x: 1750, y: G, blocking: true },
+    { type: 'lixeira',   x: 2000, y: G },
+  ],
+}
+
+// ── 1-3: Praça com Jardim (era 1-2) ──────────────────────────────────────────
+export const LEVEL_1_3: LevelData = {
+  id: '1-3', name: 'Praça com Jardim', bgColor: 0x90EE90,
   backgroundTheme: 'praca' as const, timeLimit: 200, tileWidthCols: 100,
   tiles: [
     r12.e(), r12.e(),
@@ -106,7 +164,6 @@ export const LEVEL_1_2: LevelData = {
     { type: 'pombo',   x: 1600, y: 150 },
     { type: 'dono',    x: 1900, y: 390 },
     { type: 'gato',    x: 2200, y: 390 },
-    // 2ª metade
     { type: 'pombo',   x: 2400, y: 140 },
     { type: 'morador', x: 2600, y: 390 },
     { type: 'pombo',   x: 2800, y: 150 },
@@ -122,7 +179,6 @@ export const LEVEL_1_2: LevelData = {
     { type: 'bone',           x: 1800, y: 380 },
     { type: 'chapeu',         x: 2100, y: 380 },
     { type: 'bone',           x: 2300, y: 380 },
-    // 2ª metade
     { type: 'bone',           x: 2500, y: 380 },
     { type: 'petisco',        x: 2700, y: 380 },
     { type: 'surprise_block', x: 2850, y: 310 },
@@ -134,7 +190,7 @@ export const LEVEL_1_2: LevelData = {
     { x: 2112, y: 160 },
     { x: 2880, y: 64 },
   ],
-  nextLevel: '1-3',
+  nextLevel: '1-4',
   intro: {
     complexity: 2,
     dialogue: [
@@ -154,7 +210,6 @@ export const LEVEL_1_2: LevelData = {
     { type: 'canteiro', x: 1850, y: G },
     { type: 'arvore',   x: 2100, y: G },
     { type: 'banco',    x: 2320, y: G },
-    // Extensão da praça
     { type: 'canteiro', x: 2520, y: G },
     { type: 'arvore',   x: 2720, y: G },
     { type: 'banco',    x: 2940, y: G },
@@ -162,8 +217,71 @@ export const LEVEL_1_2: LevelData = {
   ],
 }
 
-export const LEVEL_1_3: LevelData = {
-  id: '1-3', name: 'Mercadinho / Feirinha', bgColor: 0xFFD700,
+// ── 1-4: Parque da Cidade 🆕 ──────────────────────────────────────────────────
+export const LEVEL_1_4: LevelData = {
+  id: '1-4', name: 'Parque da Cidade', bgColor: 0x1a3a1a,
+  backgroundTheme: 'praca' as const, timeLimit: 200, tileWidthCols: 95,
+  tiles: [
+    r95.e(), r95.e(), r95.e(),
+    r95.mp([10,5], [45,5], [78,5]),
+    r95.e(),
+    r95.mp([22,4], [58,4], [85,4]),
+    r95.e(),
+    r95.mp([32,6], [68,5]),
+    r95.e(), r95.e(), r95.e(), r95.e(), r95.e(),
+    r95.g(),
+  ],
+  spawnX: 64, spawnY: 300, exitX: 2976, exitY: 370,
+  checkpointX: 1504, checkpointY: 380,
+  enemies: [
+    { type: 'pombo', x: 350,  y: 140 },
+    { type: 'dono',  x: 600,  y: 390 },
+    { type: 'pombo', x: 850,  y: 150 },
+    { type: 'rato',  x: 1100, y: 390 },
+    { type: 'dono',  x: 1350, y: 390 },
+    { type: 'pombo', x: 1600, y: 140 },
+    { type: 'rato',  x: 1850, y: 390 },
+    { type: 'pombo', x: 2100, y: 150 },
+    { type: 'dono',  x: 2400, y: 390 },
+  ],
+  items: [
+    { type: 'bone',           x: 200,  y: 380 },
+    { type: 'bone',           x: 450,  y: 380 },
+    { type: 'petisco',        x: 700,  y: 380 },
+    { type: 'bone',           x: 950,  y: 380 },
+    { type: 'surprise_block', x: 1150, y: 310 },
+    { type: 'coleira',        x: 1350, y: 380 },
+    { type: 'bone',           x: 1550, y: 380 },
+    { type: 'bone',           x: 1800, y: 380 },
+    { type: 'bone',           x: 2050, y: 380 },
+    { type: 'petisco',        x: 2300, y: 380 },
+    { type: 'bone',           x: 2700, y: 380 },
+  ],
+  goldenBones: [
+    { x: 380,  y: 80 },
+    { x: 1504, y: 80 },
+    { x: 2600, y: 80 },
+  ],
+  nextLevel: '1-5',
+  decorations: [
+    { type: 'arvore',   x: 150,  y: G },
+    { type: 'banco',    x: 380,  y: G },
+    { type: 'canteiro', x: 600,  y: G },
+    { type: 'arvore',   x: 820,  y: G },
+    { type: 'banco',    x: 1040, y: G },
+    { type: 'canteiro', x: 1280, y: G },
+    { type: 'arvore',   x: 1500, y: G },
+    { type: 'banco',    x: 1720, y: G },
+    { type: 'canteiro', x: 1940, y: G },
+    { type: 'arvore',   x: 2180, y: G },
+    { type: 'banco',    x: 2400, y: G },
+    { type: 'poste',    x: 2650, y: G },
+  ],
+}
+
+// ── 1-5: Mercadinho / Feirinha (era 1-3) ──────────────────────────────────────
+export const LEVEL_1_5: LevelData = {
+  id: '1-5', name: 'Mercadinho / Feirinha', bgColor: 0xFFD700,
   backgroundTheme: 'mercado' as const, timeLimit: 200, tileWidthCols: 110,
   tiles: [
     r13.e(), r13.e(), r13.mp([8,5], [20,4]),
@@ -182,7 +300,6 @@ export const LEVEL_1_3: LevelData = {
     { type: 'dono',    x: 1200, y: 390 }, { type: 'rato',    x: 1500, y: 390 },
     { type: 'gato',    x: 1700, y: 390 }, { type: 'pombo',   x: 1900, y: 150 },
     { type: 'morador', x: 2100, y: 390 },
-    // Zona de barraca interior
     { type: 'gato',    x: 2400, y: 390 },
     { type: 'rato',    x: 2650, y: 390 },
     { type: 'gato',    x: 2900, y: 390 },
@@ -195,7 +312,6 @@ export const LEVEL_1_3: LevelData = {
     { type: 'bone',           x: 1100, y: 380 }, { type: 'frisbee',  x: 1350, y: 380 },
     { type: 'bandana',        x: 1600, y: 380 }, { type: 'bone',     x: 1850, y: 380 },
     { type: 'surprise_block', x: 2100, y: 300 }, { type: 'bone',     x: 2300, y: 380 },
-    // Zona de barraca interior
     { type: 'bone',           x: 2500, y: 380 },
     { type: 'petisco',        x: 2700, y: 380 },
     { type: 'bone',           x: 2900, y: 380 },
@@ -228,7 +344,6 @@ export const LEVEL_1_3: LevelData = {
     { type: 'poste',     x: 1950, y: G },
     { type: 'barraca',   x: 2150, y: G },
     { type: 'lixeira',   x: 2380, y: G },
-    // Zona interior
     { type: 'barraca',   x: 2550, y: G },
     { type: 'saco_lixo', x: 2750, y: G },
     { type: 'barraca',   x: 2950, y: G },
@@ -263,5 +378,6 @@ export const LEVEL_1_BOSS: LevelData = {
 }
 
 export const WORLD1_LEVELS: Record<string, LevelData> = {
-  '1-1': LEVEL_1_1, '1-2': LEVEL_1_2, '1-3': LEVEL_1_3, '1-boss': LEVEL_1_BOSS,
+  '1-1': LEVEL_1_1, '1-2': LEVEL_1_2, '1-3': LEVEL_1_3,
+  '1-4': LEVEL_1_4, '1-5': LEVEL_1_5, '1-boss': LEVEL_1_BOSS,
 }
