@@ -12,22 +12,30 @@ interface MapNode {
   y:       number
 }
 
-// Definição dos nós do mapa em ordem de mundo
+// Definição dos nós do mapa em ordem de mundo (6 fases + 1 boss por mundo)
+// x positions: 20, 96, 172, 248, 324, 400  (gap 76px, circle diameter 40px)
 const MAP_NODES: MapNode[] = [
-  // World 0
-  { levelId: '0-1',    label: 'Sala',        world: 'Mundo 0 — Apartamento', x: 80,  y: 0 },
-  { levelId: '0-2',    label: 'Estacion.',   world: 'Mundo 0 — Apartamento', x: 200, y: 0 },
-  { levelId: '0-boss', label: 'Wall-E',      world: 'Mundo 0 — Apartamento', x: 320, y: 0 },
-  // World 1
-  { levelId: '1-1',    label: 'Rua',       world: 'Mundo 1 — Cidade',       x: 80,  y: 0 },
-  { levelId: '1-2',    label: 'Praça',     world: 'Mundo 1 — Cidade',       x: 200, y: 0 },
-  { levelId: '1-3',    label: 'Mercado',   world: 'Mundo 1 — Cidade',       x: 320, y: 0 },
-  { levelId: '1-boss', label: 'Boss',      world: 'Mundo 1 — Cidade',       x: 440, y: 0 },
-  // World 2
-  { levelId: '2-1',    label: 'Passeio',   world: 'Mundo 2 — Exterior',     x: 80,  y: 0 },
-  { levelId: '2-2',    label: 'Pátio',     world: 'Mundo 2 — Exterior',     x: 200, y: 0 },
-  { levelId: '2-3',    label: 'Escadas',   world: 'Mundo 2 — Exterior',     x: 320, y: 0 },
-  { levelId: '2-boss', label: 'Drone',     world: 'Mundo 2 — Exterior',     x: 440, y: 0 },
+  // World 0 — Apartamento
+  { levelId: '0-1',    label: 'Sala',      world: 'Mundo 0 — Apartamento', x: 20,  y: 0 },
+  { levelId: '0-2',    label: 'Corredor',  world: 'Mundo 0 — Apartamento', x: 96,  y: 0 },
+  { levelId: '0-3',    label: 'Estacion.', world: 'Mundo 0 — Apartamento', x: 172, y: 0 },
+  { levelId: '0-4',    label: 'Est.N1',    world: 'Mundo 0 — Apartamento', x: 248, y: 0 },
+  { levelId: '0-5',    label: 'Est.N2',    world: 'Mundo 0 — Apartamento', x: 324, y: 0 },
+  { levelId: '0-boss', label: 'Zelador',   world: 'Mundo 0 — Apartamento', x: 400, y: 0 },
+  // World 1 — Cidade
+  { levelId: '1-1',    label: 'Rua',       world: 'Mundo 1 — Cidade',      x: 20,  y: 0 },
+  { levelId: '1-2',    label: 'Beco',      world: 'Mundo 1 — Cidade',      x: 96,  y: 0 },
+  { levelId: '1-3',    label: 'Praça',     world: 'Mundo 1 — Cidade',      x: 172, y: 0 },
+  { levelId: '1-4',    label: 'Parque',    world: 'Mundo 1 — Cidade',      x: 248, y: 0 },
+  { levelId: '1-5',    label: 'Mercado',   world: 'Mundo 1 — Cidade',      x: 324, y: 0 },
+  { levelId: '1-boss', label: 'Bigodes',   world: 'Mundo 1 — Cidade',      x: 400, y: 0 },
+  // World 2 — Exterior do Prédio
+  { levelId: '2-1',    label: 'Passeio',   world: 'Mundo 2 — Exterior',    x: 20,  y: 0 },
+  { levelId: '2-2',    label: 'Pátio',     world: 'Mundo 2 — Exterior',    x: 96,  y: 0 },
+  { levelId: '2-3',    label: 'Garagem',   world: 'Mundo 2 — Exterior',    x: 172, y: 0 },
+  { levelId: '2-4',    label: 'Escadas',   world: 'Mundo 2 — Exterior',    x: 248, y: 0 },
+  { levelId: '2-5',    label: 'Varandas',  world: 'Mundo 2 — Exterior',    x: 324, y: 0 },
+  { levelId: '2-boss', label: 'Drone',     world: 'Mundo 2 — Exterior',    x: 400, y: 0 },
 ]
 
 const MEDAL_EMOJI: Record<string, string> = {
