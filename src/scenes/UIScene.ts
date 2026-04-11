@@ -19,6 +19,9 @@ export class UIScene extends Phaser.Scene {
   private _cdIcon!: Phaser.GameObjects.Text
   private timerText!: Phaser.GameObjects.Text
   private _muteText!: Phaser.GameObjects.Text
+  private _mbIcon!: Phaser.GameObjects.Image
+  private _mbBg!: Phaser.GameObjects.Rectangle
+  private _mbBar!: Phaser.GameObjects.Rectangle
   private _timeRemaining: number = 0
   private _timerActive: boolean = false
 
@@ -72,6 +75,30 @@ export class UIScene extends Phaser.Scene {
       this._timeRemaining = seconds
       this._timerActive = seconds > 0
     })
+    // Barra de mini-boss (oculta por padrão)
+    const mbY = 56
+    this._mbIcon = this.add.image(GAME_WIDTH / 2 - 115, mbY, KEYS.ASPIRADOR)
+      .setScrollFactor(0).setScale(0.6).setDepth(8).setVisible(false)
+    this._mbBg = this.add.rectangle(GAME_WIDTH / 2, mbY, 200, 12, 0x440000)
+      .setScrollFactor(0).setDepth(8).setVisible(false)
+    this._mbBar = this.add.rectangle(GAME_WIDTH / 2 - 100, mbY, 200, 12, 0xff2222)
+      .setScrollFactor(0).setDepth(8).setOrigin(0, 0.5).setVisible(false)
+
+    gameScene.events.on('showMiniBossBar', () => {
+      this._mbBar.setDisplaySize(200, 12)
+      this._mbIcon.setVisible(true)
+      this._mbBg.setVisible(true)
+      this._mbBar.setVisible(true)
+    })
+    gameScene.events.on('updateMiniBossBar', (fraction: number) => {
+      this._mbBar.setDisplaySize(Math.max(0, 200 * fraction), 12)
+    })
+    gameScene.events.on('hideMiniBossBar', () => {
+      this._mbIcon.setVisible(false)
+      this._mbBg.setVisible(false)
+      this._mbBar.setVisible(false)
+    })
+
     gameScene.events.on('level-name', (name: string) => {
       this._levelNameText.setText(name)
       this.tweens.add({
