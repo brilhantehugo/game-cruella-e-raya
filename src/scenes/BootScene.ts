@@ -1012,6 +1012,28 @@ export class BootScene extends Phaser.Scene {
     g.lineStyle(1, 0x5555aa); g.strokeRect(2, 6, 28, 10)
     gen(KEYS.DRONE, 32, 18)
 
+    // ZELADOR_BOSS — zelador maior, avental azul escuro, vassoura
+    clr()
+    // corpo principal
+    g.fillStyle(0x1a3a6b); g.fillRect(6, 8, 20, 20)        // avental azul escuro
+    g.fillStyle(0x8B6914); g.fillRect(10, 2, 12, 8)          // cabeça (castanho)
+    g.fillStyle(0xf0c060); g.fillRect(12, 3, 8, 6)            // rosto
+    // vassoura
+    g.fillStyle(0x8B6914); g.fillRect(24, 4, 3, 24)           // cabo
+    g.fillStyle(0xd4a020); g.fillRect(21, 26, 9, 4)           // cabeça da vassoura
+    // pernas
+    g.fillStyle(0x1a3a6b); g.fillRect(10, 26, 5, 6)           // perna esq
+    g.fillStyle(0x1a3a6b); g.fillRect(17, 26, 5, 6)           // perna dir
+    gen(KEYS.ZELADOR_BOSS, 32, 32)
+
+    // CHAVE — chave metálica dourada/prata (projéctil do Zelador Boss)
+    clr()
+    g.fillStyle(0xd4af37); g.fillRect(0, 1, 8, 4)             // cabo da chave
+    g.fillStyle(0xd4af37); g.fillRect(8, 0, 4, 6)             // cabeça da chave
+    g.fillStyle(0xd4af37); g.fillRect(10, 2, 2, 2)             // dente 1
+    g.fillStyle(0xc0c0c0); g.fillRect(1, 2, 6, 2)             // brilho prata no cabo
+    gen(KEYS.CHAVE, 12, 6)
+
     // ── NPCs — HUGO (homem, camisa azul) ─────────────────────────────────────
     clr()
     // Cabelo
