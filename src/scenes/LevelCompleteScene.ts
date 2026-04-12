@@ -3,6 +3,16 @@ import { KEYS, GAME_WIDTH, GAME_HEIGHT, MEDAL_THRESHOLDS } from '../constants'
 import { gameState } from '../GameState'
 import { profileManager, LevelRecord, ProfileManager } from '../storage/ProfileManager'
 import { SoundManager } from '../audio/SoundManager'
+import { WORLD0_LEVELS } from '../levels/World0'
+import { WORLD1_LEVELS } from '../levels/World1'
+import { WORLD2_LEVELS } from '../levels/World2'
+import { LevelData } from '../levels/LevelData'
+
+const ALL_LEVELS: Record<string, LevelData> = {
+  ...WORLD0_LEVELS,
+  ...WORLD1_LEVELS,
+  ...WORLD2_LEVELS,
+}
 
 interface LevelCompleteData {
   score:         number
@@ -25,6 +35,9 @@ export class LevelCompleteScene extends Phaser.Scene {
     const enemiesKilled = data?.enemiesKilled ?? 0
     const levelId       = data?.levelId       ?? gameState.currentLevel
     const nextLevel     = data?.nextLevel     ?? null
+
+    const levelData       = ALL_LEVELS[levelId]
+    const worldTransition = levelData?.worldTransition ?? null
 
     const elapsedSec    = Math.floor(timeMs / 1000)
     const maxScore      = MEDAL_THRESHOLDS[levelId] ?? 2000
@@ -162,7 +175,11 @@ export class LevelCompleteScene extends Phaser.Scene {
     }).setOrigin(0.5).setInteractive()
     this.tweens.add({ targets: mapBtn, alpha: 0.35, duration: 650, yoyo: true, repeat: -1 })
 
-    const nextLabel = nextLevel ? '[ ENTER — Próxima Fase ]' : '[ ENTER — Ver Créditos ]'
+    const nextLabel = worldTransition?.length
+      ? '[ ENTER — Próximo Mundo ]'
+      : nextLevel
+        ? '[ ENTER — Próxima Fase ]'
+        : '[ ENTER — Fim do Jogo ]'
     const nextBtn = this.add.text(cx + 80, btnY, nextLabel, {
       fontSize: '14px', color: '#ffffff', fontStyle: 'bold',
     }).setOrigin(0.5).setInteractive()
@@ -195,6 +212,53 @@ export class LevelCompleteScene extends Phaser.Scene {
     const goNext = () => {
       if (_done) return
       _done = true
+
+      if (worldTransition && worldTransition.length > 0) {
+        // Show inline world-transition dialogue overlay, then navigate
+        const overlay = this.add.rectangle(
+          cx, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, 0x000000, 0.88,
+        ).setDepth(10)
+        void overlay  // used for visual effect only
+
+        worldTransition.forEach((line, i) => {
+          const t = this.add.text(cx, 130 + i * 52, line, {
+            fontSize: '15px', color: '#ffe81f', fontStyle: 'bold',
+            align: 'center', wordWrap: { width: GAME_WIDTH - 80 },
+          }).setOrigin(0.5).setAlpha(0).setDepth(11)
+          this.tweens.add({ targets: t, alpha: 1, delay: i * 600, duration: 300 })
+        })
+
+        const contBtn = this.add.text(
+          cx,
+          130 + worldTransition.length * 52 + 30,
+          '[ ENTER — Continuar ]',
+          { fontSize: '14px', color: '#ffffff', fontStyle: 'bold' },
+        ).setOrigin(0.5).setAlpha(0).setInteractive().setDepth(11)
+
+        let contDone = false
+        const proceed = () => {
+          if (contDone) return
+          contDone = true
+          gameState.currentLevel = nextLevel!
+          gameState.resetLevel()
+          SoundManager.stopBgm()
+          this.scene.start(KEYS.GAME)
+        }
+
+        this.tweens.add({
+          targets:  contBtn,
+          alpha:    1,
+          delay:    worldTransition.length * 600 + 200,
+          duration: 300,
+          onComplete: () => {
+            this.tweens.add({ targets: contBtn, alpha: 0.35, duration: 650, yoyo: true, repeat: -1 })
+            this.input.keyboard?.once('keydown-ENTER', proceed)
+          },
+        })
+        contBtn.on('pointerdown', proceed)
+        return
+      }
+
       if (nextLevel) {
         gameState.currentLevel = nextLevel
         gameState.resetLevel()
@@ -203,7 +267,7 @@ export class LevelCompleteScene extends Phaser.Scene {
       if (nextLevel) {
         this.scene.start(KEYS.GAME)
       } else {
-        this.scene.start(KEYS.WORLD_MAP)
+        this.scene.start(KEYS.ENDING, { score, deaths, enemiesKilled })
       }
     }
 
