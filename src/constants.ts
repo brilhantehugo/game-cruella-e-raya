@@ -123,6 +123,10 @@ export const KEYS = {
   // boss Drone sprite
   DRONE: 'drone',
   ZELADOR_BOSS: 'zelador_boss',
+  GATO_SELVAGEM:  'gato_selvagem',
+  SEGURANCA:      'seguranca',
+  PORTEIRO:       'porteiro',
+  SEGURANCA_MOTO: 'seguranca_moto',
   CHAVE:        'chave',
   // áudio BGM
   BGM_MENU:    'bgm_menu',
@@ -173,4 +177,10 @@ export const MEDAL_THRESHOLDS: Record<string, number> = {
   '2-3':    1400,  // Garagem     — 9 inimigos×50 + 10 ossos×10 = 550; ouro ≈ 1400
   '2-5':    1900,  // Varandas    — 12 inimigos×50 + 12 ossos×10 = 720; ouro ≈ 1900
   '2-boss':  500,  // boss Drone apenas
+  '3-1':    1800,
+  '3-2':    2000,
+  '3-3':    2200,
+  '3-4':    2000,
+  '3-5':    2500,
+  '3-boss':  500,
 }
