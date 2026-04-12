@@ -66,8 +66,8 @@ export const LEVEL_1_1: LevelData = {
   intro: {
     complexity: 2,
     dialogue: [
-      'A rua está cheia de gatos e pombos hoje. Cuidado!',
-      'Hm, que odor terrível... Vamos logo antes que eu desmaie!',
+      'Raya: "Ar fresco! Liberdade! Cheiro a comida! POMBOS!"',
+      'Cruella: "Controla-te. Há moradores por toda a parte."',
     ],
   },
   decorations: [
@@ -127,6 +127,13 @@ export const LEVEL_1_2: LevelData = {
     { x: 2100, y: 80 },
   ],
   nextLevel: '1-3',
+  intro: {
+    complexity: 1,
+    dialogue: [
+      'Raya: "Beco escuro! Perfeito para uma emboscada!"',
+      'Cruella: "Isso é… exactamente o que eu ia dizer. Mas com mais elegância."',
+    ],
+  },
   decorations: [
     { type: 'lixeira',   x: 150,  y: G },
     { type: 'saco_lixo', x: 350,  y: G },
@@ -194,8 +201,8 @@ export const LEVEL_1_3: LevelData = {
   intro: {
     complexity: 2,
     dialogue: [
-      'Uma praça cheia de ratos! Vamos usar o jardim como cobertura.',
-      'Jardim? Eu preferia um spa, mas... vamos nessa, querida!',
+      'Raya: "Uma praça cheia de ratos! Posso caçar um?"',
+      'Cruella: "Não somos aqui para fazer amigos. Ou inimigos com patas."',
     ],
   },
   decorations: [
@@ -263,6 +270,14 @@ export const LEVEL_1_4: LevelData = {
     { x: 2600, y: 80 },
   ],
   nextLevel: '1-5',
+  intro: {
+    complexity: 2,
+    dialogue: [
+      'Raya: "ÁRVORES! Posso fazer xixi numa árvore??"',
+      'Cruella: "Concentra-te. Há donos nervosos em todo o parque."',
+      'Raya: "...Posso fazer xixi DEPOIS de me concentrar?"',
+    ],
+  },
   decorations: [
     { type: 'arvore',   x: 150,  y: G },
     { type: 'banco',    x: 380,  y: G },
@@ -328,8 +343,8 @@ export const LEVEL_1_5: LevelData = {
   intro: {
     complexity: 2,
     dialogue: [
-      'O mercadinho está infestado! Donos nervosos por todo lado.',
-      'Aquele cheiro de churrasco é perturbador... e delicioso.',
+      'Cruella: "O mercado. Cheiro insuportável mas excelente cobertura."',
+      'Raya: "Cheiro a churrasco! Focada. Estou focada. Que churrasco magnifico."',
     ],
   },
   decorations: [
@@ -368,6 +383,19 @@ export const LEVEL_1_BOSS: LevelData = {
   checkpointX: 80, checkpointY: 300,
   enemies: [], items: [], goldenBones: [],
   nextLevel: '2-1', isBossLevel: true,
+  intro: {
+    complexity: 3,
+    dialogue: [
+      'Raya: "Seu Bigodes. Ouvi falar dele. É enorme."',
+      'Cruella: "Todos os gatos são enormes quando bloqueiam a saída."',
+      'Raya: "...Ele é mesmo muito enorme, Cruella."',
+    ],
+  },
+  worldTransition: [
+    'Raya: "Seu Bigodes foi derrotado! Incrível!"',
+    'Cruella: "É o mínimo esperado. Precisamos de subir o exterior do prédio."',
+    'Raya: "...O lado de fora? Lá em cima?"',
+  ],
   decorations: [
     { type: 'saco_lixo', x: 120, y: G },
     { type: 'lixeira',   x: 280, y: G },
