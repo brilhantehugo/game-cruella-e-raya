@@ -112,9 +112,11 @@ export abstract class HumanEnemy extends Enemy {
   // ─── State behaviors ──────────────────────────────────────────────────────
 
   private _doPatrol(body: Phaser.Physics.Arcade.Body): void {
-    if (body.blocked.left || this.x <= this._patrolLeft) {
+    const worldLeft  = this.scene.physics.world.bounds.left + 16
+    const worldRight = this.scene.physics.world.bounds.right - 16
+    if (body.blocked.left || this.x <= this._patrolLeft || this.x <= worldLeft) {
       this.direction = 1
-    } else if (body.blocked.right || this.x >= this._patrolRight) {
+    } else if (body.blocked.right || this.x >= this._patrolRight || this.x >= worldRight) {
       this.direction = -1
     }
     this.setVelocityX(this.direction * this._config.patrolSpeed)
