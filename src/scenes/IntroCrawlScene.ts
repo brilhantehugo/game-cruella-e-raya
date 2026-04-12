@@ -3,36 +3,23 @@ import { KEYS, GAME_WIDTH, GAME_HEIGHT } from '../constants'
 import { SoundManager } from '../audio/SoundManager'
 
 const CRAWL_TEXT = [
-  'Em uma tarde ensolarada no bairro...',
+  'Numa cidade qualquer, numa noite de quinta-feira…',
   '',
-  'Raya, a maior e mais corajosa das duas,',
-  'convenceu Cruella de que era absolutamente',
-  'necessário investigar o outro lado da rua.',
+  'Cruella De Vil estava em apuros.',
+  'Como de costume.',
   '',
-  'Cruella, a menor e mais cética,',
-  'latiu três vezes em sinal de protesto.',
-  'Mas foi mesmo assim.',
+  'A sua única aliada: Raya,',
+  'uma labrador de 4 anos com excesso de confiança',
+  'e falta de bom gosto.',
   '',
-  'O portão estava aberto.',
-  'O mundo estava ali.',
+  'O plano: sair do prédio sem serem vistas.',
+  'Simples. Infalível.',
   '',
-  'Havia gatos que as olhavam com desprezo.',
-  'Pombos que não ligavam para ninguém.',
-  'Ratos que corriam rápido demais.',
-  'E um Dono Nervoso que gritava seus nomes',
-  'em cada esquina.',
+  'Completamente impossível.',
   '',
-  'No fim da rua, dizem os mais velhos,',
-  'mora Seu Bigodes — um gato enorme e ranzinza',
-  'que guarda o maior depósito de lixo do bairro',
-  'como se fosse um tesouro sagrado.',
+  'Mas Cruella nunca perde.',
   '',
-  'Ninguém voltou de lá para contar a história.',
-  '',
-  'Até hoje.',
-  '',
-  'Boa sorte, pequenas.',
-  'Vocês vão precisar.',
+  'E Raya nunca para de latir.',
 ]
 
 export class IntroCrawlScene extends Phaser.Scene {
@@ -84,7 +71,7 @@ export class IntroCrawlScene extends Phaser.Scene {
     })
 
     // ── "A long time ago…" header ───────────────────────────────────────
-    const headerTxt = this.add.text(GAME_WIDTH / 2, 38, 'Em uma galáxia muito, muito próxima…', {
+    const headerTxt = this.add.text(GAME_WIDTH / 2, 38, 'Em algures num prédio de Lisboa…', {
       fontSize: '13px',
       color: '#7799cc',
       fontStyle: 'italic',
