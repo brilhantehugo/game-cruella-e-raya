@@ -72,8 +72,8 @@ export const LEVEL_2_1: LevelData = {
   intro: {
     complexity: 2,
     dialogue: [
-      'O passeio está cheio de ratos à noite. Cuidado com o zelador!',
-      'Que horror. Eu mereço um táxi, não isto.',
+      'Cruella: "Passeio à noite. Quase civilizado."',
+      'Raya: "Há ratos, zeladores, e o chão está molhado. Adoro!"',
     ],
   },
   decorations: [
@@ -141,8 +141,8 @@ export const LEVEL_2_2: LevelData = {
   intro: {
     complexity: 2,
     dialogue: [
-      'O pátio... parece que tem gatos em todo lado.',
-      'Óptimo. Uma visita guiada ao inferno felino.',
+      'Raya: "Pátio! Espaço aberto. Boa visibilidade."',
+      'Cruella: "Gatos em todo o lado. Alguém os alimentou em excesso."',
     ],
   },
   decorations: [
@@ -206,6 +206,14 @@ export const LEVEL_2_3: LevelData = {
     { x: 2500, y: 80 },
   ],
   nextLevel: '2-4',
+  intro: {
+    complexity: 2,
+    dialogue: [
+      'Raya: "Garagem. Cheiro a óleo e a zeladores."',
+      'Cruella: "Mais zeladores? Quantos tem este prédio?!"',
+      'Raya: "Muitos. É um prédio muito bem guardado."',
+    ],
+  },
   decorations: [
     { type: 'carro',     x: 200,  y: G, blocking: true },
     { type: 'lixeira',   x: 450,  y: G },
@@ -280,8 +288,9 @@ export const LEVEL_2_4: LevelData = {
   intro: {
     complexity: 3,
     dialogue: [
-      'As escadas de emergência — vamos subir andar a andar!',
-      'Sempre soube que morreria a subir escadas. Vamos lá.',
+      'Cruella: "Escadas de emergência. Sempre soube que morreria a subir escadas."',
+      'Raya: "Estamos quase no telhado! Vai ser incrível!"',
+      'Cruella: "Isso é suposto motivar-me?"',
     ],
   },
   decorations: [
@@ -356,6 +365,14 @@ export const LEVEL_2_5: LevelData = {
     { x: 2900, y: 80 },
   ],
   nextLevel: '2-boss',
+  intro: {
+    complexity: 2,
+    dialogue: [
+      'Raya: "Varandas! Conseguimos ver toda a cidade daqui!"',
+      'Cruella: "Não olhes para baixo. Não olhes para baixo. Não—"',
+      'Raya: "Eu olhei para baixo."',
+    ],
+  },
   decorations: [
     { type: 'grade',     x: 150,  y: G, blocking: true },
     { type: 'poste',     x: 350,  y: G },
@@ -395,8 +412,10 @@ export const LEVEL_2_BOSS: LevelData = {
   intro: {
     complexity: 3,
     dialogue: [
-      'Um drone de vigilância — tem câmeras em todo lado!',
-      'Eu comprei um drone igual a este. O meu era mais elegante.',
+      'Raya: "Um drone. Com câmeras. E bombas."',
+      'Cruella: "Reconheço aquele modelo. Eu tinha um igual."',
+      'Raya: "E agora ele quer matar-nos."',
+      'Cruella: "O meu era mais elegante."',
     ],
   },
   decorations: [
