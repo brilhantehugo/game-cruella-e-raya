@@ -51,6 +51,7 @@ export const KEYS = {
   LEVEL_INTRO: 'LevelIntroScene',
   PROFILE_SELECT: 'ProfileSelectScene',
   WORLD_MAP:      'WorldMapScene',
+  ENDING:         'EndingScene',
   // projéteis de boss
   DIRT_BALL: 'dirt_ball',
   BLADE:     'blade',

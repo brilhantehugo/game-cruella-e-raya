@@ -48,7 +48,8 @@ export interface LevelData {
   decorations: DecorationSpawn[]
   intro?: {
     complexity: 1 | 2 | 3          // 1=fácil, 2=médio, 3=difícil
-    dialogue: [string, string]     // [Raya fala, Cruella fala]
+    dialogue: string[]          // 2–4 linhas, formato "Personagem: texto"
   }
+  worldTransition?: string[]    // diálogo pós-boss mostrado em LevelCompleteScene
   miniBoss?: MiniBossConfig
 }
