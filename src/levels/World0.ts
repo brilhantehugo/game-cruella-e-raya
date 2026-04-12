@@ -85,8 +85,8 @@ export const LEVEL_0_1: LevelData = {
   intro: {
     complexity: 1,
     dialogue: [
-      'Precisamos passar pela sala sem que Hugo e Hannah nos vejam!',
-      'Deixa comigo, eu sei latir bem alto para distraí-los!',
+      'Raya: "Vejo Hugo e Hannah. Precisamos de um plano!"',
+      'Cruella: "O plano É correr. O teu plano foi sempre correr."',
     ],
   },
   decorations: [
@@ -144,6 +144,13 @@ export const LEVEL_0_2: LevelData = {
     { x: 1700, y: 80 },
   ],
   nextLevel: '0-3',
+  intro: {
+    complexity: 1,
+    dialogue: [
+      'Raya: "Corredor estreito. Vou à frente para proteger-te!"',
+      'Cruella: "Eu própria consigo proteger-me, obrigada. Vai."',
+    ],
+  },
   decorations: [
     { type: 'cadeira',  x: 150,  y: G, blocking: true },
     { type: 'balcao',   x: 370,  y: G, blocking: true },
@@ -206,8 +213,8 @@ export const LEVEL_0_3: LevelData = {
   intro: {
     complexity: 2,
     dialogue: [
-      'O estacionamento! Zeladores e gatos estão de olho. Não nos peguem!',
-      'Já passei pelo aspirador e pelo corredor — vamos logo, Raya!',
+      'Raya: "Estacionamento! Há carros! Posso farejar os pneus?"',
+      'Cruella: "Focada. Precisamos de estar focadas. Há zeladores em todo o lado."',
     ],
   },
   decorations: [
@@ -273,6 +280,13 @@ export const LEVEL_0_4: LevelData = {
     { x: 2500, y: 80 },
   ],
   nextLevel: '0-5',
+  intro: {
+    complexity: 2,
+    dialogue: [
+      'Raya: "Há mais zeladores aqui do que gatos na rua!"',
+      'Cruella: "Precisamos de sair antes que percam completamente a paciência."',
+    ],
+  },
   decorations: [
     { type: 'carro',  x: 200,  y: G, blocking: true },
     { type: 'carro',  x: 500,  y: G, blocking: true },
@@ -332,6 +346,13 @@ export const LEVEL_0_5: LevelData = {
     { x: 2800, y: 80 },
   ],
   nextLevel: '0-boss',
+  intro: {
+    complexity: 2,
+    dialogue: [
+      'Raya: "Mais um andar! Estamos quase fora!"',
+      'Cruella: "Isto não era suposto ter tantos andares. Quem construiu este prédio?"',
+    ],
+  },
   decorations: [
     { type: 'carro',  x: 200,  y: G, blocking: true },
     { type: 'carro',  x: 500,  y: G, blocking: true },
@@ -377,10 +398,16 @@ export const LEVEL_0_BOSS: LevelData = {
   intro: {
     complexity: 3,
     dialogue: [
-      'O zelador do prédio está a bloquear a saída!',
-      'Cuidado com a vassoura — e com as chaves que ele atira!',
+      'Cruella: "O zelador. Guardião do único corredor de saída."',
+      'Raya: "Eu trato dele! Tenho dentes!"',
+      'Cruella: "Tens também o entusiasmo de um aspirador. Mas aprecia-se."',
     ],
   },
+  worldTransition: [
+    'Raya: "CONSEGUIMOS! Saímos do edifício!"',
+    'Cruella: "Saímos para a rua. Que é igualmente perigosa."',
+    'Raya: "Deixa-me ter este momento, Cruella."',
+  ],
   decorations: [
     { type: 'balcao',    x: 150,  y: G, blocking: true },
     { type: 'mesa',      x: 420,  y: G, blocking: true },
