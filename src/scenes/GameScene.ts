@@ -16,6 +16,12 @@ import { LevelData, MiniBossConfig } from '../levels/LevelData'
 import { WORLD1_LEVELS } from '../levels/World1'
 import { WORLD0_LEVELS } from '../levels/World0'
 import { WORLD2_LEVELS } from '../levels/World2'
+import { WORLD3_LEVELS } from '../levels/World3'
+import { GatoSelvagem } from '../entities/enemies/GatoSelvagem'
+import { Seguranca }     from '../entities/enemies/Seguranca'
+import { Porteiro }      from '../entities/enemies/Porteiro'
+import { SegurancaMoto } from '../entities/enemies/SegurancaMoto'
+import { SpotlightOverlay, type LightSource } from '../fx/SpotlightOverlay'
 import { Aspirador } from '../entities/enemies/Aspirador'
 import { Drone } from '../entities/enemies/Drone'
 import { ZeladorBoss } from '../entities/enemies/ZeladorBoss'
@@ -50,12 +56,13 @@ export class GameScene extends Phaser.Scene {
   private _miniBossTriggerFired = false
   private _fx!: EffectsManager
   private _lastTrailAt: number = 0
+  private _spotlight: SpotlightOverlay | null = null
 
   constructor() { super(KEYS.GAME) }
 
   create(): void {
     this._gameOverPending = false
-    const ALL_LEVELS = { ...WORLD0_LEVELS, ...WORLD1_LEVELS, ...WORLD2_LEVELS }
+    const ALL_LEVELS = { ...WORLD0_LEVELS, ...WORLD1_LEVELS, ...WORLD2_LEVELS, ...WORLD3_LEVELS }
     this.currentLevel = ALL_LEVELS[gameState.currentLevel] ?? WORLD0_LEVELS['0-1']
 
     // Show level intro screen for non-boss levels that have intro data
@@ -82,6 +89,8 @@ export class GameScene extends Phaser.Scene {
     this.events.once('shutdown', () => {
       SoundManager.stopBgm()
       this._parallax.destroy()
+      this._spotlight?.destroy()
+      this._spotlight = null
     })
 
     this._buildDecorations()
@@ -102,6 +111,11 @@ export class GameScene extends Phaser.Scene {
     this._spawnItems()
     this._setupCollisions()
     this._setupCamera()
+
+    // ── Spotlight overlay (World 3) ──────────────────────────────────────────
+    if (this.currentLevel.hasSpotlight) {
+      this._spotlight = new SpotlightOverlay(this, this.currentLevel.playerAuraRadius ?? 130)
+    }
 
     // Boss intro cinemática — deve rodar depois de _setupCamera() para que
     // cam.stopFollow() e setBounds() operem sobre uma câmera já configurada
@@ -324,6 +338,9 @@ export class GameScene extends Phaser.Scene {
         case 'hannah':    enemy = new Hannah(this, spawn.x, spawn.y);          break
         case 'zelador':   enemy = new Zelador(this, spawn.x, spawn.y);         break
         case 'morador':   enemy = new Morador(this, spawn.x, spawn.y);         break
+        case 'gato_selvagem': enemy = new GatoSelvagem(this, spawn.x, spawn.y); break
+        case 'seguranca':     enemy = new Seguranca(this, spawn.x, spawn.y);    break
+        case 'porteiro':      enemy = new Porteiro(this, spawn.x, spawn.y);     break
       }
       if (!enemy) return
       this.enemyGroup.add(enemy)
@@ -335,6 +352,18 @@ export class GameScene extends Phaser.Scene {
           activeBody.setVelocityX(knockbackDir * 180)
           activeBody.setVelocityY(-200)
           if (gameState.isDead()) this._gameOver()
+        })
+      }
+      if (enemy instanceof Porteiro) {
+        enemy.on('spawnChave', (data: { x: number; y: number; vx: number; vy: number }) => {
+          if (!this.scene.isActive(KEYS.GAME)) return
+          if (!this._bossProjectileGroup) this._bossProjectileGroup = this.physics.add.group()
+          const chave = this.physics.add.image(data.x, data.y, KEYS.CHAVE)
+          chave.setDepth(5)
+          const body = chave.body as Phaser.Physics.Arcade.Body
+          body.setVelocity(data.vx, data.vy)
+          this._bossProjectileGroup.add(chave)
+          this.time.delayedCall(3000, () => { if (chave.active) chave.destroy() })
         })
       }
       enemy.on('died', (e: Enemy) => {
@@ -440,6 +469,31 @@ export class GameScene extends Phaser.Scene {
           this._fx.enemyDeathBurst(b.x, b.y)
           this._spawnScorePopup(b.x, b.y - 30, '+500', '#ff4444')
           this._levelComplete()
+        })
+
+        this.time.addEvent({
+          delay: 100, loop: true, callback: () => {
+            if (boss.active && this.player) boss.setPlayerPos(this.player.x, this.player.y)
+          },
+        })
+      } else if (this.currentLevel.id === '3-boss') {
+        const mapWidth = this.currentLevel.tileWidthCols * 32
+        const boss = new SegurancaMoto(this, mapWidth - 100, 352)
+        this.enemyGroup.add(boss)
+
+        if (!this._bossProjectileGroup) this._bossProjectileGroup = this.physics.add.group()
+
+        boss.on('died', (b: Enemy) => {
+          gameState.addScore(1000)
+          gameState.sessionEnemiesKilled++
+          this._fx.enemyDeathBurst(b.x, b.y)
+          this._spawnScorePopup(b.x, b.y - 30, '+1000', '#22ccff')
+          if (this._bossExit) {
+            this._bossExit.setVisible(true)
+            ;(this._bossExit.body as Phaser.Physics.Arcade.StaticBody).enable = true
+            this._bossExit.refreshBody()
+            this.cameras.main.shake(200, 0.006)
+          }
         })
 
         this.time.addEvent({
@@ -822,6 +876,30 @@ export class GameScene extends Phaser.Scene {
       this._followingSprite = this.player.active
       this.cameras.main.startFollow(this._followingSprite, true, 0.1, 0.1)
     }
+    // ── Spotlight update (World 3) ──────────────────────────────────────────
+    if (this._spotlight) {
+      const cam = this.cameras.main
+      const worldSources: LightSource[] = []
+      for (const e of (this.enemyGroup?.getChildren() ?? []) as Enemy[]) {
+        if (e instanceof Seguranca)     worldSources.push((e as Seguranca).getLightSource())
+        if (e instanceof Porteiro)      worldSources.push((e as Porteiro).getLightSource())
+        if (e instanceof SegurancaMoto) worldSources.push((e as SegurancaMoto).getLightSource())
+      }
+      const screenSources: LightSource[] = worldSources.map(s => ({
+        ...s, x: s.x - cam.scrollX, y: s.y - cam.scrollY,
+      }))
+      const psx = this.player.x - cam.scrollX
+      const psy = this.player.y - cam.scrollY
+      this._spotlight.update(psx, psy, screenSources)
+
+      const auraR = this.currentLevel.playerAuraRadius ?? 130
+      for (const e of (this.enemyGroup?.getChildren() ?? []) as Enemy[]) {
+        if (e instanceof GatoSelvagem) {
+          ;(e as GatoSelvagem).setLightSources(worldSources, auraR)
+        }
+      }
+    }
+
     enemies.forEach(e => {
       e.update(time, delta)
       if (e instanceof DonoNervoso) e.setTarget(this.player.x)

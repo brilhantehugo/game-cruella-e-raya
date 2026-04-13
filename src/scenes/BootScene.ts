@@ -1065,6 +1065,62 @@ export class BootScene extends Phaser.Scene {
     g.fillStyle(0x302010); g.fillRect(10, 39, 7, 3)
     gen(KEYS.HUGO, 18, 42)
 
+    // ── NPCs — SEGURANÇA (uniforme escuro, lanterna amarela) ──────────────────
+    clr()
+    g.fillStyle(0x222222); g.fillRect(3, 0, 12, 5)        // cabelo
+    g.fillStyle(0xf0c090); g.fillRect(3, 3, 12, 11)       // cabeça
+    g.fillStyle(0x222222); g.fillRect(5, 7, 2, 2); g.fillRect(11, 7, 2, 2) // olhos
+    g.fillStyle(0xf0c090); g.fillRect(6, 14, 6, 3)        // pescoço
+    g.fillStyle(0x223344); g.fillRect(2, 17, 14, 10)      // uniforme azul-escuro
+    g.fillStyle(0x112233); g.fillRect(2, 17, 14, 3)       // ombros
+    g.fillStyle(0x223344); g.fillRect(0, 17, 2, 8)        // braço esq
+    g.fillStyle(0xf0c090); g.fillRect(0, 25, 2, 3)        // mão esq
+    g.fillStyle(0x223344); g.fillRect(16, 17, 2, 8)       // braço dir
+    g.fillStyle(0xffee00); g.fillRect(16, 20, 4, 7)       // lanterna amarela
+    g.fillStyle(0x111122); g.fillRect(2, 27, 6, 12)       // calça preta
+    g.fillStyle(0x111122); g.fillRect(10, 27, 6, 12)
+    g.fillStyle(0x110000); g.fillRect(1, 39, 7, 3)        // sapatos
+    g.fillStyle(0x110000); g.fillRect(10, 39, 7, 3)
+    gen(KEYS.SEGURANCA, 20, 42)
+
+    // ── NPCs — PORTEIRO (colete amarelo, braços cruzados) ────────────────────
+    clr()
+    g.fillStyle(0x555555); g.fillRect(3, 0, 12, 5)        // cabelo cinza
+    g.fillStyle(0xf0c090); g.fillRect(3, 3, 12, 11)       // cabeça
+    g.fillStyle(0x222222); g.fillRect(5, 7, 2, 2); g.fillRect(11, 7, 2, 2) // olhos
+    g.fillStyle(0xf0c090); g.fillRect(6, 14, 6, 3)        // pescoço
+    g.fillStyle(0xffffff); g.fillRect(2, 17, 14, 10)      // camisa branca
+    g.fillStyle(0xcc8800); g.fillRect(3, 17, 4, 10)       // colete esq
+    g.fillStyle(0xcc8800); g.fillRect(11, 17, 4, 10)      // colete dir
+    g.fillStyle(0xffffff); g.fillRect(0, 19, 4, 6)        // braço esq
+    g.fillStyle(0xffffff); g.fillRect(14, 19, 4, 6)       // braço dir
+    g.fillStyle(0xf0c090); g.fillRect(0, 25, 4, 3)        // mão esq
+    g.fillStyle(0xf0c090); g.fillRect(14, 25, 4, 3)       // mão dir
+    g.fillStyle(0x444444); g.fillRect(2, 27, 6, 12)       // calça
+    g.fillStyle(0x444444); g.fillRect(10, 27, 6, 12)
+    g.fillStyle(0x222222); g.fillRect(1, 39, 7, 3)        // sapatos
+    g.fillStyle(0x222222); g.fillRect(10, 39, 7, 3)
+    gen(KEYS.PORTEIRO, 18, 42)
+
+    // ── VEÍCULO — SEGURANÇA EM MOTO (moto escura + rider + farol) ────────────
+    clr()
+    // Moto — corpo
+    g.fillStyle(0x1a1a2a); g.fillRect(10, 22, 40, 16)     // chassis
+    g.fillStyle(0x2a2a3a); g.fillRect(8, 18, 44, 8)       // carenagem
+    // Rodas
+    g.fillStyle(0x111111); g.fillCircle(18, 38, 10)        // roda traseira
+    g.fillStyle(0x111111); g.fillCircle(46, 38, 10)        // roda dianteira
+    g.fillStyle(0x333333); g.fillCircle(18, 38, 6)         // jante traseira
+    g.fillStyle(0x333333); g.fillCircle(46, 38, 6)         // jante dianteira
+    // Farol (frente → esquerda, moto vai para a esquerda)
+    g.fillStyle(0xffee44); g.fillEllipse(8, 22, 12, 8)     // farol amarelo
+    g.fillStyle(0xffffff, 0.6); g.fillEllipse(7, 21, 6, 4) // brilho
+    // Piloto
+    g.fillStyle(0x223344); g.fillRect(24, 8, 14, 14)       // torso uniforme
+    g.fillStyle(0x111111); g.fillRect(25, 4, 10, 7)        // capacete
+    g.fillStyle(0xffcc00); g.fillRect(26, 5, 8, 3)         // visor dourado
+    gen(KEYS.SEGURANCA_MOTO, 60, 50)
+
     // ── NPCs — HANNAH (mulher, blusa vermelha) ────────────────────────────────
     clr()
     // Cabelo longo (castanho claro)

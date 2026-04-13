@@ -1,4 +1,5 @@
 export type EnemyType = 'gato' | 'pombo' | 'rato' | 'dono' | 'aspirador' | 'hugo' | 'hannah' | 'zelador' | 'morador'
+  | 'gato_selvagem' | 'seguranca' | 'porteiro'
 export interface DecorationSpawn { type: string; x: number; y: number; blocking?: boolean }
 
 export type ItemType =
@@ -12,7 +13,7 @@ export interface EnemySpawn { type: EnemyType; x: number; y: number }
 export interface ItemSpawn  { type: ItemType;  x: number; y: number }
 
 export type BackgroundTheme = 'rua' | 'praca' | 'mercado' | 'boss' | 'apartamento' | 'apto_boss'
-  | 'exterior' | 'patio' | 'telhado'
+  | 'exterior' | 'patio' | 'telhado' | 'rua_noite'
 
 export interface MiniBossConfig {
   /** Posição X que o jogador deve cruzar para disparar o encontro */
@@ -51,5 +52,7 @@ export interface LevelData {
     dialogue: string[]          // 2–4 linhas, formato "Personagem: texto"
   }
   worldTransition?: string[]    // diálogo pós-boss mostrado em LevelCompleteScene
+  hasSpotlight?: boolean
+  playerAuraRadius?: number   // px — usado por SpotlightOverlay; required when hasSpotlight=true
   miniBoss?: MiniBossConfig
 }
