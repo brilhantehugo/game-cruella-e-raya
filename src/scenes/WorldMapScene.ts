@@ -36,6 +36,13 @@ const MAP_NODES: MapNode[] = [
   { levelId: '2-4',    label: 'Escadas',   world: 'Mundo 2 — Exterior',    x: 248, y: 0 },
   { levelId: '2-5',    label: 'Varandas',  world: 'Mundo 2 — Exterior',    x: 324, y: 0 },
   { levelId: '2-boss', label: 'Drone',     world: 'Mundo 2 — Exterior',    x: 400, y: 0 },
+  // World 3 — Rua de Noite
+  { levelId: '3-1',    label: 'Passeio',  world: 'Mundo 3 — Rua de Noite', x: 20,  y: 0 },
+  { levelId: '3-2',    label: 'Parque',   world: 'Mundo 3 — Rua de Noite', x: 96,  y: 0 },
+  { levelId: '3-3',    label: 'Travessa', world: 'Mundo 3 — Rua de Noite', x: 172, y: 0 },
+  { levelId: '3-4',    label: 'Mercado',  world: 'Mundo 3 — Rua de Noite', x: 248, y: 0 },
+  { levelId: '3-5',    label: 'Regresso', world: 'Mundo 3 — Rua de Noite', x: 324, y: 0 },
+  { levelId: '3-boss', label: 'Moto',     world: 'Mundo 3 — Rua de Noite', x: 400, y: 0 },
 ]
 
 const MEDAL_EMOJI: Record<string, string> = {
@@ -71,8 +78,8 @@ export class WorldMapScene extends Phaser.Scene {
     line.lineBetween(20, 44, GAME_WIDTH - 20, 44)
 
     // ── Mundos ──────────────────────────────────────────────────────────
-    const worlds = ['Mundo 0 — Apartamento', 'Mundo 1 — Cidade', 'Mundo 2 — Exterior']
-    const worldStartY = [70, 200, 330]
+    const worlds = ['Mundo 0 — Apartamento', 'Mundo 1 — Cidade', 'Mundo 2 — Exterior', 'Mundo 3 — Rua de Noite']
+    const worldStartY = [58, 160, 262, 364]
 
     worlds.forEach((worldName, wi) => {
       const baseY = worldStartY[wi]
