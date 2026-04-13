@@ -6,12 +6,14 @@ import { SoundManager } from '../audio/SoundManager'
 import { WORLD0_LEVELS } from '../levels/World0'
 import { WORLD1_LEVELS } from '../levels/World1'
 import { WORLD2_LEVELS } from '../levels/World2'
+import { WORLD3_LEVELS } from '../levels/World3'
 import { LevelData } from '../levels/LevelData'
 
 const ALL_LEVELS: Record<string, LevelData> = {
   ...WORLD0_LEVELS,
   ...WORLD1_LEVELS,
   ...WORLD2_LEVELS,
+  ...WORLD3_LEVELS,
 }
 
 interface LevelCompleteData {

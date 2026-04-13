@@ -408,7 +408,12 @@ export const LEVEL_2_BOSS: LevelData = {
   spawnX: 64, spawnY: 300, exitX: 1856, exitY: 370,
   checkpointX: 80, checkpointY: 300,
   enemies: [], items: [], goldenBones: [],
-  nextLevel: null, isBossLevel: true,
+  nextLevel: '3-1', isBossLevel: true,
+  worldTransition: [
+    'Cruella: "Descemos do telhado. Só falta a rua."',
+    'Raya: "De noite. Sem trela."',
+    'Cruella: "Encantador."',
+  ],
   intro: {
     complexity: 3,
     dialogue: [
