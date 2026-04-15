@@ -152,13 +152,17 @@ export class GameScene extends Phaser.Scene {
       ease: 'Sine.easeInOut',
     })
 
-    // Etapa 2 (500–1500ms): pan até o boss (centro da arena)
+    // Etapa 2 (500–1500ms): pan até o boss
+    // 3-boss nasce à direita; todos os outros ficam no centro da arena
+    const bossWorldX = this.currentLevel.id === '3-boss'
+      ? mapWidth - 100
+      : mapWidth / 2
     this.time.delayedCall(500, () => {
       if (!this.scene.isActive(KEYS.GAME)) return
-      const bossX = mapWidth / 2
+      const bossX = bossWorldX
       const bossY = GAME_HEIGHT / 2
       // scrollX = worldX - (viewportWidth / zoom / 2) para centrar o boss na tela
-      const scrollX = bossX - GAME_WIDTH / 2 / 0.85
+      const scrollX = Phaser.Math.Clamp(bossX - GAME_WIDTH / 2 / 0.85, 0, mapWidth - GAME_WIDTH)
       const scrollY = bossY - GAME_HEIGHT / 2 / 0.85
       this.tweens.add({
         targets: cam,
@@ -172,48 +176,30 @@ export class GameScene extends Phaser.Scene {
       })
     })
 
-    // Etapa 2.5 (1100ms): fala do boss (fixa na tela via scrollFactor 0)
-    if (this.currentLevel.id === '0-boss') {
-      this.time.delayedCall(1100, () => {
-        if (!this.scene.isActive(KEYS.GAME)) return
-        const header = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2 - 10,
-          '🧹 ZELADOR DO PRÉDIO 🧹', {
-            fontSize: '20px', color: '#ffa040', fontStyle: 'bold',
-            stroke: '#331500', strokeThickness: 4,
-            backgroundColor: '#000000ee', padding: { x: 16, y: 8 },
-          }).setOrigin(0.5).setScrollFactor(0).setDepth(20).setAlpha(0)
-        const speech = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2 + 32,
-          '"Ninguém passa enquanto eu estiver de guarda!"', {
-            fontSize: '14px', color: '#aaeeff', fontStyle: 'italic',
-            stroke: '#000000', strokeThickness: 3,
-            backgroundColor: '#000000cc', padding: { x: 12, y: 6 },
-          }).setOrigin(0.5).setScrollFactor(0).setDepth(20).setAlpha(0)
-        this.tweens.add({ targets: [header, speech], alpha: 1, duration: 300 })
-        this.time.delayedCall(3000, () => {
-          if (!this.scene.isActive(KEYS.GAME)) return
-          this.tweens.add({
-            targets: [header, speech], alpha: 0, duration: 400,
-            onComplete: () => {
-              if (header.active) header.destroy()
-              if (speech.active) speech.destroy()
-            },
-          })
-        })
-      })
+    // Etapa 2.5 (1100ms): fala do boss — tabela unificada para todos os bosses
+    const BOSS_SPEECHES: Record<string, { header: string; hColor: string; speech: string; sColor: string }> = {
+      '0-boss': { header: '🧹 ZELADOR DO PRÉDIO 🧹', hColor: '#ffa040',
+                  speech: '"Ninguém passa enquanto eu estiver de guarda!"', sColor: '#ffcc88' },
+      '1-boss': { header: '🐱 SEU BIGODES 🐱',       hColor: '#ff8800',
+                  speech: '"Meu território, minha lixeira! Não vão a lugar algum!"', sColor: '#ffcc88' },
+      '2-boss': { header: '🤖 DRONE DE VIGILÂNCIA 🤖', hColor: '#22ccff',
+                  speech: '"Intruso detectado. A activar protocolo de eliminação."', sColor: '#aaeeff' },
+      '3-boss': { header: '🏍️ SEGURANÇA EM MOTO 🏍️', hColor: '#ff4444',
+                  speech: '"Desta vez não escapam. Acabou!"', sColor: '#ffaaaa' },
     }
-
-    if (this.currentLevel.id === '1-boss') {
+    const bossData = BOSS_SPEECHES[this.currentLevel.id]
+    if (bossData) {
       this.time.delayedCall(1100, () => {
         if (!this.scene.isActive(KEYS.GAME)) return
         const header = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2 - 10,
-          '🐱 SEU BIGODES 🐱', {
-            fontSize: '20px', color: '#ff8800', fontStyle: 'bold',
-            stroke: '#2a1a00', strokeThickness: 4,
+          bossData.header, {
+            fontSize: '20px', color: bossData.hColor, fontStyle: 'bold',
+            stroke: '#000000', strokeThickness: 4,
             backgroundColor: '#000000ee', padding: { x: 16, y: 8 },
           }).setOrigin(0.5).setScrollFactor(0).setDepth(20).setAlpha(0)
-        const speech = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2 + 32,
-          '"Meu território, minha lixeira! Não vão a lugar algum!"', {
-            fontSize: '14px', color: '#ffcc88', fontStyle: 'italic',
+        const speech = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2 + 36,
+          bossData.speech, {
+            fontSize: '14px', color: bossData.sColor, fontStyle: 'italic',
             stroke: '#000000', strokeThickness: 3,
             backgroundColor: '#000000cc', padding: { x: 12, y: 6 },
           }).setOrigin(0.5).setScrollFactor(0).setDepth(20).setAlpha(0)
@@ -736,7 +722,7 @@ export class GameScene extends Phaser.Scene {
       })
     })
 
-    // Projéteis do boss Aspirador — colidem com chão e danificam jogador
+    // Projéteis dos bosses — colidem com chão e danificam jogador
     if (this._bossProjectileGroup) {
       this.physics.add.collider(this._bossProjectileGroup, this.groundLayer, (proj) => {
         ;(proj as Phaser.Physics.Arcade.Image).destroy()
