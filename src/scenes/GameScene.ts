@@ -33,6 +33,7 @@ import { Morador } from '../entities/enemies/Morador'
 import { ParallaxBackground } from '../background/ParallaxBackground'
 import { SoundManager } from '../audio/SoundManager'
 import { EffectsManager } from '../fx/EffectsManager'
+import { AchievementManager } from '../achievements/AchievementManager'
 
 export class GameScene extends Phaser.Scene {
   private player!: Player
@@ -57,11 +58,22 @@ export class GameScene extends Phaser.Scene {
   private _fx!: EffectsManager
   private _lastTrailAt: number = 0
   private _spotlight: SpotlightOverlay | null = null
+  private _am?: AchievementManager      // persists across levels
+  private _bossStartTime = 0
+  private _livesAtBossStart = 0
+  private _killCountInLevel = 0
 
   constructor() { super(KEYS.GAME) }
 
   create(): void {
     this._gameOverPending = false
+    if (!this._am) {
+      this._am = new AchievementManager((def) => {
+        const ui = this.scene.get(KEYS.UI) as any
+        ui?.showAchievementToast?.(def.icon, def.title, def.description)
+      })
+    }
+    this._killCountInLevel = 0
     const ALL_LEVELS = { ...WORLD0_LEVELS, ...WORLD1_LEVELS, ...WORLD2_LEVELS, ...WORLD3_LEVELS }
     this.currentLevel = ALL_LEVELS[gameState.currentLevel] ?? WORLD0_LEVELS['0-1']
 
@@ -355,6 +367,8 @@ export class GameScene extends Phaser.Scene {
       enemy.on('died', (e: Enemy) => {
         gameState.addScore(50)
         gameState.sessionEnemiesKilled++
+        this._am?.notify('enemy_killed')
+        this._killCountInLevel++
         this._fx.enemyDeathBurst(e.x, e.y)
         this._spawnScorePopup(e.x, e.y - 20, '+50', '#f97316')
       })
@@ -364,6 +378,8 @@ export class GameScene extends Phaser.Scene {
       if (this.currentLevel.id === '0-boss') {
         // ZeladorBoss — Zelador do Prédio
         const mapWidth = this.currentLevel.tileWidthCols * 32
+        this._bossStartTime = this.time.now
+        this._livesAtBossStart = gameState.hearts
         const boss = new ZeladorBoss(this, mapWidth / 2, 352)
         this.enemyGroup.add(boss)
 
@@ -385,6 +401,8 @@ export class GameScene extends Phaser.Scene {
           minion.on('died', (e: Enemy) => {
             gameState.addScore(SCORING.ENEMY_KILL)
             gameState.sessionEnemiesKilled++
+            this._am?.notify('enemy_killed')
+            this._killCountInLevel++
             this._fx.enemyDeathBurst(e.x, e.y)
             this._spawnScorePopup(e.x, e.y - 20, '+50', '#f97316')
           })
@@ -393,6 +411,12 @@ export class GameScene extends Phaser.Scene {
         boss.on('died', (b: Enemy) => {
           gameState.addScore(1000)
           gameState.sessionEnemiesKilled++
+          this._am?.notify('boss_defeated', {
+            levelId: this.currentLevel.id,
+            fightDurationMs: this.time.now - this._bossStartTime,
+            damageTaken: this._livesAtBossStart - gameState.hearts,
+            playerHpFull: gameState.hearts >= this._livesAtBossStart,
+          })
           this._fx.enemyDeathBurst(b.x, b.y)
           this._spawnScorePopup(b.x, b.y - 30, '+1000', '#22ccff')
           if (this._bossExit) {
@@ -422,6 +446,8 @@ export class GameScene extends Phaser.Scene {
       } else if (this.currentLevel.id === '2-boss') {
         // Drone boss
         const mapWidth = this.currentLevel.tileWidthCols * 32
+        this._bossStartTime = this.time.now
+        this._livesAtBossStart = gameState.hearts
         const boss = new Drone(this, mapWidth / 2, 180)
         this.enemyGroup.add(boss)
 
@@ -452,6 +478,12 @@ export class GameScene extends Phaser.Scene {
         boss.on('died', (b: Enemy) => {
           gameState.addScore(500)
           gameState.sessionEnemiesKilled++
+          this._am?.notify('boss_defeated', {
+            levelId: this.currentLevel.id,
+            fightDurationMs: this.time.now - this._bossStartTime,
+            damageTaken: this._livesAtBossStart - gameState.hearts,
+            playerHpFull: gameState.hearts >= this._livesAtBossStart,
+          })
           this._fx.enemyDeathBurst(b.x, b.y)
           this._spawnScorePopup(b.x, b.y - 30, '+500', '#ff4444')
           this._levelComplete()
@@ -464,6 +496,8 @@ export class GameScene extends Phaser.Scene {
         })
       } else if (this.currentLevel.id === '3-boss') {
         const mapWidth = this.currentLevel.tileWidthCols * 32
+        this._bossStartTime = this.time.now
+        this._livesAtBossStart = gameState.hearts
         const boss = new SegurancaMoto(this, mapWidth - 100, 352)
         this.enemyGroup.add(boss)
 
@@ -472,6 +506,12 @@ export class GameScene extends Phaser.Scene {
         boss.on('died', (b: Enemy) => {
           gameState.addScore(1000)
           gameState.sessionEnemiesKilled++
+          this._am?.notify('boss_defeated', {
+            levelId: this.currentLevel.id,
+            fightDurationMs: this.time.now - this._bossStartTime,
+            damageTaken: this._livesAtBossStart - gameState.hearts,
+            playerHpFull: gameState.hearts >= this._livesAtBossStart,
+          })
           this._fx.enemyDeathBurst(b.x, b.y)
           this._spawnScorePopup(b.x, b.y - 30, '+1000', '#22ccff')
           if (this._bossExit) {
@@ -489,11 +529,19 @@ export class GameScene extends Phaser.Scene {
         })
       } else {
         // Seu Bigodes boss
+        this._bossStartTime = this.time.now
+        this._livesAtBossStart = gameState.hearts
         const boss = new SeuBigodes(this, 480, 360)
         this.enemyGroup.add(boss)
         boss.on('died', (b: Enemy) => {
           gameState.addScore(1000)
           gameState.sessionEnemiesKilled++
+          this._am?.notify('boss_defeated', {
+            levelId: this.currentLevel.id,
+            fightDurationMs: this.time.now - this._bossStartTime,
+            damageTaken: this._livesAtBossStart - gameState.hearts,
+            playerHpFull: gameState.hearts >= this._livesAtBossStart,
+          })
           gameState.collarOfGold = true
           this._fx.enemyDeathBurst(b.x, b.y)
           this._spawnScorePopup(b.x, b.y - 30, '+1000', '#22c55e')
@@ -504,6 +552,8 @@ export class GameScene extends Phaser.Scene {
           minion.on('died', (e: Enemy) => {
             gameState.addScore(SCORING.ENEMY_KILL)
             gameState.sessionEnemiesKilled++
+            this._am?.notify('enemy_killed')
+            this._killCountInLevel++
             this._fx.enemyDeathBurst(e.x, e.y)
             this._spawnScorePopup(e.x, e.y - 20, '+50', '#f97316')
           })
@@ -572,6 +622,8 @@ export class GameScene extends Phaser.Scene {
       SoundManager.playBgm(KEYS.BGM_WORLD1, this)
       gameState.addScore(500)
       gameState.sessionEnemiesKilled++
+      this._am?.notify('enemy_killed')
+      this._killCountInLevel++
       this._fx.enemyDeathBurst(b.x, b.y)
       this._spawnScorePopup(b.x, b.y - 30, '+500', '#22ccff')
     })
@@ -769,6 +821,7 @@ export class GameScene extends Phaser.Scene {
         SoundManager.play('collectBone')
         this._fx.boneSpark(item.x, item.y)
         this._spawnScorePopup(item.x, item.y - 16, '+10', '#ffff00')
+        this._am?.notify('item_collected', { type: 'bone' })
         break
       case 'golden_bone':
         gameState.collectGoldenBone(gameState.currentLevel, (item as GoldenBone).boneIndex)
@@ -776,10 +829,12 @@ export class GameScene extends Phaser.Scene {
         SoundManager.play('collectGolden')
         this._fx.goldenBoneBurst(item.x, item.y)
         this._spawnScorePopup(item.x, item.y - 16, '+500', '#ffd700')
+        this._am?.notify('golden_bone')
         break
       case 'pizza':
         gameState.restoreHeart()
         this._spawnScorePopup(item.x, item.y - 16, '❤️', '#ff6b6b')
+        this._am?.notify('item_collected', { type: 'pizza' })
         break
       case 'laco': case 'coleira': case 'chapeu': case 'bandana':
         gameState.equipAccessory(type as any)
@@ -790,6 +845,7 @@ export class GameScene extends Phaser.Scene {
         SoundManager.play('powerUp')
         this._fx.powerUpBurst(this.player.x, this.player.y, type)
         this._spawnScorePopup(item.x, item.y - 16, '✨', '#00ffff')
+        this._am?.notify('item_collected', { type })
     }
     item.destroy()
   }
@@ -812,6 +868,18 @@ export class GameScene extends Phaser.Scene {
       ? Date.now() - gameState.sessionStartTime
       : 0
 
+    const timeLeft = Math.max(0, this.currentLevel.timeLimit - Math.floor(elapsedMs / 1000))
+    this._am?.notify('level_complete', {
+      usedCheckpoint: gameState.checkpointReached,
+      timeLeft,
+      damageTaken: 0,
+      killCount: this._killCountInLevel,
+    })
+    if (this.currentLevel.isBossLevel) {
+      const world = this.currentLevel.id.split('-')[0]
+      this._am?.notify('world_complete', { world })
+    }
+
     this.scene.start(KEYS.LEVEL_COMPLETE, {
       score:         gameState.score,
       time:          elapsedMs,
@@ -827,6 +895,7 @@ export class GameScene extends Phaser.Scene {
     if (this._gameOverPending) return
     this._gameOverPending = true
     gameState.sessionDeaths++
+    this._am?.notify('player_died')
     this.scene.stop(KEYS.UI)
     this.scene.start(KEYS.GAME_OVER)
   }
