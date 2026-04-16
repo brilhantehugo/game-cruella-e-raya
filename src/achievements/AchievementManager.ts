@@ -95,7 +95,7 @@ export class AchievementManager {
         break
       case 'world_complete':
         if (payload.world) flag(`world_${payload.world}_done`)
-        if (this._state.flags['no_death_current_run'] !== false) flag('no_death_world')
+        if (this._state.flags['no_death_current_run'] === true) flag('no_death_world')
         this._state.flags['no_death_current_run'] = true
         break
       case 'ending_seen':
@@ -133,14 +133,19 @@ export class AchievementManager {
       const raw = localStorage.getItem(STORAGE_KEY)
       if (raw) {
         const parsed = JSON.parse(raw) as Partial<AchievementState>
-        return {
+        const state = {
           unlocked: parsed.unlocked ?? [],
           counters: parsed.counters ?? {},
           flags:    parsed.flags    ?? {},
         }
+        // Initialize tracking flag to true if not previously set
+        if (state.flags['no_death_current_run'] === undefined) {
+          state.flags['no_death_current_run'] = true
+        }
+        return state
       }
     } catch { /* ignore corrupt data */ }
-    return { unlocked: [], counters: {}, flags: {} }
+    return { unlocked: [], counters: {}, flags: { no_death_current_run: true } }
   }
 
   private _save(): void {

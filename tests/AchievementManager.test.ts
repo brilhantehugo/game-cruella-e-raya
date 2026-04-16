@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { AchievementManager } from '../src/achievements/AchievementManager'
+import { ACHIEVEMENTS } from '../src/achievements/achievements'
 
 // Mock localStorage
 const storage: Record<string, string> = {}
@@ -138,5 +139,41 @@ describe('AchievementManager', () => {
     am.notify('item_collected', { type: 'pizza' })
     expect(am.getCounter('pizzas_collected')).toBe(1)
     expect(am.getCounter('items_collected')).toBe(1)
+  })
+
+  it('no_death_world: desbloqueia ao completar mundo sem morrer', () => {
+    am.notify('world_complete', { world: '1' })
+    expect(onUnlock).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'no_death_world' })
+    )
+  })
+
+  it('no_death_world: não desbloqueia se morreu antes de completar mundo', () => {
+    am.notify('player_died')
+    am.notify('world_complete', { world: '1' })
+    expect(onUnlock).not.toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'no_death_world' })
+    )
+  })
+
+  it('no_death_world: pode desbloquear num mundo seguinte após ter morrido no anterior', () => {
+    am.notify('player_died')
+    am.notify('world_complete', { world: '1' })  // não desbloqueia
+    onUnlock.mockClear()
+    am.notify('world_complete', { world: '2' })  // desbloqueia (reset após world_complete)
+    expect(onUnlock).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'no_death_world' })
+    )
+  })
+
+  it('getProgress retorna current/total para counter achievements', () => {
+    am.notify('enemy_killed')
+    const def = ACHIEVEMENTS.find((a: any) => a.id === 'pest_control')!
+    expect(am.getProgress(def)).toEqual({ current: 1, total: 50 })
+  })
+
+  it('getProgress retorna null para flag achievements', () => {
+    const def = ACHIEVEMENTS.find((a: any) => a.id === 'true_ending')!
+    expect(am.getProgress(def)).toBeNull()
   })
 })
