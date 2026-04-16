@@ -24,6 +24,8 @@ export class UIScene extends Phaser.Scene {
   private _mbBar!: Phaser.GameObjects.Rectangle
   private _timeRemaining: number = 0
   private _timerActive: boolean = false
+  private _toastQueue: { title: string; description: string; icon: string }[] = []
+  private _toastActive = false
 
   constructor() { super({ key: KEYS.UI, active: false }) }
 
@@ -212,5 +214,55 @@ export class UIScene extends Phaser.Scene {
     // Indicador de mudo
     this._muteText.setText(gameState.muted ? '🔇 M' : '🔊 M')
       .setAlpha(gameState.muted ? 1 : 0.45)
+  }
+
+  showAchievementToast(icon: string, title: string, description: string): void {
+    this._toastQueue.push({ icon, title, description })
+    if (!this._toastActive) this._showNextToast()
+  }
+
+  private _showNextToast(): void {
+    if (this._toastQueue.length === 0) { this._toastActive = false; return }
+    this._toastActive = true
+    const { icon, title, description } = this._toastQueue.shift()!
+
+    const W = 800
+    const x = W - 16
+    const y = 28
+
+    const bg = this.add.rectangle(x - 110, y, 220, 56, 0x1a0a00, 0.92)
+      .setStrokeStyle(2, 0xffa040).setDepth(60).setScrollFactor(0).setAlpha(0)
+
+    const iconTxt = this.add.text(x - 206, y, icon, { fontSize: '22px' })
+      .setOrigin(0.5).setDepth(61).setScrollFactor(0).setAlpha(0)
+
+    const labelTxt = this.add.text(x - 184, y - 10, 'Conquista Desbloqueada!', {
+      fontSize: '9px', color: '#ffa040', fontStyle: 'bold',
+    }).setDepth(61).setScrollFactor(0).setAlpha(0)
+
+    const titleTxt = this.add.text(x - 184, y, title, {
+      fontSize: '12px', color: '#ffffff', fontStyle: 'bold',
+    }).setDepth(61).setScrollFactor(0).setAlpha(0)
+
+    const descTxt = this.add.text(x - 184, y + 12, description, {
+      fontSize: '9px', color: '#aaaaaa',
+    }).setDepth(61).setScrollFactor(0).setAlpha(0)
+
+    const targets = [bg, iconTxt, labelTxt, titleTxt, descTxt]
+
+    this.tweens.add({
+      targets, alpha: 1, duration: 300,
+      onComplete: () => {
+        this.time.delayedCall(3000, () => {
+          this.tweens.add({
+            targets, alpha: 0, duration: 400,
+            onComplete: () => {
+              targets.forEach(t => t.destroy())
+              this._showNextToast()
+            },
+          })
+        })
+      },
+    })
   }
 }
