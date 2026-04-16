@@ -14,6 +14,10 @@ export class EndingScene extends Phaser.Scene {
   constructor() { super(KEYS.ENDING) }
 
   create(data: EndingData): void {
+    // Notify achievement system that the ending was seen
+    const gs = this.scene.get(KEYS.GAME) as any
+    gs?._am?.notify('ending_seen')
+
     const score         = data?.score         ?? gameState.score
     const deaths        = data?.deaths        ?? 0
     const enemiesKilled = data?.enemiesKilled ?? 0
