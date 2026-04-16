@@ -872,7 +872,6 @@ export class GameScene extends Phaser.Scene {
     this._am?.notify('level_complete', {
       usedCheckpoint: gameState.checkpointReached,
       timeLeft,
-      damageTaken: 0,
       killCount: this._killCountInLevel,
     })
     if (this.currentLevel.isBossLevel) {
