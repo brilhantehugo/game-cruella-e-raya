@@ -15,6 +15,7 @@ import { LevelIntroScene } from './scenes/LevelIntroScene'
 import { ProfileSelectScene } from './scenes/ProfileSelectScene'
 import { WorldMapScene } from './scenes/WorldMapScene'
 import { EndingScene } from './scenes/EndingScene'
+import { AchievementsScene } from './scenes/AchievementsScene'
 import { GAME_WIDTH, GAME_HEIGHT, PHYSICS } from './constants'
 import { SoundManager } from './audio/SoundManager'
 import { gameState } from './GameState'
@@ -53,6 +54,7 @@ const config: Phaser.Types.Core.GameConfig = {
     ProfileSelectScene,
     WorldMapScene,
     EndingScene,
+    AchievementsScene,
   ],
 }
 

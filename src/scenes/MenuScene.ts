@@ -176,6 +176,10 @@ export class MenuScene extends Phaser.Scene {
       fontSize: '14px', color: '#7766aa',
     }).setOrigin(0.5).setInteractive()
 
+    const achievBtn = this.add.text(GAME_WIDTH / 2, 432, '[ C — 🏆 CONQUISTAS ]', {
+      fontSize: '13px', color: '#ffa040',
+    }).setOrigin(0.5).setInteractive({ useHandCursor: true })
+
     // ── Control hint ────────────────────────────────────────────────────
     this.add.text(GAME_WIDTH / 2, 438, '← → Mover   ESPAÇO Pular   SHIFT Habilidade   TAB Trocar', {
       fontSize: '10px', color: '#555555',
@@ -190,7 +194,8 @@ export class MenuScene extends Phaser.Scene {
     const goGallery   = () => { this.scene.start(KEYS.GALLERY) }
     const goHowToPlay = () => { this.scene.start(KEYS.HOW_TO_PLAY) }
     const goEnemies   = () => { this.scene.start(KEYS.ENEMY_INFO) }
-    const goProfile   = () => { this.scene.start(KEYS.PROFILE_SELECT) }
+    const goProfile       = () => { this.scene.start(KEYS.PROFILE_SELECT) }
+    const goAchievements  = () => { this.scene.start('AchievementsScene') }
 
     const kb = this.input.keyboard!
     kb.on('keydown-ENTER', startGame)
@@ -198,11 +203,13 @@ export class MenuScene extends Phaser.Scene {
     kb.on('keydown-H', goHowToPlay)
     kb.on('keydown-I', goEnemies)
     kb.on('keydown-P', goProfile)
+    kb.on('keydown-C', goAchievements)
     playBtn.on('pointerdown', startGame)
     galBtn.on('pointerdown', goGallery)
     howBtn.on('pointerdown', goHowToPlay)
     enemyBtn.on('pointerdown', goEnemies)
     profileBtn.on('pointerdown', goProfile)
+    achievBtn.on('pointerdown', goAchievements)
 
     this.events.once('shutdown', () => {
       kb.off('keydown-ENTER', startGame)
@@ -210,6 +217,7 @@ export class MenuScene extends Phaser.Scene {
       kb.off('keydown-H', goHowToPlay)
       kb.off('keydown-I', goEnemies)
       kb.off('keydown-P', goProfile)
+      kb.off('keydown-C', goAchievements)
       SoundManager.stopBgm()
     })
 
