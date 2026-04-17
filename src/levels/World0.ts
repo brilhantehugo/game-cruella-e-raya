@@ -86,7 +86,7 @@ export const LEVEL_0_1: LevelData = {
     complexity: 1,
     dialogue: [
       'Raya: "Vejo Hugo e Hannah. Precisamos de um plano!"',
-      'Cruella: "O plano É correr. O teu plano foi sempre correr."',
+      'Cruella: "O plano É correr. Seu plano sempre foi correr."',
     ],
   },
   decorations: [
@@ -147,8 +147,8 @@ export const LEVEL_0_2: LevelData = {
   intro: {
     complexity: 1,
     dialogue: [
-      'Raya: "Corredor estreito. Vou à frente para proteger-te!"',
-      'Cruella: "Eu própria consigo proteger-me, obrigada. Vai."',
+      'Raya: "Corredor estreito. Vou na frente para te proteger!"',
+      'Cruella: "Eu mesma consigo me proteger, obrigada. Vai."',
     ],
   },
   decorations: [
@@ -214,7 +214,7 @@ export const LEVEL_0_3: LevelData = {
     complexity: 2,
     dialogue: [
       'Raya: "Estacionamento! Há carros! Posso farejar os pneus?"',
-      'Cruella: "Focada. Precisamos de estar focadas. Há zeladores em todo o lado."',
+      'Cruella: "Focada. Precisamos ficar focadas. Tem zelador por todo lado."',
     ],
   },
   decorations: [
@@ -283,8 +283,8 @@ export const LEVEL_0_4: LevelData = {
   intro: {
     complexity: 2,
     dialogue: [
-      'Raya: "Há mais zeladores aqui do que gatos na rua!"',
-      'Cruella: "Precisamos de sair antes que percam completamente a paciência."',
+      'Raya: "Tem mais zelador aqui do que gato na rua!"',
+      'Cruella: "Precisamos sair antes que percam a paciência de vez."',
     ],
   },
   decorations: [
@@ -350,7 +350,7 @@ export const LEVEL_0_5: LevelData = {
     complexity: 2,
     dialogue: [
       'Raya: "Mais um andar! Estamos quase fora!"',
-      'Cruella: "Isto não era suposto ter tantos andares. Quem construiu este prédio?"',
+      'Cruella: "Não era pra ter tantos andares. Quem construiu esse prédio?"',
     ],
   },
   decorations: [
@@ -400,13 +400,13 @@ export const LEVEL_0_BOSS: LevelData = {
     dialogue: [
       'Cruella: "O zelador. Guardião do único corredor de saída."',
       'Raya: "Eu trato dele! Tenho dentes!"',
-      'Cruella: "Tens também o entusiasmo de um aspirador. Mas aprecia-se."',
+      'Cruella: "Você também tem o entusiasmo de um aspirador. Mas é apreciável."',
     ],
   },
   worldTransition: [
-    'Raya: "CONSEGUIMOS! Saímos do edifício!"',
+    'Raya: "CONSEGUIMOS! A gente saiu do prédio!"',
     'Cruella: "Saímos para a rua. Que é igualmente perigosa."',
-    'Raya: "Deixa-me ter este momento, Cruella."',
+    'Raya: "Me deixa ter esse momento, Cruella."',
   ],
   decorations: [
     { type: 'balcao',    x: 150,  y: G, blocking: true },
