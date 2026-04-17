@@ -2,6 +2,7 @@ import Phaser from 'phaser'
 import { KEYS, GAME_WIDTH, GAME_HEIGHT } from '../constants'
 import { gameState } from '../GameState'
 import { SoundManager } from '../audio/SoundManager'
+import { SettingsOverlay } from '../ui/SettingsOverlay'
 
 export class MenuScene extends Phaser.Scene {
   private _mKey!: Phaser.Input.Keyboard.Key
@@ -180,14 +181,13 @@ export class MenuScene extends Phaser.Scene {
       fontSize: '13px', color: '#ffa040',
     }).setOrigin(0.5).setInteractive({ useHandCursor: true })
 
-    // ── Control hint ────────────────────────────────────────────────────
-    this.add.text(GAME_WIDTH / 2, 438, '← → Mover   ESPAÇO Pular   SHIFT Habilidade   TAB Trocar', {
-      fontSize: '10px', color: '#555555',
-    }).setOrigin(0.5)
+    // ── Settings overlay ────────────────────────────────────────────────
+    const settingsOverlay = new SettingsOverlay(this)
 
-    this.add.text(GAME_WIDTH / 2, 451, 'M — silenciar música   I — guia de personagens', {
-      fontSize: '10px', color: '#333355',
-    }).setOrigin(0.5)
+    const settingsBtn = this.add.text(GAME_WIDTH / 2, 449, '[ S — CONFIGURAÇÕES ]', {
+      fontSize: '13px', color: '#cccccc',
+    }).setOrigin(0.5).setInteractive({ useHandCursor: true })
+    settingsBtn.on('pointerdown', () => settingsOverlay.show())
 
     // ── Actions ─────────────────────────────────────────────────────────
     const startGame   = () => { this.scene.start(KEYS.WORLD_MAP) }
@@ -198,12 +198,17 @@ export class MenuScene extends Phaser.Scene {
     const goAchievements  = () => { this.scene.start('AchievementsScene') }
 
     const kb = this.input.keyboard!
+    const onS   = () => settingsOverlay.show()
+    const onEsc = () => { if (settingsOverlay.isVisible()) settingsOverlay.hide() }
+
     kb.on('keydown-ENTER', startGame)
     kb.on('keydown-G', goGallery)
     kb.on('keydown-H', goHowToPlay)
     kb.on('keydown-I', goEnemies)
     kb.on('keydown-P', goProfile)
     kb.on('keydown-C', goAchievements)
+    kb.on('keydown-S',   onS)
+    kb.on('keydown-ESC', onEsc)
     playBtn.on('pointerdown', startGame)
     galBtn.on('pointerdown', goGallery)
     howBtn.on('pointerdown', goHowToPlay)
@@ -218,6 +223,8 @@ export class MenuScene extends Phaser.Scene {
       kb.off('keydown-I', goEnemies)
       kb.off('keydown-P', goProfile)
       kb.off('keydown-C', goAchievements)
+      kb.off('keydown-S',   onS)
+      kb.off('keydown-ESC', onEsc)
       SoundManager.stopBgm()
     })
 
