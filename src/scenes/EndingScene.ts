@@ -10,6 +10,15 @@ interface EndingData {
   enemiesKilled: number
 }
 
+const EPILOGUE_LINES: { text: string; color: string }[] = [
+  { text: 'Raya: "Conseguimos! A gente tá FORA! Eu sabia! Eu SABIA!"',                   color: '#88ffaa' },
+  { text: 'Cruella: "Claro que sabia. Não para de falar nisso desde o primeiro andar."', color: '#ffa040' },
+  { text: 'Raya: "Porque era verdade! Somos uma dupla incrível!"',                       color: '#88ffaa' },
+  { text: 'Cruella: "Não somos uma dupla. Você é minha cachorra."',                      color: '#ffa040' },
+  { text: 'Raya: "...A melhor cachorra do mundo?"',                                      color: '#88ffaa' },
+  { text: 'Cruella: "…A melhor cachorra do mundo."',                                     color: '#ffa040' },
+]
+
 export class EndingScene extends Phaser.Scene {
   constructor() { super(KEYS.ENDING) }
 
@@ -82,41 +91,6 @@ export class EndingScene extends Phaser.Scene {
       showMoment(moment)
     }
 
-    // ── Momento 0: Alívio ─────────────────────────────────────────────────
-    const m0 = this.add.container(0, 0)
-    ;[
-      'Raya: "CONSEGUIMOS! Estamos livres!"',
-      'Cruella: "Sabia que iríamos conseguir.',
-      'Nunca duvidei nem um segundo."',
-    ].forEach((line, i) => {
-      m0.add(this.add.text(cx, 150 + i * 46, line, {
-        fontSize: '16px', color: '#ffe81f', fontStyle: 'bold',
-        align: 'center', wordWrap: { width: GAME_WIDTH - 80 },
-      }).setOrigin(0.5))
-    })
-    m0.add(this.add.text(cx, GAME_HEIGHT - 28, '[ ENTER — Continuar ]', {
-      fontSize: '13px', color: '#aaaaff', fontStyle: 'bold',
-    }).setOrigin(0.5))
-    containers.push(m0)
-
-    // ── Momento 1: Reconhecimento ─────────────────────────────────────────
-    const m1 = this.add.container(0, 0).setAlpha(0)
-    ;[
-      'Raya: "Foste incrível lá dentro, Cruella."',
-      'Cruella: "...Tu também não foste má, para um cão."',
-      'Raya: "[abana o rabo vigorosamente]"',
-      'Cruella: "Para. Estás a fazer-me sorrir e odeio isso."',
-    ].forEach((line, i) => {
-      m1.add(this.add.text(cx, 110 + i * 46, line, {
-        fontSize: '15px', color: '#ffffff',
-        align: 'center', wordWrap: { width: GAME_WIDTH - 80 },
-      }).setOrigin(0.5))
-    })
-    m1.add(this.add.text(cx, GAME_HEIGHT - 28, '[ ENTER — Ver Estatísticas ]', {
-      fontSize: '13px', color: '#aaaaff', fontStyle: 'bold',
-    }).setOrigin(0.5))
-    containers.push(m1)
-
     // ── Momento 2: Estatísticas ───────────────────────────────────────────
     const m2 = this.add.container(0, 0).setAlpha(0)
     m2.add(this.add.text(cx, 36, '📊 ESTATÍSTICAS', {
@@ -178,6 +152,7 @@ export class EndingScene extends Phaser.Scene {
 
     // ── Input ─────────────────────────────────────────────────────────────
     let _done = false
+    let _epilogueDone = false
 
     const goReplay = () => {
       if (_done) return
@@ -195,6 +170,7 @@ export class EndingScene extends Phaser.Scene {
     }
 
     this.input.keyboard?.on('keydown-ENTER', () => {
+      if (!_epilogueDone) return
       if (moment < containers.length - 1) advance()
       else goReplay()
     })
@@ -208,5 +184,41 @@ export class EndingScene extends Phaser.Scene {
 
     // ── Music ─────────────────────────────────────────────────────────────
     SoundManager.playProceduralBgm('intro')
+
+    // ── Epílogo ───────────────────────────────────────────────────────────
+    this._runEpilogue(() => {
+      _epilogueDone = true
+      showMoment(0)
+    })
+  }
+
+  private _runEpilogue(onDone: () => void): void {
+    const cx = GAME_WIDTH / 2
+    const cy = GAME_HEIGHT / 2
+
+    EPILOGUE_LINES.forEach((line, i) => {
+      this.time.delayedCall(i * 2600, () => {
+        const txt = this.add.text(cx, cy, line.text, {
+          fontSize: '16px',
+          color: line.color,
+          align: 'center',
+          wordWrap: { width: GAME_WIDTH - 100 },
+        }).setOrigin(0.5).setAlpha(0).setScrollFactor(0).setDepth(10)
+
+        this.tweens.add({
+          targets: txt,
+          alpha: 1,
+          duration: 400,
+          onComplete: () => {
+            this.time.delayedCall(1800, () => {
+              this.tweens.add({ targets: txt, alpha: 0, duration: 400 })
+            })
+          },
+        })
+      })
+    })
+
+    // 6 lines × 2600ms + 600ms pause = 16200ms
+    this.time.delayedCall(EPILOGUE_LINES.length * 2600 + 600, onDone)
   }
 }
