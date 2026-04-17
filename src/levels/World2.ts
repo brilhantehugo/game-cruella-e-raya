@@ -73,7 +73,7 @@ export const LEVEL_2_1: LevelData = {
     complexity: 2,
     dialogue: [
       'Cruella: "Passeio à noite. Quase civilizado."',
-      'Raya: "Há ratos, zeladores, e o chão está molhado. Adoro!"',
+      'Raya: "Tem rato, zelador, e o chão está molhado. Adoro!"',
     ],
   },
   decorations: [
@@ -142,7 +142,7 @@ export const LEVEL_2_2: LevelData = {
     complexity: 2,
     dialogue: [
       'Raya: "Pátio! Espaço aberto. Boa visibilidade."',
-      'Cruella: "Gatos em todo o lado. Alguém os alimentou em excesso."',
+      'Cruella: "Gatos por todo lado. Alguém alimentou demais."',
     ],
   },
   decorations: [
@@ -210,7 +210,7 @@ export const LEVEL_2_3: LevelData = {
     complexity: 2,
     dialogue: [
       'Raya: "Garagem. Cheiro a óleo e a zeladores."',
-      'Cruella: "Mais zeladores? Quantos tem este prédio?!"',
+      'Cruella: "Mais zeladores? Quantos tem esse prédio?!"',
       'Raya: "Muitos. É um prédio muito bem guardado."',
     ],
   },
@@ -288,9 +288,9 @@ export const LEVEL_2_4: LevelData = {
   intro: {
     complexity: 3,
     dialogue: [
-      'Cruella: "Escadas de emergência. Sempre soube que morreria a subir escadas."',
+      'Cruella: "Escadas de emergência. Sempre soube que morreria subindo escadas."',
       'Raya: "Estamos quase no telhado! Vai ser incrível!"',
-      'Cruella: "Isso é suposto motivar-me?"',
+      'Cruella: "Isso é pra me motivar?"',
     ],
   },
   decorations: [
@@ -368,8 +368,8 @@ export const LEVEL_2_5: LevelData = {
   intro: {
     complexity: 2,
     dialogue: [
-      'Raya: "Varandas! Conseguimos ver toda a cidade daqui!"',
-      'Cruella: "Não olhes para baixo. Não olhes para baixo. Não—"',
+      'Raya: "Varandas! A gente consegue ver toda a cidade daqui!"',
+      'Cruella: "Não olha pra baixo. Não olha pra baixo. Não—"',
       'Raya: "Eu olhei para baixo."',
     ],
   },
@@ -419,7 +419,7 @@ export const LEVEL_2_BOSS: LevelData = {
     dialogue: [
       'Raya: "Um drone. Com câmeras. E bombas."',
       'Cruella: "Reconheço aquele modelo. Eu tinha um igual."',
-      'Raya: "E agora ele quer matar-nos."',
+      'Raya: "E agora ele quer nos matar."',
       'Cruella: "O meu era mais elegante."',
     ],
   },
