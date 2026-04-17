@@ -7,7 +7,7 @@ import { AchievementDef, AchievementCategory } from '../achievements/Achievement
 const GAME_WIDTH  = 800
 const GAME_HEIGHT = 450
 const COLS        = 2
-const ROW_H       = 52
+const ROW_H       = 35
 const PAD_X       = 40
 const CARD_W      = (GAME_WIDTH - PAD_X * 2 - 12) / COLS
 const HEADER_H    = 90
@@ -153,8 +153,8 @@ export class AchievementsScene extends Phaser.Scene {
     // Título
     const titleStr  = isSecret ? '???' : def.title
     const titleColor = unlocked ? '#ffa040' : '#555555'
-    const title = this.add.text(x + 36, y + 10, titleStr, {
-      fontSize: '11px', color: titleColor, fontStyle: 'bold',
+    const title = this.add.text(x + 36, y + 4, titleStr, {
+      fontSize: '10px', color: titleColor, fontStyle: 'bold',
     }).setAlpha(alpha)
     this._container.add(title)
 
@@ -163,8 +163,8 @@ export class AchievementsScene extends Phaser.Scene {
     if (!unlocked && progress) {
       descStr = `${def.description} · ${progress.current}/${progress.total}`
     }
-    const desc = this.add.text(x + 36, y + 25, descStr, {
-      fontSize: '9px', color: '#666666',
+    const desc = this.add.text(x + 36, y + 16, descStr, {
+      fontSize: '8px', color: '#666666',
     }).setAlpha(alpha)
     this._container.add(desc)
 
