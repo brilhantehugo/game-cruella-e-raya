@@ -180,7 +180,11 @@ export class EndingScene extends Phaser.Scene {
     replayBtn.on('pointerdown', goReplay)
     mapBtn.on('pointerdown', goMap)
 
-    this.events.once('shutdown', () => SoundManager.stopBgm())
+    this.events.once('shutdown', () => {
+      SoundManager.stopBgm()
+      this.time.removeAllEvents()
+      this.tweens.killAll()
+    })
 
     // ── Music ─────────────────────────────────────────────────────────────
     SoundManager.playProceduralBgm('intro')
