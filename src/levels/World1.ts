@@ -67,7 +67,7 @@ export const LEVEL_1_1: LevelData = {
     complexity: 2,
     dialogue: [
       'Raya: "Ar fresco! Liberdade! Cheiro a comida! POMBOS!"',
-      'Cruella: "Controla-te. Há moradores por toda a parte."',
+      'Cruella: "Controle-se. Tem morador por todo lado."',
     ],
   },
   decorations: [
@@ -131,7 +131,7 @@ export const LEVEL_1_2: LevelData = {
     complexity: 1,
     dialogue: [
       'Raya: "Beco escuro! Perfeito para uma emboscada!"',
-      'Cruella: "Isso é… exactamente o que eu ia dizer. Mas com mais elegância."',
+      'Cruella: "Isso é… exatamente o que eu ia dizer. Mas com mais elegância."',
     ],
   },
   decorations: [
@@ -202,7 +202,7 @@ export const LEVEL_1_3: LevelData = {
     complexity: 2,
     dialogue: [
       'Raya: "Uma praça cheia de ratos! Posso caçar um?"',
-      'Cruella: "Não somos aqui para fazer amigos. Ou inimigos com patas."',
+      'Cruella: "Não estamos aqui pra fazer amigos. Ou inimigos com patas."',
     ],
   },
   decorations: [
@@ -274,7 +274,7 @@ export const LEVEL_1_4: LevelData = {
     complexity: 2,
     dialogue: [
       'Raya: "ÁRVORES! Posso fazer xixi numa árvore??"',
-      'Cruella: "Concentra-te. Há donos nervosos em todo o parque."',
+      'Cruella: "Concentra. Tem dono nervoso por todo o parque."',
       'Raya: "...Posso fazer xixi DEPOIS de me concentrar?"',
     ],
   },
@@ -388,12 +388,12 @@ export const LEVEL_1_BOSS: LevelData = {
     dialogue: [
       'Raya: "Seu Bigodes. Ouvi falar dele. É enorme."',
       'Cruella: "Todos os gatos são enormes quando bloqueiam a saída."',
-      'Raya: "...Ele é mesmo muito enorme, Cruella."',
+      'Raya: "...Ele é muito grande mesmo, Cruella."',
     ],
   },
   worldTransition: [
     'Raya: "Seu Bigodes foi derrotado! Incrível!"',
-    'Cruella: "É o mínimo esperado. Precisamos de subir o exterior do prédio."',
+    'Cruella: "É o mínimo esperado. Precisamos subir pelo exterior do prédio."',
     'Raya: "...O lado de fora? Lá em cima?"',
   ],
   decorations: [
