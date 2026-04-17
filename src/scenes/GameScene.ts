@@ -415,7 +415,7 @@ export class GameScene extends Phaser.Scene {
             levelId: this.currentLevel.id,
             fightDurationMs: this.time.now - this._bossStartTime,
             damageTaken: this._livesAtBossStart - gameState.hearts,
-            playerHpFull: gameState.hearts >= this._livesAtBossStart,
+            playerHpFull: gameState.hearts >= 3,
           })
           this._fx.enemyDeathBurst(b.x, b.y)
           this._spawnScorePopup(b.x, b.y - 30, '+1000', '#22ccff')
@@ -482,7 +482,7 @@ export class GameScene extends Phaser.Scene {
             levelId: this.currentLevel.id,
             fightDurationMs: this.time.now - this._bossStartTime,
             damageTaken: this._livesAtBossStart - gameState.hearts,
-            playerHpFull: gameState.hearts >= this._livesAtBossStart,
+            playerHpFull: gameState.hearts >= 3,
           })
           this._fx.enemyDeathBurst(b.x, b.y)
           this._spawnScorePopup(b.x, b.y - 30, '+500', '#ff4444')
@@ -510,7 +510,7 @@ export class GameScene extends Phaser.Scene {
             levelId: this.currentLevel.id,
             fightDurationMs: this.time.now - this._bossStartTime,
             damageTaken: this._livesAtBossStart - gameState.hearts,
-            playerHpFull: gameState.hearts >= this._livesAtBossStart,
+            playerHpFull: gameState.hearts >= 3,
           })
           this._fx.enemyDeathBurst(b.x, b.y)
           this._spawnScorePopup(b.x, b.y - 30, '+1000', '#22ccff')
@@ -540,7 +540,7 @@ export class GameScene extends Phaser.Scene {
             levelId: this.currentLevel.id,
             fightDurationMs: this.time.now - this._bossStartTime,
             damageTaken: this._livesAtBossStart - gameState.hearts,
-            playerHpFull: gameState.hearts >= this._livesAtBossStart,
+            playerHpFull: gameState.hearts >= 3,
           })
           gameState.collarOfGold = true
           this._fx.enemyDeathBurst(b.x, b.y)
