@@ -65,7 +65,7 @@ export const LEVEL_3_1: LevelData = {
     complexity: 1,
     dialogue: [
       'Raya: "Finalmente ar fresco! E... escuridão total."',
-      'Cruella: "Há alguém com uma lanterna ao fundo."',
+      'Cruella: "Tem alguém com uma lanterna lá no fundo."',
       'Raya: "Amigo ou inimigo?"',
       'Cruella: "Neste bairro? Inimigo."',
     ],
@@ -128,8 +128,8 @@ export const LEVEL_3_2: LevelData = {
     complexity: 2,
     dialogue: [
       'Raya: "Um parque! De noite! Completamente assustador!"',
-      'Cruella: "Há gatos a correr em direcção à nossa luz."',
-      'Raya: "...Os gatos correm em direcção à luz agora?"',
+      'Cruella: "Tem gatos correndo em direção à nossa luz."',
+      'Raya: "...Os gatos correm em direção à luz agora?"',
       'Cruella: "Aparentemente só os desta rua."',
     ],
   },
@@ -190,7 +190,7 @@ export const LEVEL_3_3: LevelData = {
     dialogue: [
       'Cruella: "Travessa. Porteiros em cada entrada. Sem alternativa."',
       'Raya: "Podemos ir devagar e não fazer barulho."',
-      'Cruella: "Tu. Devagar. Sem barulho."',
+      'Cruella: "Você. Devagar. Sem barulho."',
       'Raya: "Estou a tentar."',
     ],
   },
@@ -249,8 +249,8 @@ export const LEVEL_3_4: LevelData = {
   intro: {
     complexity: 1,
     dialogue: [
-      'Raya: "LUZ! Luz a sério! Estou a ver tudo!"',
-      'Cruella: "Também significa que toda a gente nos vê a nós."',
+      'Raya: "LUZ! Luz de verdade! Estou vendo tudo!"',
+      'Cruella: "Também significa que todo mundo nos vê."',
       'Raya: "...Devia ter pensado nisso."',
       'Cruella: "Sim."',
     ],
@@ -314,9 +314,9 @@ export const LEVEL_3_5: LevelData = {
   intro: {
     complexity: 3,
     dialogue: [
-      'Raya: "O nosso prédio! Estamos quase!"',
-      'Cruella: "Há um segurança de moto lá ao fundo."',
-      'Raya: "Vamos a isso."',
+      'Raya: "Nosso prédio! Estamos quase!"',
+      'Cruella: "Tem um segurança de moto lá no fundo."',
+      'Raya: "Vamos nessa."',
       'Cruella: "Pela última vez, espero."',
     ],
   },
@@ -353,9 +353,9 @@ export const LEVEL_3_BOSS: LevelData = {
   intro: {
     complexity: 3,
     dialogue: [
-      'Raya: "Uma moto. Com farol. A vir na nossa direcção."',
+      'Raya: "Uma moto. Com farol. Vindo em nossa direção."',
       'Cruella: "Dito de outra forma: uma morte bem iluminada."',
-      'Raya: "Vou saltar. É o meu plano."',
+      'Raya: "Vou pular. É meu plano."',
       'Cruella: "Claro que é."',
     ],
   },
