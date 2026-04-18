@@ -5,7 +5,6 @@ import { SoundManager } from '../audio/SoundManager'
 import { SettingsOverlay } from '../ui/SettingsOverlay'
 
 export class MenuScene extends Phaser.Scene {
-  private _mKey!: Phaser.Input.Keyboard.Key
   constructor() { super(KEYS.MENU) }
 
   create(): void {
@@ -200,6 +199,10 @@ export class MenuScene extends Phaser.Scene {
     const kb = this.input.keyboard!
     const onS   = () => { if (!settingsOverlay.isVisible()) settingsOverlay.show() }
     const onEsc = () => { if (settingsOverlay.isVisible()) settingsOverlay.hide() }
+    const onM   = () => {
+      SoundManager.setMuted(!gameState.muted)
+      if (settingsOverlay.isVisible()) settingsOverlay.show() // refresh mute label
+    }
 
     kb.on('keydown-ENTER', startGame)
     kb.on('keydown-G', goGallery)
@@ -209,6 +212,7 @@ export class MenuScene extends Phaser.Scene {
     kb.on('keydown-C', goAchievements)
     kb.on('keydown-S',   onS)
     kb.on('keydown-ESC', onEsc)
+    kb.on('keydown-M',   onM)
     playBtn.on('pointerdown', startGame)
     galBtn.on('pointerdown', goGallery)
     howBtn.on('pointerdown', goHowToPlay)
@@ -225,19 +229,12 @@ export class MenuScene extends Phaser.Scene {
       kb.off('keydown-C', goAchievements)
       kb.off('keydown-S',   onS)
       kb.off('keydown-ESC', onEsc)
+      kb.off('keydown-M',   onM)
       SoundManager.stopBgm()
     })
 
     // ── Procedural BGM ──────────────────────────────────────────────────
     SoundManager.playProceduralBgm('menu')
 
-    // ── Mute toggle ─────────────────────────────────────────────────────
-    this._mKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.M)
-  }
-
-  update(): void {
-    if (Phaser.Input.Keyboard.JustDown(this._mKey)) {
-      SoundManager.setMuted(!gameState.muted)
-    }
   }
 }

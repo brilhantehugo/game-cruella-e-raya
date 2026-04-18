@@ -69,6 +69,9 @@ export class SettingsOverlay {
     this._container = scene.add.container(0, 0, [
       bg, title, this._muteBtn, sep, ctrlTitle, ...ctrlTexts, closeBtn,
     ])
+    // Note: setScrollFactor(0) on a Container is a no-op in Phaser 3 — it does not
+    // propagate to children. Both host scenes (MenuScene, PauseScene) use fixed cameras,
+    // so this is safe. If reused in a scrolling scene, set scrollFactor on each child.
     this._container.setDepth(50).setScrollFactor(0).setVisible(false)
   }
 
