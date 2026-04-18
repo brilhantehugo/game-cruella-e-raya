@@ -42,7 +42,7 @@ export class PauseScene extends Phaser.Scene {
       this.scene.start(KEYS.MENU)
     }
 
-    const onS = () => settingsOverlay.show()
+    const onS = () => { if (!settingsOverlay.isVisible()) settingsOverlay.show() }
 
     kb.on('keydown-ESC', onEsc)
     kb.on('keydown-M',   onMenu)

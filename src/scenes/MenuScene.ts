@@ -198,7 +198,7 @@ export class MenuScene extends Phaser.Scene {
     const goAchievements  = () => { this.scene.start('AchievementsScene') }
 
     const kb = this.input.keyboard!
-    const onS   = () => settingsOverlay.show()
+    const onS   = () => { if (!settingsOverlay.isVisible()) settingsOverlay.show() }
     const onEsc = () => { if (settingsOverlay.isVisible()) settingsOverlay.hide() }
 
     kb.on('keydown-ENTER', startGame)
