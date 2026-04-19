@@ -738,53 +738,34 @@ export class BootScene extends Phaser.Scene {
     g.fillStyle(0x7a5c10); g.fillRect(0, 440, 200, 10)
     gen(KEYS.BG_APTO_3, 200, 450)
 
-    // bg_apto_boss_1: cozinha — azulejos brancos + janela
+    // bg_apto_boss_1: azulejos brancos + luz de janela
     clr()
-    g.fillStyle(0xf0f0f0); g.fillRect(0, 0, 200, 450)         // parede branca
-    g.fillStyle(0xe0e0e0)
-    for (let ty = 0; ty < 350; ty += 20) {
-      for (let tx = 0; tx < 200; tx += 20) {
-        g.strokeRect(tx, ty, 20, 20)                           // azulejos
-      }
-    }
-    g.fillStyle(0x87ceeb); g.fillRect(130, 30, 60, 80)        // janela cozinha
-    g.fillStyle(0xffffff); g.fillRect(158, 30, 4, 80); g.fillRect(130, 68, 60, 4)
-    g.fillStyle(0xd4d4d4); g.fillRect(125, 110, 70, 5)        // peitoril
+    g.fillStyle(0xf0f0f0); g.fillRect(0, 0, 200, 450)
+    ;[30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360, 390, 420].forEach((y: number) => {
+      g.fillStyle(0xdddddd); g.fillRect(0, y, 200, 1)
+    })
+    ;[30, 60, 90, 120, 150, 180].forEach((x: number) => {
+      g.fillStyle(0xdddddd); g.fillRect(x, 0, 1, 450)
+    })
+    g.fillStyle(0xfffff8, 0.3); g.fillRect(140, 0, 60, 200)
     gen(KEYS.BG_APTO_BOSS_1, 200, 450)
 
-    // bg_apto_boss_2: armários de cozinha + geladeira
+    // bg_apto_boss_2: armários suspensos — cinza frio
     clr()
-    g.fillStyle(0xd4c090); g.fillRect(0, 0, 200, 140)         // armário superior
-    g.lineStyle(1, 0xaa8a50)
-    for (let cx2 = 0; cx2 < 200; cx2 += 50) {
-      g.strokeRect(cx2 + 2, 2, 46, 136)                       // portas armário
-      g.fillStyle(0xffd700); g.fillCircle(cx2 + 25, 70, 4)   // puxadores
-      g.fillStyle(0xd4c090)
-    }
-    g.fillStyle(0x888888); g.fillRect(0, 140, 200, 8)         // bancada
-    g.fillStyle(0xaaaaaa); g.fillRect(0, 140, 200, 3)
-    g.fillStyle(0xf0f0f0); g.fillRect(0, 280, 55, 170)        // geladeira
-    g.fillStyle(0xdddddd); g.fillRect(0, 280, 55, 80)         // congelador
-    g.lineStyle(1, 0xaaaaaa); g.strokeRect(0, 280, 55, 170)
-    g.strokeRect(0, 280, 55, 80)
-    g.fillStyle(0xaaaaaa); g.fillCircle(48, 320, 3); g.fillCircle(48, 400, 3) // puxadores
+    g.fillStyle(0x888a8c); g.fillRect(0, 180, 200, 110)
+    g.fillStyle(0x777a7c); g.fillRect(0, 180, 200, 4)
+    g.fillStyle(0x777a7c); g.fillRect(66, 184, 2, 106)
+    g.fillStyle(0x777a7c); g.fillRect(132, 184, 2, 106)
     gen(KEYS.BG_APTO_BOSS_2, 200, 450)
 
-    // bg_apto_boss_3: chão cozinha + rodapé
+    // bg_apto_boss_3: balcão + pia + torneira
     clr()
-    g.fillStyle(0xe8e0c8)
-    for (let ty = 350; ty < 450; ty += 25) {
-      for (let tx = 0; tx < 200; tx += 25) {
-        g.fillRect(tx, ty, 23, 23)
-        g.fillStyle(0xd8d0b8); g.fillRect(tx, ty, 23, 3)      // brilho
-        g.fillStyle(0xe8e0c8)
-      }
-    }
-    g.fillStyle(0xc8c0a8)
-    for (let tx = 0; tx < 200; tx += 25) {
-      g.fillRect(tx, 350, 1, 100); g.fillRect(0, tx + 350, 200, 1)
-    }
-    g.fillStyle(0xb8b0a0); g.fillRect(0, 350, 200, 4)         // rodapé
+    g.fillStyle(0xe8e8e8); g.fillRect(0, 350, 200, 20)
+    g.fillStyle(0xd0d0d0); g.fillRect(0, 348, 200, 4)
+    g.fillStyle(0xcccccc); g.fillRect(70, 310, 50, 42)
+    g.fillStyle(0xaaaaaa); g.fillRect(74, 314, 42, 34)
+    g.fillStyle(0x999999); g.fillRect(92, 300, 6, 16)
+    g.fillStyle(0x999999); g.fillRect(88, 300, 14, 5)
     gen(KEYS.BG_APTO_BOSS_3, 200, 450)
 
     // ── BACKGROUNDS — EXTERIOR DO PRÉDIO ──────────────────────────────────────
