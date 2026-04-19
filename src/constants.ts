@@ -117,6 +117,9 @@ export const KEYS = {
   BG_TELHADO_1:   'bg_telhado_1',
   BG_TELHADO_2:   'bg_telhado_2',
   BG_TELHADO_3:   'bg_telhado_3',
+  BG_RUA_NOITE_1: 'bg_rua_noite_1',
+  BG_RUA_NOITE_2: 'bg_rua_noite_2',
+  BG_RUA_NOITE_3: 'bg_rua_noite_3',
   // projéteis do boss Drone
   BOMB:  'bomb',
   LASER: 'laser',

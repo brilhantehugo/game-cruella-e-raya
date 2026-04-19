@@ -57,9 +57,9 @@ const THEME_LAYERS: Record<BackgroundTheme, LayerConfig[]> = {
     { key: KEYS.BG_TELHADO_3,   speed: 0.5,  y: 0, height: 450 },
   ],
   rua_noite: [
-    { key: KEYS.BG_EXT_1,       speed: 0.05, y: 0, height: 450 },
-    { key: KEYS.BG_EXT_2,       speed: 0.2,  y: 0, height: 450 },
-    { key: KEYS.BG_EXT_3,       speed: 0.5,  y: 0, height: 450 },
+    { key: KEYS.BG_RUA_NOITE_1, speed: 0.05, y: 0, height: 450 },
+    { key: KEYS.BG_RUA_NOITE_2, speed: 0.2,  y: 0, height: 450 },
+    { key: KEYS.BG_RUA_NOITE_3, speed: 0.5,  y: 0, height: 450 },
   ],
 }
 
