@@ -713,49 +713,29 @@ export class BootScene extends Phaser.Scene {
 
     // ── Apartamento backgrounds ──────────────────────────────────────────────
 
-    // bg_apto_1: parede bege com janela + céu externo
+    // bg_apto_1: parede bege — gradiente 2 stops
     clr()
-    g.fillStyle(0xe8d8b0); g.fillRect(0, 0, 200, 450)         // parede bege
-    g.fillStyle(0x87ceeb); g.fillRect(60, 40, 80, 100)        // janela — céu
-    g.fillStyle(0xffffff)
-    g.fillRect(90, 40, 4, 100); g.fillRect(60, 85, 80, 4)    // caixilho
-    g.fillStyle(0x666677)                                       // grade
-    for (let bx = 64; bx < 136; bx += 10) {
-      g.fillRect(bx, 40, 4, 100)
-    }
-    g.fillStyle(0xd0c090); g.fillRect(55, 140, 90, 6)         // peitoril
-    g.fillStyle(0xffffff); g.fillRect(0, 260, 200, 2)         // rodapé
+    g.fillStyle(0xf5e6c8); g.fillRect(0, 0, 200, 280)
+    g.fillStyle(0xe8d4aa); g.fillRect(0, 280, 200, 170)
     gen(KEYS.BG_APTO_1, 200, 450)
 
-    // bg_apto_2: móveis ao fundo (sofá, quadro)
+    // bg_apto_2: quadro na parede + sofá
     clr()
-    g.fillStyle(0x5566aa); g.fillRect(0, 290, 130, 80)        // sofá
-    g.fillStyle(0x6677bb); g.fillRect(0, 270, 130, 25)        // encosto sofá
-    g.fillStyle(0x778acc); g.fillRect(0, 268, 20, 102)        // braço esq
-    g.fillStyle(0x4455aa); g.fillRect(10, 366, 100, 14)       // pés sofá
-    g.fillStyle(0xc8b890)                                      // quadro na parede
-    g.fillRect(145, 150, 50, 70)
-    g.fillStyle(0x5588cc); g.fillRect(150, 155, 40, 60)       // imagem do quadro
-    g.fillStyle(0xffe090); g.fillCircle(165, 185, 18)         // sol no quadro
-    g.lineStyle(2, 0x8b5c2a); g.strokeRect(145, 150, 50, 70)
+    g.fillStyle(0x909080); g.fillRect(48, 190, 44, 56)
+    g.fillStyle(0xa8b898); g.fillRect(52, 194, 36, 48)
+    g.fillStyle(0xb8a888); g.fillRect(8, 328, 148, 68)
+    g.fillStyle(0xa09870); g.fillRect(8, 316, 148, 16)
+    g.fillStyle(0xa09870); g.fillRect(150, 316, 14, 84)
+    g.fillStyle(0xa09870); g.fillRect(4, 316, 14, 84)
     gen(KEYS.BG_APTO_2, 200, 450)
 
-    // bg_apto_3: chão de madeira + tapete + baseboards
+    // bg_apto_3: rodapé + piso de madeira
     clr()
-    g.fillStyle(0xd4a060)
-    for (let bx = 0; bx < 200; bx += 40) {
-      g.fillRect(bx, 360, 38, 90)                              // tábuas de madeira
-    }
-    g.fillStyle(0xc09050)
-    for (let bx = 0; bx < 200; bx += 40) {
-      g.fillRect(bx, 360, 38, 3)                              // separação tábuas
-    }
-    g.fillStyle(0x882222)                                       // tapete
-    g.fillRect(20, 375, 160, 50)
-    g.fillStyle(0xaa3333); g.fillRect(25, 380, 150, 40)        // padrão tapete
-    g.fillStyle(0xcc5555); g.fillRect(30, 390, 50, 20); g.fillRect(120, 390, 50, 20)
-    g.fillStyle(0xffd700); g.fillRect(20, 375, 160, 3)        // borda dourada
-    g.fillStyle(0xffd700); g.fillRect(20, 422, 160, 3)
+    g.fillStyle(0xe8dcc0); g.fillRect(0, 388, 200, 10)
+    g.fillStyle(0x8B6914); g.fillRect(0, 398, 200, 16)
+    g.fillStyle(0x7a5c10); g.fillRect(0, 414, 200, 14)
+    g.fillStyle(0x8B6914); g.fillRect(0, 428, 200, 12)
+    g.fillStyle(0x7a5c10); g.fillRect(0, 440, 200, 10)
     gen(KEYS.BG_APTO_3, 200, 450)
 
     // bg_apto_boss_1: cozinha — azulejos brancos + janela
