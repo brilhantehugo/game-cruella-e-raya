@@ -133,34 +133,34 @@ export const RAYA_SPRITE = compile(32, 32, rP, [
 //          K pink(bow)  W white(eye)  A amber(eye)  P pink(nose)
 
 const cP: Record<string, string | null> = {
-  '.': null, 'B': '#110811', 'D': '#2a1a2a', 'G': '#5a3a5a',
-  'L': '#9a7a9a', 'K': '#ff69b4', 'W': '#f0f0f0', 'A': '#cc8800', 'P': '#bb4455',
+  '.': null, 'B': '#000000', 'D': '#1a1a1a', 'K': '#2a2a2a',
+  'W': '#ffffff', 'S': '#d8d8d8', 'G': '#888888', 'P': '#bb4455',
 }
 
-// 28-char wide rows, rows 0-21: head, ears, face, bow, body
+// 28-char wide rows, rows 0-21: head, ears, juba (mane), body — parti-color left=black right=white
 const cBase: string[] = [
-  '............................',  // r00
-  '.........BB....BB...........',  // r01 ear tips
-  '........BGDB..BGDB..........',  // r02 ears
-  '........BGGB..BGGB..........',  // r03 ears
-  '........BGGGBBGGGB..........',  // r04 ears merge
-  '........BGGLLLLLGGB.........',  // r05 head
-  '........BGGLWALLGPB.........',  // r06 eye+nose
-  '........BGGLLLLLGGB.........',  // r07 face
-  '.........BGGGGGGGGB.........',  // r08 chin
-  '.........BGKKKKGGGB.........',  // r09 bow
-  '.........BGKKKKKGB..........',  // r10 bow center
-  '..BBB....BGKKKKGB...........',  // r11 tail+bow
-  '.BDDGB...BGGGGGB............',  // r12 tail
-  '.BDDGB...BDGGGGGB...........',  // r13 tail+body
-  '.BDDGB..BDGGGLLGB...........',  // r14 body chest
-  '..BDDGBBDGGGLLLLGB..........',  // r15 body chest
-  '...BDDGDGGGLLLLGB...........',  // r16 body
-  '....BDDGGGGGGGGB............',  // r17 body
-  '.....BDDGGGGGGGB............',  // r18 body
-  '.....BDGGGGGGGGB............',  // r19 body
-  '.....BDGGGGGGGB.............',  // r20 body
-  '.....BDGGGGGGB..............',  // r21 body bottom
+  '............................',  // r00 blank
+  '..........BB..BB............',  // r01 ear tips
+  '.........BKDB.BWSB..........',  // r02 ears (left=dark, right=light)
+  '.........BKKB.BWWB..........',  // r03 ears
+  '.........BKKKBBWWWB.........',  // r04 ears merge
+  '........BKKKGGGWWWB.........',  // r05 head (G=center transition)
+  '........BKKBGGSWWWB.........',  // r06 eye(B=pupil left, G=iris, S=eye right)
+  '........BKKKGPGWWWB.........',  // r07 nose(P) at center
+  '........BKKKGGSWWWB.........',  // r08 face lower
+  '.........BKKGGGSWWB.........',  // r09 chin
+  '......KBKKGGGSSSWWWBS.......',  // r10 juba start (K left tip, S right tip)
+  '.....KBKKGGGSSSWWWWBS.......',  // r11 juba grows
+  '....KBKKKGGGSSSWWWWWBS......',  // r12 juba widest
+  '.....KBKKGGGSSSWWWWBS.......',  // r13 juba
+  '......KBKKGGGSWWWBS.........',  // r14 juba shrinks
+  '......KBKKKGGSWWWBS.........',  // r15 juba fades
+  '........BKKGGGWWWB..........',  // r16 body top
+  '........BKKKGSWWWB..........',  // r17 body
+  '........BKKKGWWWB...........',  // r18 body
+  '........BKKGGGWWB...........',  // r19 body lower
+  '.........BKKGGWWB...........',  // r20 body
+  '.........BKGGGWB............',  // r21 belly bottom
 ]
 
 const cLegs: Record<string, string[]> = {
