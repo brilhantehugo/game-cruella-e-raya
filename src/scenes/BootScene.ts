@@ -542,41 +542,28 @@ export class BootScene extends Phaser.Scene {
 
     // ── PARALLAX BACKGROUNDS ───────────────────────────────────────────────────
 
-    // bg_rua_1: blue sky + clouds
+    // bg_rua_1: céu azul — gradiente 2 stops + 1 nuvem
     clr()
-    g.fillStyle(0x5b8dd9); g.fillRect(0, 0, 200, 450)
-    g.fillStyle(0xffffff)
-    g.fillEllipse(40, 80, 80, 30); g.fillEllipse(65, 70, 50, 20); g.fillEllipse(20, 82, 40, 18)
-    g.fillEllipse(150, 50, 70, 25); g.fillEllipse(175, 42, 45, 18); g.fillEllipse(130, 55, 35, 14)
-    g.fillEllipse(100, 130, 60, 22); g.fillEllipse(120, 124, 40, 16)
+    g.fillStyle(0x87ceeb); g.fillRect(0, 0, 200, 320)
+    g.fillStyle(0xd4eeff); g.fillRect(0, 320, 200, 130)
+    g.fillStyle(0xffffff, 0.7); g.fillEllipse(90, 90, 120, 36)
     gen(KEYS.BG_RUA_1, 200, 450)
 
-    // bg_rua_2: distant gray buildings (transparent base — layers on top of sky)
+    // bg_rua_2: 3 prédios em silhueta — cinza-azulado
     clr()
-    g.fillStyle(0x8a8a9a); g.fillRect(0, 180, 50, 270)
-    g.fillStyle(0x6a6a7a); g.fillRect(0, 100, 50, 80)
-    g.fillStyle(0x7a7a8a); g.fillRect(55, 220, 60, 230)
-    g.fillStyle(0x5a5a6a); g.fillRect(55, 130, 60, 90)
-    g.fillStyle(0x9a9aaa); g.fillRect(120, 250, 45, 200)
-    g.fillStyle(0x6a6a7a); g.fillRect(170, 200, 30, 250)
-    g.fillStyle(0xd0d8f0)
-    g.fillRect(8, 110, 8, 6);  g.fillRect(20, 110, 8, 6);  g.fillRect(32, 110, 8, 6)
-    g.fillRect(8, 125, 8, 6);  g.fillRect(20, 125, 8, 6);  g.fillRect(32, 125, 8, 6)
-    g.fillRect(62, 142, 10, 7); g.fillRect(76, 142, 10, 7); g.fillRect(90, 142, 10, 7)
-    g.fillRect(62, 158, 10, 7); g.fillRect(76, 158, 10, 7); g.fillRect(90, 158, 10, 7)
+    g.fillStyle(0x7a8a99); g.fillRect(0, 150, 60, 300)
+    g.fillStyle(0x6a7a88); g.fillRect(70, 200, 70, 250)
+    g.fillStyle(0x7a8a99); g.fillRect(150, 240, 50, 210)
     gen(KEYS.BG_RUA_2, 200, 450)
 
-    // bg_rua_3: near houses + tree tops — tons dessaturados para separar do foreground
+    // bg_rua_3: calçada + poste + janela com grade
     clr()
-    g.fillStyle(0xb0a090); g.fillRect(10, 300, 50, 150)           // casa 1 (cinza-bege)
-    g.fillStyle(0x907070); g.fillTriangle(5, 300, 35, 268, 65, 300) // telhado 1 (cinza-verm)
-    g.fillStyle(0x7aacb8, 0.5); g.fillRect(18, 315, 14, 10); g.fillRect(37, 315, 14, 10)
-    g.fillStyle(0xb8a888); g.fillRect(80, 320, 60, 130)           // casa 2 (cinza-bege)
-    g.fillStyle(0x806060); g.fillTriangle(75, 320, 110, 285, 145, 320) // telhado 2
-    g.fillStyle(0x7aacb8, 0.5); g.fillRect(88, 334, 16, 12); g.fillRect(112, 334, 16, 12)
-    g.fillStyle(0x5a3a1a); g.fillRect(155, 310, 8, 100)           // tronco
-    g.fillStyle(0x5a6a50); g.fillCircle(159, 295, 28)             // copa (dessaturada)
-    g.fillStyle(0x6a7860); g.fillCircle(155, 280, 18)             // topo copa
+    g.fillStyle(0xaaaaaa); g.fillRect(0, 400, 200, 50)
+    g.fillStyle(0x888888); g.fillRect(0, 398, 200, 4)
+    g.fillStyle(0x555555); g.fillRect(60, 300, 6, 100)
+    g.fillStyle(0x555555); g.fillRect(44, 300, 22, 5)
+    g.fillStyle(0x7a8888); g.fillRect(100, 320, 40, 55)
+    g.fillStyle(0x555566, 0.5); g.fillRect(104, 324, 32, 47)
     gen(KEYS.BG_RUA_3, 200, 450)
 
     // bg_praca_1: light blue sky + soft clouds
