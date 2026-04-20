@@ -599,6 +599,7 @@ export class GameScene extends Phaser.Scene {
     this._miniBossBarriers.add(rightGate)
     this.physics.add.collider(this.player.raya,   this._miniBossBarriers)
     this.physics.add.collider(this.player.cruella, this._miniBossBarriers)
+    this.physics.add.collider(boss,                this._miniBossBarriers)
 
     // BGM de boss + barra de mini-boss
     SoundManager.playBgm(KEYS.BGM_BOSS, this)
@@ -655,7 +656,6 @@ export class GameScene extends Phaser.Scene {
     this.physics.add.collider(this.player.raya,   this.platformLayer)
     this.physics.add.collider(this.player.cruella, this.platformLayer)
     this.physics.add.collider(this.enemyGroup, this.groundLayer)
-    this.physics.add.collider(this.enemyGroup, this.platformLayer)
 
     // Decorações sólidas (móveis, grades) bloqueiam personagens e inimigos
     if (this.decorationLayer.getLength() > 0) {

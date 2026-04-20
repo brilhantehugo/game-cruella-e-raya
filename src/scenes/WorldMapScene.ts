@@ -164,13 +164,22 @@ export class WorldMapScene extends Phaser.Scene {
     })
 
     // ── Instruções ──────────────────────────────────────────────────────
-    this.add.text(GAME_WIDTH / 2, GAME_HEIGHT - 28, 'Clique numa fase para jogar  |  ESC — menu', {
+    this.add.text(GAME_WIDTH / 2, GAME_HEIGHT - 28, 'Clique numa fase para jogar  |  ENTER — iniciar atual  |  ESC — menu', {
       fontSize: '11px', color: '#333355',
     }).setOrigin(0.5)
 
     // ── Tecla ESC ───────────────────────────────────────────────────────
     this.input.keyboard!.once('keydown-ESC', () => {
       this.scene.start(KEYS.MENU)
+    })
+
+    // ── Tecla ENTER — inicia o level atual do perfil ─────────────────────
+    this.input.keyboard!.once('keydown-ENTER', () => {
+      const profile = profileManager.getActive()
+      const levelId = profile?.currentLevel
+      if (levelId && profileManager.isUnlocked(levelId)) {
+        this._startLevel(levelId)
+      }
     })
 
     // ── Trocar perfil link ───────────────────────────────────────────────
