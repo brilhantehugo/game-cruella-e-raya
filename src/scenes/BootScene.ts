@@ -693,42 +693,34 @@ export class BootScene extends Phaser.Scene {
     gen(KEYS.BG_APTO_BOSS_3, 200, 450)
 
     // ── BACKGROUNDS — EXTERIOR DO PRÉDIO ──────────────────────────────────────
-    // BG_EXT_1: céu noturno azul escuro com estrelas e lua
+    // BG_EXT_1: céu noturno azul-escuro + lua cheia
     clr()
-    g.fillStyle(0x0a0a2a); g.fillRect(0, 0, 480, 450)
-    g.fillStyle(0xffffff)
-    g.fillCircle(60,  40, 1);  g.fillCircle(120, 20, 1); g.fillCircle(200, 50, 1)
-    g.fillCircle(300, 30, 1);  g.fillCircle(380, 60, 1); g.fillCircle(440, 25, 1)
-    g.fillCircle(80,  80, 1);  g.fillCircle(240, 10, 1); g.fillCircle(350, 80, 1)
-    g.fillStyle(0xffffcc); g.fillCircle(420, 45, 14)
-    g.fillStyle(0x0a0a2a); g.fillCircle(430, 38, 11)
+    g.fillStyle(0x0a1628); g.fillRect(0, 0, 480, 280)
+    g.fillStyle(0x1a2a44); g.fillRect(0, 280, 480, 170)
+    g.fillStyle(0xfffff0, 0.9); g.fillCircle(380, 70, 28)
     gen(KEYS.BG_EXT_1, 480, 450)
 
-    // BG_EXT_2: fachada do prédio com janelas iluminadas
+    // BG_EXT_2: fachada de prédio + 6 janelas iluminadas
     clr()
-    g.fillStyle(0x1a1a3a); g.fillRect(0, 0, 480, 450)
-    g.fillStyle(0x2a2a4a)
-    g.fillRect(40, 100, 80, 350); g.fillRect(180, 60, 120, 390); g.fillRect(360, 120, 100, 330)
-    g.fillStyle(0xffee88)
-    g.fillRect(55, 115, 14, 18);  g.fillRect(80, 115, 14, 18)
-    g.fillRect(55, 157, 14, 18);  g.fillRect(80, 157, 14, 18)
-    g.fillRect(55, 199, 14, 18);  g.fillRect(80, 199, 14, 18)
-    g.fillRect(195, 75, 14, 18);  g.fillRect(235, 75, 14, 18); g.fillRect(270, 75, 14, 18)
-    g.fillRect(195, 117, 14, 18); g.fillRect(270, 117, 14, 18)
-    g.fillRect(235, 159, 14, 18); g.fillRect(270, 159, 14, 18)
-    g.fillRect(375, 130, 14, 18); g.fillRect(420, 130, 14, 18)
-    g.fillRect(420, 172, 14, 18)
-    g.fillStyle(0x555577); g.fillRect(0, 380, 480, 70)
+    g.fillStyle(0x404850); g.fillRect(100, 100, 280, 350)
+    ;[
+      [130, 140], [220, 140], [310, 140],
+      [130, 230], [220, 230], [310, 230],
+    ].forEach(([wx, wy]: number[]) => {
+      g.fillStyle(0xffe8a0, 0.8); g.fillRect(wx, wy, 50, 70)
+    })
     gen(KEYS.BG_EXT_2, 480, 450)
 
-    // BG_EXT_3: primeiro plano — arbustos e grades
+    // BG_EXT_3: grades + arbustos + calçada
     clr()
-    g.fillStyle(0x1a3a1a); g.fillEllipse(60,  400, 80, 40); g.fillEllipse(160, 405, 60, 35)
-    g.fillStyle(0x2a4a2a); g.fillEllipse(220, 398, 70, 38); g.fillEllipse(340, 403, 90, 42)
-    g.fillStyle(0x1a4a1a); g.fillEllipse(420, 400, 60, 36)
-    g.fillStyle(0x555566)
-    for (let gx = 270; gx < 330; gx += 10) { g.fillRect(gx, 360, 3, 60) }
-    g.fillRect(268, 358, 64, 4); g.fillRect(268, 418, 64, 4)
+    g.fillStyle(0x606060); g.fillRect(0, 400, 480, 50)
+    g.fillStyle(0x505050); g.fillRect(0, 398, 480, 4)
+    ;[0, 40, 80, 120, 160, 200, 240, 280, 320, 360, 400, 440].forEach((px: number) => {
+      g.fillStyle(0x333333); g.fillRect(px, 300, 6, 102)
+    })
+    g.fillStyle(0x333333); g.fillRect(0, 300, 480, 6)
+    g.fillStyle(0x2a3a1a); g.fillEllipse(80, 395, 80, 40)
+    g.fillStyle(0x2a3a1a); g.fillEllipse(380, 395, 90, 42)
     gen(KEYS.BG_EXT_3, 480, 450)
 
     // ── BACKGROUNDS — PÁTIO INTERIOR ─────────────────────────────────────────
