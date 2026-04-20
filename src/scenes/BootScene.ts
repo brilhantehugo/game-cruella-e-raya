@@ -617,30 +617,22 @@ export class BootScene extends Phaser.Scene {
     g.fillStyle(0xaa3a24); g.fillRect(100, 300, 90, 4)
     gen(KEYS.BG_MERCADO_3, 200, 450)
 
-    // bg_boss_1: dark purple sky + crescent moon + stars
+    // bg_boss_1: céu roxo-escuro + lua crescente + 3 estrelas
     clr()
-    g.fillStyle(0x1a0033); g.fillRect(0, 0, 200, 450)
-    g.fillStyle(0xd4d0a0); g.fillCircle(150, 80, 30)
-    g.fillStyle(0x1a0033); g.fillCircle(162, 72, 24)
-    g.fillStyle(0xffffff)
-    g.fillRect(20, 30, 2, 2);  g.fillRect(55, 15, 2, 2);  g.fillRect(80, 60, 2, 2)
-    g.fillRect(100, 20, 2, 2); g.fillRect(30, 90, 2, 2);  g.fillRect(170, 30, 2, 2)
-    g.fillRect(10, 120, 2, 2); g.fillRect(60, 110, 2, 2); g.fillRect(120, 50, 2, 2)
-    g.fillRect(185, 70, 2, 2); g.fillRect(40, 140, 2, 2); g.fillRect(95, 130, 2, 2)
+    g.fillStyle(0x1a0a2e); g.fillRect(0, 0, 200, 280)
+    g.fillStyle(0x2d1b4e); g.fillRect(0, 280, 200, 170)
+    g.fillStyle(0xf0f0e0, 0.9); g.fillCircle(160, 60, 20)
+    g.fillStyle(0x1a0a2e); g.fillCircle(152, 56, 16)
+    g.fillStyle(0xffffff, 0.8)
+    g.fillRect(30, 40, 2, 2); g.fillRect(80, 25, 2, 2); g.fillRect(50, 90, 2, 2)
     gen(KEYS.BG_BOSS_1, 200, 450)
 
-    // bg_boss_2: dark building silhouettes
+    // bg_boss_2: 2 prédios quase-pretos com borda topo
     clr()
-    g.fillStyle(0x1a1a2a); g.fillRect(0, 180, 45, 270)
-    g.fillStyle(0x111120); g.fillRect(0, 100, 45, 80)
-    g.fillRect(25, 90, 20, 90)
-    g.fillStyle(0x1a1a2a); g.fillRect(50, 220, 70, 230)
-    g.fillStyle(0x111120); g.fillRect(70, 150, 30, 70)
-    g.fillStyle(0x1a1a2a); g.fillRect(130, 260, 40, 190)
-    g.fillStyle(0x111120); g.fillRect(175, 200, 25, 250)
-    g.fillStyle(0xffaa00)
-    g.fillRect(10, 115, 6, 4); g.fillRect(22, 115, 6, 4)
-    g.fillRect(60, 165, 8, 5); g.fillRect(75, 165, 8, 5)
+    g.fillStyle(0x1a1a2a); g.fillRect(0, 180, 80, 270)
+    g.fillStyle(0x2a2a3a); g.fillRect(0, 178, 80, 4)
+    g.fillStyle(0x1a1a2a); g.fillRect(100, 230, 100, 220)
+    g.fillStyle(0x2a2a3a); g.fillRect(100, 228, 100, 4)
     gen(KEYS.BG_BOSS_2, 200, 450)
 
     // ── Apartamento backgrounds ──────────────────────────────────────────────
@@ -829,19 +821,14 @@ export class BootScene extends Phaser.Scene {
     for (let row = 0; row <= 4; row++) { g.fillRect(0, 350 + row * 24, 480, 2) }
     gen(KEYS.BG_TELHADO_3, 480, 450)
 
-    // bg_boss_3: metal fence + spikes
+    // bg_boss_3: grade metálica + chão escuro com reflexo
     clr()
-    g.fillStyle(0x3a3a4a)
-    g.fillRect(0, 330, 200, 8)
-    g.fillRect(0, 355, 200, 6)
-    for (let bx = 5; bx < 200; bx += 18) {
-      g.fillStyle(0x3a3a4a); g.fillRect(bx, 310, 6, 80)
-      g.fillStyle(0x505060); g.fillRect(bx + 1, 310, 2, 80)
-    }
-    g.fillStyle(0x505060)
-    for (let sx = 8; sx < 200; sx += 18) {
-      g.fillTriangle(sx, 310, sx + 4, 295, sx + 8, 310)
-    }
+    g.fillStyle(0x2a2a3a); g.fillRect(0, 395, 200, 55)
+    g.fillStyle(0x3a3a4a); g.fillRect(0, 393, 200, 4)
+    ;[0, 20, 40, 60, 80, 100, 120, 140, 160, 180].forEach((px: number) => {
+      g.fillStyle(0x444444); g.fillRect(px, 300, 6, 95)
+    })
+    g.fillStyle(0x444444); g.fillRect(0, 300, 200, 6)
     gen(KEYS.BG_BOSS_3, 200, 450)
 
     // ── ASPIRADOR: robô aspirador (disco branco, vista lateral) ──────────────
