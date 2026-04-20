@@ -592,59 +592,29 @@ export class BootScene extends Phaser.Scene {
     })
     gen(KEYS.BG_PRACA_3, 200, 450)
 
-    // bg_mercado_1: sunset sky
+    // bg_mercado_1: pôr do sol — 2 stops dessaturados
     clr()
-    g.fillStyle(0xff7a20); g.fillRect(0, 0, 200, 200)
-    g.fillStyle(0xff9a3c); g.fillRect(0, 200, 200, 150)
-    g.fillStyle(0xffd060); g.fillRect(0, 350, 200, 100)
-    g.fillStyle(0xffee80); g.fillCircle(150, 200, 60)
-    g.fillStyle(0xffcc40); g.fillCircle(150, 200, 40)
+    g.fillStyle(0xd08840); g.fillRect(0, 0, 200, 200)
+    g.fillStyle(0xc8a040); g.fillRect(0, 200, 200, 250)
     gen(KEYS.BG_MERCADO_1, 200, 450)
 
-    // bg_mercado_2: warehouses + colorful banners
+    // bg_mercado_2: 2 galpões em silhueta
     clr()
-    g.fillStyle(0x6a6060); g.fillRect(0, 200, 90, 250)
-    g.fillStyle(0x5a5050); g.fillRect(0, 200, 90, 8)
-    g.fillStyle(0x7a7070); g.fillRect(100, 240, 100, 210)
-    g.fillStyle(0x6a6060); g.fillRect(100, 240, 100, 8)
-    g.fillStyle(0xff3333); g.fillRect(10, 220, 60, 12)
-    g.fillStyle(0x33cc33); g.fillRect(10, 236, 60, 12)
-    g.fillStyle(0x3399ff); g.fillRect(10, 252, 60, 12)
-    g.fillStyle(0xffcc00); g.fillRect(110, 258, 70, 12)
-    g.fillStyle(0xff6600); g.fillRect(110, 274, 70, 12)
+    g.fillStyle(0x5a4a3a); g.fillRect(0, 220, 95, 230)
+    g.fillStyle(0x4a3a2a); g.fillRect(0, 190, 95, 32)
+    g.fillStyle(0x5a4a3a); g.fillRect(105, 260, 95, 190)
+    g.fillStyle(0x4a3a2a); g.fillRect(105, 235, 95, 28)
     gen(KEYS.BG_MERCADO_2, 200, 450)
 
-    // bg_mercado_3: market stalls + crates (vibrant market)
+    // bg_mercado_3: chão + caixa de madeira + toldo
     clr()
-    g.fillStyle(0xff4444); g.fillRect(0, 300, 90, 20)
-    g.fillStyle(0xffffff); g.fillRect(10, 300, 12, 20); g.fillRect(34, 300, 12, 20); g.fillRect(58, 300, 12, 20)
-    g.fillStyle(0x8b6030); g.fillRect(0, 320, 90, 80)
-    g.fillStyle(0x44aaff); g.fillRect(105, 310, 95, 20)
-    g.fillStyle(0xffffff); g.fillRect(115, 310, 12, 20); g.fillRect(140, 310, 12, 20); g.fillRect(165, 310, 12, 20)
-    g.fillStyle(0x8b6030); g.fillRect(105, 330, 95, 70)
-    // placas de preço nas barracas
-    g.fillStyle(0xffffff); g.fillRect(20, 296, 16, 6)             // placa barraca esq
-    g.fillStyle(0xffffff); g.fillRect(130, 306, 16, 6)            // placa barraca dir
-    // caixotes com etiquetas (mais variados)
-    g.fillStyle(0xc8903a)
-    g.fillRect(10, 370, 28, 28); g.fillRect(42, 370, 28, 28)
-    g.fillRect(75, 380, 22, 20)                                    // caixote extra
-    g.fillRect(155, 375, 24, 22)                                   // caixote lado direito
-    g.lineStyle(1, 0x9a6020)
-    g.strokeRect(10, 370, 28, 28); g.strokeRect(42, 370, 28, 28)
-    g.strokeRect(75, 380, 22, 20); g.strokeRect(155, 375, 24, 22)
-    g.lineBetween(24, 370, 24, 398); g.lineBetween(10, 384, 38, 384)
-    g.lineBetween(56, 370, 56, 398); g.lineBetween(42, 384, 70, 384)
-    g.lineBetween(86, 380, 86, 400); g.lineBetween(75, 390, 97, 390)
-    // etiquetas de cor nos caixotes
-    g.fillStyle(0xff8800); g.fillRect(13, 373, 8, 5)              // etiqueta laranja
-    g.fillStyle(0x33cc33); g.fillRect(46, 373, 8, 5)              // etiqueta verde
-    g.fillStyle(0x4488ff); g.fillRect(77, 383, 7, 4)              // etiqueta azul
-    // bandeirolas entre as barracas (bunting diagonal)
-    const buntingColors = [0xffdd00, 0xff2200, 0x22cc22, 0x2244ff, 0xffdd00, 0xff2200, 0x22cc22, 0x2244ff]
-    buntingColors.forEach((bc, bi) => {
-      g.fillStyle(bc); g.fillRect(20 + bi * 10, 300 - bi * 2, 7, 7)  // bandeirola
-    })
+    g.fillStyle(0x888888); g.fillRect(0, 400, 200, 50)
+    g.fillStyle(0x8B6030); g.fillRect(10, 340, 50, 60)
+    g.fillStyle(0x7a5020); g.fillRect(10, 340, 50, 6)
+    g.fillStyle(0x7a5020); g.fillRect(10, 360, 50, 4)
+    g.fillStyle(0x7a5020); g.fillRect(28, 340, 4, 60)
+    g.fillStyle(0xc84b32); g.fillRect(100, 300, 90, 22)
+    g.fillStyle(0xaa3a24); g.fillRect(100, 300, 90, 4)
     gen(KEYS.BG_MERCADO_3, 200, 450)
 
     // bg_boss_1: dark purple sky + crescent moon + stars
