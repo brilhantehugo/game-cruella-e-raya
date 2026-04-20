@@ -27,37 +27,37 @@ function compile(
 //          Y yellow(bandana)  W white(eye)  A amber(eye)  P pink(nose)
 
 const rP: Record<string, string | null> = {
-  '.': null, 'B': '#111111', 'D': '#2e2e2e', 'G': '#5f5f5f',
-  'L': '#a0a0a0', 'Y': '#ffd700', 'W': '#f0f0f0', 'A': '#cc8800', 'P': '#bb4455',
+  '.': null, 'B': '#000000', 'D': '#2b3050', 'G': '#5a6b8a',
+  'L': '#8fa3be', 'W': '#ccd8e8', 'H': '#e8eef6', 'A': '#cc8800', 'P': '#bb4455',
 }
 
-// Rows 0-24: head, ears, face, bandana, body, tail — same for all walk frames
+// Rows 0-24: head, ears, juba (mane), body — same for all walk frames
 const rBase: string[] = [
-  '................................',  // r00
-  '...........BB.....BB............',  // r01 ear tips
-  '..........BGDB...BGDB...........',  // r02 ears
-  '..........BGGB...BGGB...........',  // r03 ears
-  '..........BGGGBBBGGGB...........',  // r04 ears merge
-  '..........BGGLLLLLLGGB..........',  // r05 head/face
-  '..........BGGLLLLLLGGB..........',  // r06 face
-  '..........BGGLWALLLLGPB.........',  // r07 eye(W,A) + nose(P)
-  '..........BGGLLLLLLLGGB.........',  // r08 face lower
-  '..........BGGGLLLLGGGB..........',  // r09 chin
-  '...........BGGGGGGGGB...........',  // r10 chin/neck
-  '...........BGYYYYYYGB...........',  // r11 bandana
-  '..BBB......BGYYYYYYGB...........',  // r12 tail+bandana
-  '.BDDGB.....BGYYYYYGB............',  // r13 tail
-  '.BDDGB.....BGGGGGGGB............',  // r14 tail+body top
-  '.BDDGB....BDGGGGGGGB............',  // r15 body
-  '.BDDGB....BDGGGLLLGGB...........',  // r16 body chest
-  '..BDDGB..BDGGGLLLLGGB...........',  // r17 body chest
-  '...BDDGBBDGGGGLLLLGGB...........',  // r18 body
-  '....BDDGDGGGGGGGGGGB............',  // r19 body
-  '.....BDDGGGGGGGGGGB.............',  // r20 body
-  '.....BDDGGGGGGGGGGB.............',  // r21 body
-  '.....BDGGGGGGGGGGB..............',  // r22 body
-  '.....BDGGGGGGGGGB...............',  // r23 body
-  '.....BDGGGGGGGGB................',  // r24 body bottom
+  '................................',  // r00 blank
+  '...........BB....BB.............',  // r01 ear tips
+  '..........BGDB..BGDB............',  // r02 ears
+  '..........BGGB..BGGB............',  // r03 ears
+  '..........BGGGBBGGGB............',  // r04 ears merge
+  '.........BGGLLLLLGGB............',  // r05 head top
+  '.........BGGLWALLGPB............',  // r06 eye(W,A) + nose(P)
+  '.........BGGLLLLLLGB............',  // r07 face
+  '..........BGGLLLGGB.............',  // r08 chin
+  '..........BGGGGGGGB.............',  // r09 neck
+  '.......WLGGDLLLLDGGLLW..........',  // r10 juba start
+  '......HLGGDDLLLLDDGGLH..........',  // r11 juba
+  '.....WLGGDDDLLLLDDGGGLLW........',  // r12 juba widest
+  '.....HLGGDDLLLLLDDGGLLH.........',  // r13 juba
+  '......WLGGGDLLLLDGGGLLW.........',  // r14 juba
+  '.......WLGGGLLLLGGGLLW..........',  // r15 juba bottom
+  '........WLGGLLLLGGLLW...........',  // r16 juba fades
+  '..........BGGLLLGGGB............',  // r17 body top
+  '..........BGGLLLLGGB............',  // r18 body
+  '..........BGGGLLGGGB............',  // r19 body
+  '.........BDGGGLLGGGB............',  // r20 body
+  '.........BDGGGLLLGGB............',  // r21 body lower
+  '.........BDGGGGGGGB.............',  // r22 body
+  '..........BDGGGGGB..............',  // r23 belly
+  '...........BDGGGGB..............',  // r24 belly bottom
 ]
 
 // Leg rows (7 rows: 25-31) for each animation frame
