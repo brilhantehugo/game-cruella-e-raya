@@ -655,7 +655,6 @@ export class GameScene extends Phaser.Scene {
     this.physics.add.collider(this.player.raya,   this.platformLayer)
     this.physics.add.collider(this.player.cruella, this.platformLayer)
     this.physics.add.collider(this.enemyGroup, this.groundLayer)
-    this.physics.add.collider(this.enemyGroup, this.platformLayer)
 
     // Decorações sólidas (móveis, grades) bloqueiam personagens e inimigos
     if (this.decorationLayer.getLength() > 0) {
