@@ -566,55 +566,30 @@ export class BootScene extends Phaser.Scene {
     g.fillStyle(0x555566, 0.5); g.fillRect(104, 324, 32, 47)
     gen(KEYS.BG_RUA_3, 200, 450)
 
-    // bg_praca_1: light blue sky + soft clouds
+    // bg_praca_1: céu azul claro — gradiente 2 stops + 1 nuvem
     clr()
-    g.fillStyle(0x87ceeb); g.fillRect(0, 0, 200, 450)
-    g.fillStyle(0xffffff)
-    g.fillEllipse(50, 60, 90, 32); g.fillEllipse(80, 52, 55, 22); g.fillEllipse(25, 65, 45, 20)
-    g.fillEllipse(160, 100, 75, 28); g.fillEllipse(185, 93, 48, 20)
+    g.fillStyle(0xa8d8ea); g.fillRect(0, 0, 200, 300)
+    g.fillStyle(0xd9eeff); g.fillRect(0, 300, 200, 150)
+    g.fillStyle(0xffffff, 0.6); g.fillEllipse(80, 70, 100, 30)
     gen(KEYS.BG_PRACA_1, 200, 450)
 
-    // bg_praca_2: green hills + tall trees
+    // bg_praca_2: colinas + 2 árvores triangulares
     clr()
-    g.fillStyle(0x5a9a40); g.fillEllipse(60, 430, 180, 130)
-    g.fillStyle(0x4a8a30); g.fillEllipse(160, 440, 160, 100)
-    g.fillStyle(0x5a3a1a); g.fillRect(20, 240, 8, 120)
-    g.fillStyle(0x2a6a20); g.fillCircle(24, 228, 30)
-    g.fillStyle(0x3a8030); g.fillCircle(20, 212, 20)
-    g.fillStyle(0x5a3a1a); g.fillRect(110, 260, 8, 100)
-    g.fillStyle(0x2a6a20); g.fillCircle(114, 248, 28)
-    g.fillStyle(0x3a8030); g.fillCircle(110, 234, 18)
-    g.fillStyle(0x5a3a1a); g.fillRect(170, 250, 8, 110)
-    g.fillStyle(0x2a6a20); g.fillCircle(174, 238, 26)
+    g.fillStyle(0x7a9a6a); g.fillEllipse(100, 450, 260, 120)
+    g.fillStyle(0x5a3a1a); g.fillRect(38, 280, 6, 100)
+    g.fillStyle(0x4a6a3a); g.fillTriangle(20, 282, 41, 220, 62, 282)
+    g.fillStyle(0x5a3a1a); g.fillRect(148, 290, 6, 90)
+    g.fillStyle(0x4a6a3a); g.fillTriangle(130, 292, 151, 230, 172, 292)
     gen(KEYS.BG_PRACA_2, 200, 450)
 
-    // bg_praca_3: bushes + wooden fence (park style)
+    // bg_praca_3: gramado + cerca de madeira
     clr()
-    g.fillStyle(0xc8a060)
-    g.fillRect(0, 350, 200, 8)
-    g.fillRect(10, 338, 10, 30); g.fillRect(40, 338, 10, 30)
-    g.fillRect(70, 338, 10, 30);  g.fillRect(100, 338, 10, 30)
-    g.fillRect(130, 338, 10, 30); g.fillRect(160, 338, 10, 30)
-    g.fillRect(190, 338, 10, 30)
-    // arbustos variados (múltiplos tons de verde)
-    g.fillStyle(0x3a8a2a)
-    g.fillEllipse(25, 360, 55, 40); g.fillEllipse(50, 355, 45, 35)
-    g.fillStyle(0x5aaa3a)
-    g.fillEllipse(100, 362, 60, 38); g.fillEllipse(125, 357, 48, 33)
-    g.fillStyle(0x3a7a2a)
-    g.fillEllipse(170, 360, 50, 36); g.fillEllipse(185, 356, 35, 28)
-    g.fillStyle(0x5aaa3a); g.fillEllipse(10, 368, 30, 24)         // arbusto baixo esq extra
-    g.fillStyle(0x3a8a2a); g.fillEllipse(75, 355, 38, 28)         // arbusto mid extra
-    // canteiro de flores na base
-    g.fillStyle(0x8a4a20); g.fillRect(0, 440, 200, 6)             // terra canteiro
-    // flores pequenas
-    ;[15, 30, 50, 70, 90, 110, 130, 150, 170, 185].forEach(fx => {
-      g.fillStyle(0xff4466); g.fillCircle(fx, 440, 3)             // flores rosas
+    g.fillStyle(0x5a8a4a); g.fillRect(0, 390, 200, 60)
+    g.fillStyle(0x8B6914); g.fillRect(0, 370, 200, 8)
+    g.fillStyle(0x8B6914); g.fillRect(0, 384, 200, 8)
+    ;[8, 38, 68, 98, 128, 158, 188].forEach((px: number) => {
+      g.fillStyle(0x7a5a10); g.fillRect(px, 360, 10, 40)
     })
-    // fonte d'água (centro-direita)
-    g.fillStyle(0x4499cc); g.fillCircle(155, 390, 16)             // bacia da fonte
-    g.fillStyle(0x66bbee); g.fillCircle(155, 390, 10)             // água interior
-    g.fillStyle(0x3388bb); g.fillRect(152, 374, 6, 16)            // coluna da fonte
     gen(KEYS.BG_PRACA_3, 200, 450)
 
     // bg_mercado_1: sunset sky
