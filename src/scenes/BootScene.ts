@@ -762,47 +762,37 @@ export class BootScene extends Phaser.Scene {
     gen(KEYS.BG_PATIO_3, 480, 450)
 
     // ── BACKGROUNDS — TELHADO ────────────────────────────────────────────────
-    // BG_TELHADO_1: céu noturno com estrelas e nuvens
+    // BG_TELHADO_1: noturno profundo + lua + 8 estrelas
     clr()
-    g.fillStyle(0x05050f); g.fillRect(0, 0, 480, 450)
-    g.fillStyle(0xffffff)
-    g.fillCircle(24,  18, 1); g.fillCircle(73,  44, 1); g.fillCircle(145, 12, 1)
-    g.fillCircle(198, 55, 1); g.fillCircle(267, 28, 1); g.fillCircle(319, 67, 1)
-    g.fillCircle(374, 15, 1); g.fillCircle(421, 48, 1); g.fillCircle(456, 31, 1)
-    g.fillCircle(48,  90, 1); g.fillCircle(112, 78, 1); g.fillCircle(231, 95, 1)
-    g.fillCircle(308, 83, 1); g.fillCircle(389, 102, 1); g.fillCircle(464, 88, 1)
-    g.fillCircle(88, 130, 2); g.fillCircle(240, 60, 2); g.fillCircle(410, 110, 2)
-    g.fillStyle(0x1a1a30); g.fillEllipse(80, 120, 140, 50)
-    g.fillStyle(0x141428); g.fillEllipse(320, 90, 160, 60)
+    g.fillStyle(0x080818); g.fillRect(0, 0, 480, 300)
+    g.fillStyle(0x141428); g.fillRect(0, 300, 480, 150)
+    g.fillStyle(0xf0f0e0, 0.9); g.fillCircle(400, 80, 24)
+    const tStars: number[][] = [[40,30],[120,60],[200,25],[280,50],[60,100],[160,80],[320,35],[440,65]]
+    tStars.forEach(([sx, sy]: number[]) => { g.fillStyle(0xffffff, 0.7); g.fillRect(sx, sy, 2, 2) })
     gen(KEYS.BG_TELHADO_1, 480, 450)
 
-    // BG_TELHADO_2: antenas e caixas d'água
+    // BG_TELHADO_2: caixa d'água + 2 antenas de TV
     clr()
-    g.fillStyle(0x0a0a1a); g.fillRect(0, 0, 480, 450)
-    g.fillStyle(0x333344)
-    g.fillRect(60,  200, 4, 160); g.fillRect(55, 196, 14, 4)
-    g.fillRect(58,  200, 2, 60);  g.fillRect(64, 200, 2, 60)
-    g.fillRect(250, 210, 4, 150); g.fillRect(245, 206, 14, 4)
-    g.fillRect(400, 190, 4, 170); g.fillRect(395, 186, 14, 4)
-    g.fillStyle(0x2a2a3a)
-    g.fillRect(120, 270, 50, 40); g.fillRect(115, 266, 60, 6)
-    g.fillRect(122, 310, 8, 20);  g.fillRect(136, 310, 8, 20)
-    g.fillRect(320, 260, 60, 45); g.fillRect(315, 256, 70, 6)
-    g.fillRect(326, 305, 10, 25); g.fillRect(354, 305, 10, 25)
+    g.fillStyle(0x3a3a4a); g.fillRect(60, 240, 70, 60)
+    g.fillStyle(0x2a2a3a); g.fillRect(60, 240, 70, 6)
+    g.fillStyle(0x2a2a3a); g.fillRect(88, 220, 14, 22)
+    g.fillStyle(0x2a2a2a); g.fillRect(260, 200, 4, 120)
+    g.fillStyle(0x2a2a2a); g.fillRect(240, 210, 44, 3)
+    g.fillStyle(0x2a2a2a); g.fillRect(360, 220, 4, 100)
+    g.fillStyle(0x2a2a2a); g.fillRect(344, 230, 36, 3)
     gen(KEYS.BG_TELHADO_2, 480, 450)
 
-    // BG_TELHADO_3: superfície do telhado com telhas
+    // BG_TELHADO_3: superfície de telhas + calha
     clr()
-    g.fillStyle(0x1a1a24); g.fillRect(0, 350, 480, 100)
-    g.fillStyle(0x2a2a36)
-    for (let row = 0; row < 4; row++) {
-      const offset = (row % 2) * 24
-      for (let col = -1; col < 11; col++) {
-        g.fillRect(col * 48 + offset, 350 + row * 24, 46, 22)
-      }
-    }
-    g.fillStyle(0x0f0f1a)
-    for (let row = 0; row <= 4; row++) { g.fillRect(0, 350 + row * 24, 480, 2) }
+    ;[0, 1, 2, 3].forEach((i: number) => {
+      g.fillStyle(i % 2 === 0 ? 0x4a3a2a : 0x3a2a1a)
+      g.fillRect(0, 380 + i * 20, 480, 20)
+    })
+    g.fillStyle(0x606060); g.fillRect(0, 358, 480, 14)
+    g.fillStyle(0x505050); g.fillRect(0, 356, 480, 4)
+    ;[0, 60, 120, 180, 240, 300, 360, 420].forEach((px: number) => {
+      g.fillStyle(0x2a1a0a, 0.4); g.fillRect(px, 380, 2, 70)
+    })
     gen(KEYS.BG_TELHADO_3, 480, 450)
 
     // bg_boss_3: grade metálica + chão escuro com reflexo
@@ -814,6 +804,42 @@ export class BootScene extends Phaser.Scene {
     })
     g.fillStyle(0x444444); g.fillRect(0, 300, 200, 6)
     gen(KEYS.BG_BOSS_3, 200, 450)
+
+    // ── Rua Noite backgrounds (World 3) ────────────────────────────────────────
+
+    // BG_RUA_NOITE_1: céu roxo-azulado noturno + 2 estrelas + luar
+    clr()
+    g.fillStyle(0x0e0a1e); g.fillRect(0, 0, 480, 300)
+    g.fillStyle(0x1a1232); g.fillRect(0, 300, 480, 150)
+    g.fillStyle(0x8888cc, 0.15); g.fillEllipse(240, 330, 300, 60)
+    g.fillStyle(0xffffff, 0.6); g.fillRect(60, 40, 2, 2); g.fillRect(300, 70, 2, 2)
+    gen(KEYS.BG_RUA_NOITE_1, 480, 450)
+
+    // BG_RUA_NOITE_2: prédios escuros com janelas iluminadas tênues
+    clr()
+    g.fillStyle(0x18141e); g.fillRect(0, 160, 130, 290)
+    g.fillStyle(0xffe880, 0.5); g.fillRect(15, 185, 22, 30); g.fillRect(55, 185, 22, 30); g.fillRect(95, 185, 22, 30)
+    g.fillStyle(0xffe880, 0.5); g.fillRect(15, 235, 22, 30); g.fillRect(95, 235, 22, 30)
+    g.fillStyle(0x18141e); g.fillRect(150, 200, 150, 250)
+    g.fillStyle(0xffe880, 0.5); g.fillRect(165, 225, 22, 30); g.fillRect(220, 225, 22, 30); g.fillRect(275, 225, 22, 30)
+    g.fillStyle(0xffe880, 0.5); g.fillRect(165, 275, 22, 30)
+    g.fillStyle(0x18141e); g.fillRect(315, 180, 165, 270)
+    g.fillStyle(0xffe880, 0.5); g.fillRect(330, 205, 22, 30); g.fillRect(380, 205, 22, 30); g.fillRect(440, 205, 22, 30)
+    g.fillStyle(0xffe880, 0.5); g.fillRect(330, 255, 22, 30); g.fillRect(440, 255, 22, 30)
+    gen(KEYS.BG_RUA_NOITE_2, 480, 450)
+
+    // BG_RUA_NOITE_3: calçada + poste com halo + grade baixa
+    clr()
+    g.fillStyle(0x4a4a5a); g.fillRect(0, 400, 480, 50)
+    g.fillStyle(0x3a3a4a); g.fillRect(0, 398, 480, 4)
+    g.fillStyle(0x888888, 0.9); g.fillRect(200, 300, 6, 102)
+    g.fillStyle(0x888888, 0.9); g.fillRect(186, 300, 34, 5)
+    g.fillStyle(0xffe080, 0.2); g.fillEllipse(220, 295, 70, 40)
+    g.fillStyle(0x555565); g.fillRect(0, 380, 480, 6)
+    ;[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360, 390, 420, 450].forEach((px: number) => {
+      g.fillStyle(0x555565); g.fillRect(px, 355, 5, 32)
+    })
+    gen(KEYS.BG_RUA_NOITE_3, 480, 450)
 
     // ── ASPIRADOR: robô aspirador (disco branco, vista lateral) ──────────────
     // Inspirado em robô Xiaomi: corpo oval achatado, sensor LiDAR laranja,
