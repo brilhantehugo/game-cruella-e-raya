@@ -724,49 +724,41 @@ export class BootScene extends Phaser.Scene {
     gen(KEYS.BG_EXT_3, 480, 450)
 
     // ── BACKGROUNDS — PÁTIO INTERIOR ─────────────────────────────────────────
-    // BG_PATIO_1: muro de tijolo escuro ao fundo
+    // BG_PATIO_1: céu cinza-azul + 1 nuvem
     clr()
-    g.fillStyle(0x1a0f08); g.fillRect(0, 0, 480, 450)
-    g.fillStyle(0x2a1810); g.fillRect(0, 50, 480, 400)
-    g.fillStyle(0x1a1008)
-    for (let row = 0; row < 12; row++) {
-      const offset = (row % 2) * 30
-      for (let col = -1; col < 9; col++) {
-        g.fillRect(col * 60 + offset, 50 + row * 32, 58, 30)
-      }
-    }
-    g.fillStyle(0x0a0806)
-    for (let row = 0; row <= 12; row++) { g.fillRect(0, 50 + row * 32, 480, 2) }
+    g.fillStyle(0x5a6a7a); g.fillRect(0, 0, 480, 280)
+    g.fillStyle(0x8a9aaa); g.fillRect(0, 280, 480, 170)
+    g.fillStyle(0xcccccc, 0.5); g.fillEllipse(200, 80, 120, 32)
     gen(KEYS.BG_PATIO_1, 480, 450)
 
-    // BG_PATIO_2: varal de roupa
+    // BG_PATIO_2: muro de tijolo — fiadas alternadas
     clr()
-    g.fillStyle(0x2a1810); g.fillRect(0, 0, 480, 450)
-    g.lineStyle(2, 0x6a4a30); g.lineBetween(0, 180, 480, 200)
-    g.lineStyle(2, 0x6a4a30); g.lineBetween(0, 280, 480, 260)
-    g.fillStyle(0xff6644); g.fillRect(40,  180, 22, 34)
-    g.fillStyle(0x4488cc); g.fillRect(110, 180, 18, 40)
-    g.fillStyle(0xffee66); g.fillRect(180, 180, 22, 34)
-    g.fillStyle(0x44cc88); g.fillRect(260, 180, 18, 40)
-    g.fillStyle(0xee88aa); g.fillRect(340, 180, 22, 34)
-    g.fillStyle(0x4488cc); g.fillRect(400, 180, 18, 40)
-    g.fillStyle(0x888888)
-    g.fillRect(49, 176, 2, 6); g.fillRect(119, 176, 2, 6); g.fillRect(189, 176, 2, 6)
-    g.fillRect(269, 176, 2, 6); g.fillRect(349, 176, 2, 6); g.fillRect(409, 176, 2, 6)
+    const bH = 18, bW = 60, mortH = 3, mortW = 3
+    let row = 0
+    for (let y = 200; y < 450; y += bH + mortH) {
+      const offset = (row % 2 === 0) ? 0 : bW / 2
+      for (let x = -offset; x < 480; x += bW + mortW) {
+        g.fillStyle(row % 2 === 0 ? 0x7a5a4a : 0x6a4a3a)
+        g.fillRect(x, y, bW, bH)
+      }
+      row++
+    }
     gen(KEYS.BG_PATIO_2, 480, 450)
 
-    // BG_PATIO_3: chão de paralelepípedo cinza
+    // BG_PATIO_3: paralelepípedo + varal com 2 peças de roupa
     clr()
-    g.fillStyle(0x2a2a2a); g.fillRect(0, 360, 480, 90)
-    g.fillStyle(0x383838)
-    for (let row = 0; row < 3; row++) {
-      const offset = (row % 2) * 20
-      for (let col = -1; col < 13; col++) {
-        g.fillRect(col * 40 + offset, 360 + row * 28, 38, 26)
-      }
-    }
-    g.fillStyle(0x1a1a1a)
-    for (let row = 0; row <= 3; row++) { g.fillRect(0, 360 + row * 28, 480, 2) }
+    g.fillStyle(0x888888); g.fillRect(0, 400, 480, 50)
+    ;[0, 48, 92, 140, 192, 240, 290, 340, 388, 438].forEach((px: number) => {
+      g.fillStyle(0x666666); g.fillRect(px, 400, 2, 50)
+    })
+    ;[412, 430].forEach((py: number) => {
+      g.fillStyle(0x666666); g.fillRect(0, py, 480, 2)
+    })
+    g.fillStyle(0x888888); g.fillRect(60, 300, 360, 3)
+    g.fillStyle(0x555555); g.fillRect(60, 290, 4, 115)
+    g.fillStyle(0x555555); g.fillRect(416, 290, 4, 115)
+    g.fillStyle(0x4488cc); g.fillRect(140, 303, 30, 45)
+    g.fillStyle(0xcc4444); g.fillRect(290, 303, 25, 40)
     gen(KEYS.BG_PATIO_3, 480, 450)
 
     // ── BACKGROUNDS — TELHADO ────────────────────────────────────────────────
