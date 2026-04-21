@@ -170,3 +170,72 @@ describe('ProfileManager.calcMedal', () => {
     expect(ProfileManager.calcMedal(100, [false,false,false], 10, 2000)).toBe('bronze')
   })
 })
+
+describe('ProfileManager upgrades', () => {
+  let pm: ProfileManager
+
+  beforeEach(() => {
+    localStorageMock.clear()
+    pm = new ProfileManager()
+  })
+
+  it('hasUpgrade retorna false se não comprado', () => {
+    pm.create('Hugo', 'raya')
+    expect(pm.hasUpgrade('heart_plus')).toBe(false)
+  })
+
+  it('saveUpgrade persiste e hasUpgrade retorna true', () => {
+    pm.create('Hugo', 'raya')
+    pm.saveUpgrade('heart_plus')
+    expect(pm.hasUpgrade('heart_plus')).toBe(true)
+  })
+
+  it('hasUpgrade retorna false sem perfil ativo', () => {
+    expect(pm.hasUpgrade('dash_fast')).toBe(false)
+  })
+
+  it('getTotalGoldenBones soma bones coletados em todos os níveis', () => {
+    pm.create('Hugo', 'raya')
+    pm.saveLevel('1-1', {
+      completed: true, medal: 'gold', bestScore: 100, bestTime: 60,
+      goldenBones: [true, true, false], totalDeaths: 0, totalEnemiesKilled: 0, playCount: 1,
+    })
+    pm.saveLevel('0-1', {
+      completed: true, medal: 'bronze', bestScore: 50, bestTime: 90,
+      goldenBones: [true, false, false], totalDeaths: 0, totalEnemiesKilled: 0, playCount: 1,
+    })
+    expect(pm.getTotalGoldenBones()).toBe(3)
+  })
+
+  it('getTotalGoldenBones retorna 0 sem perfil', () => {
+    expect(pm.getTotalGoldenBones()).toBe(0)
+  })
+
+  it('getSpentBones soma custos dos upgrades comprados', () => {
+    pm.create('Hugo', 'raya')
+    pm.saveUpgrade('heart_plus')  // custo 8
+    pm.saveUpgrade('dash_fast')   // custo 6
+    expect(pm.getSpentBones()).toBe(14)
+  })
+
+  it('getSpentBones retorna 0 sem upgrades comprados', () => {
+    pm.create('Hugo', 'raya')
+    expect(pm.getSpentBones()).toBe(0)
+  })
+
+  it('getAvailableBones = total - spent', () => {
+    pm.create('Hugo', 'raya')
+    pm.saveLevel('1-1', {
+      completed: true, medal: 'gold', bestScore: 100, bestTime: 60,
+      goldenBones: [true, true, true], totalDeaths: 0, totalEnemiesKilled: 0, playCount: 1,
+    })
+    expect(pm.getAvailableBones()).toBe(3)
+    pm.saveUpgrade('swap_fast')  // custo 5
+    expect(pm.getAvailableBones()).toBe(-2)
+  })
+
+  it('novo perfil inicializa upgrades como objeto vazio', () => {
+    const p = pm.create('Hugo', 'raya')
+    expect(p.upgrades).toEqual({})
+  })
+})

@@ -22,6 +22,7 @@ export interface PlayerProfile {
   currentLevel: string
   totalScore: number
   levels: Record<string, LevelRecord>
+  upgrades: Record<string, boolean>
   version?: number          // SAVE_VERSION for migrations
 }
 
@@ -31,6 +32,14 @@ const MAX_PROFILES       = 3
 const DEFAULT_LEVEL      = '0-1'
 const STARTING_LEVELS    = ['0-1', '1-1']
 const SAVE_VERSION       = 2
+
+const UPGRADE_COSTS: Record<string, number> = {
+  heart_plus: 8,
+  dash_fast:  6,
+  bark_wide:  6,
+  swap_fast:  5,
+  bone_radar: 7,
+}
 
 export class ProfileManager {
   // ── Leitura ──────────────────────────────────────────────────────────
@@ -71,6 +80,7 @@ export class ProfileManager {
       currentLevel: DEFAULT_LEVEL,
       totalScore: 0,
       levels: {},
+      upgrades: {},
       version: SAVE_VERSION,
     }
     // Desbloqueia fases iniciais
@@ -162,6 +172,43 @@ export class ProfileManager {
 
   getMedal(levelId: string): Medal | null {
     return this.getActive()?.levels[levelId]?.medal ?? null
+  }
+
+  // ── Upgrades ─────────────────────────────────────────────────────────
+
+  saveUpgrade(key: string): void {
+    const all    = this.getAll()
+    const active = localStorage.getItem(ACTIVE_KEY)
+    if (!active) return
+    const idx = all.findIndex(p => p.id === active)
+    if (idx === -1) return
+    if (!all[idx].upgrades) all[idx].upgrades = {}
+    all[idx].upgrades[key] = true
+    this._persist(all)
+  }
+
+  hasUpgrade(key: string): boolean {
+    return this.getActive()?.upgrades?.[key] ?? false
+  }
+
+  getTotalGoldenBones(): number {
+    const profile = this.getActive()
+    if (!profile) return 0
+    return Object.values(profile.levels).reduce((sum, lvl) => {
+      return sum + (lvl.goldenBones ?? []).filter(Boolean).length
+    }, 0)
+  }
+
+  getSpentBones(): number {
+    const profile = this.getActive()
+    if (!profile) return 0
+    return Object.keys(profile.upgrades ?? {})
+      .filter(k => profile.upgrades[k])
+      .reduce((sum, k) => sum + (UPGRADE_COSTS[k] ?? 0), 0)
+  }
+
+  getAvailableBones(): number {
+    return this.getTotalGoldenBones() - this.getSpentBones()
   }
 
   // ── Cálculo de medalha (estático, sem efeito colateral) ──────────────
