@@ -62,6 +62,8 @@ export class GameScene extends Phaser.Scene {
   private _spotlight: SpotlightOverlay | null = null
   private _am?: AchievementManager      // persists across levels
   private _enemyHPBar!: EnemyHPBar
+  private _radarArrow: Phaser.GameObjects.Text | null = null
+  private _radarTimer: Phaser.Time.TimerEvent | null = null
   private _bossStartTime = 0
   private _livesAtBossStart = 0
   private _killCountInLevel = 0
@@ -106,6 +108,10 @@ export class GameScene extends Phaser.Scene {
       this._parallax.destroy()
       this._spotlight?.destroy()
       this._spotlight = null
+      this._radarArrow?.destroy()
+      this._radarArrow = null
+      this._radarTimer?.remove()
+      this._radarTimer = null
     })
 
     this._buildDecorations()
@@ -774,7 +780,7 @@ export class GameScene extends Phaser.Scene {
             e.takeDamage(999)
             this._fx.enemyDeathBurst(e.x, e.y)
             this._spawnScorePopup(e.x, e.y - 24, 'KO! +100', '#22ccff')
-            gameState.addScore(100)
+            gameState.addScore(50) // 'died' event already adds +50; net = +100
           } else {
             e.stun(2000)
             this._fx.barkImpact(e.x, e.y)
@@ -812,10 +818,10 @@ export class GameScene extends Phaser.Scene {
       if (!countered) {
         if (e.hp <= 0) {
           this._spawnScorePopup(e.x, e.y - 20, 'KO! +100', '#f97316')
-          gameState.addScore(100)
+          gameState.addScore(50) // 'died' event already adds +50; net = +100
         } else {
           this._spawnScorePopup(e.x, e.y - 20, '+50', '#f97316')
-          this._enemyHPBar.show(e)
+          if (e.active) this._enemyHPBar.show(e)
         }
       }
     })
@@ -1008,24 +1014,27 @@ export class GameScene extends Phaser.Scene {
   }
 
   private _activateBoneRadar(): void {
-    const arrow = this.add.text(0, 0, '▶', {
+    // Guard against duplicate activation on scene restart
+    if (this._radarArrow) return
+
+    this._radarArrow = this.add.text(0, 0, '▶', {
       fontSize: '18px',
       color: '#ffd700',
       stroke: '#000000',
       strokeThickness: 2,
     }).setDepth(30).setOrigin(0.5).setVisible(false)
 
-    this.time.addEvent({
+    this._radarTimer = this.time.addEvent({
       delay: 1000,
       loop: true,
       callback: () => {
-        if (!arrow.active) return
+        if (!this._radarArrow?.active) return
 
         const bones = (this.itemGroup.getChildren() as Phaser.Physics.Arcade.Image[])
           .filter(item => item.active && item.getData('type') === 'golden_bone')
 
         if (bones.length === 0) {
-          arrow.setVisible(false)
+          this._radarArrow.setVisible(false)
           return
         }
 
@@ -1038,9 +1047,9 @@ export class GameScene extends Phaser.Scene {
         }
 
         const angle = Math.atan2(nearest.y - dog.y, nearest.x - dog.x)
-        arrow.setPosition(dog.x, dog.y - 32)
-        arrow.setRotation(angle)
-        arrow.setVisible(true)
+        this._radarArrow.setPosition(dog.x, dog.y - 32)
+        this._radarArrow.setRotation(angle)
+        this._radarArrow.setVisible(true)
       },
     })
   }

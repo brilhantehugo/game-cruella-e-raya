@@ -177,6 +177,8 @@ export class ProfileManager {
   // ── Upgrades ─────────────────────────────────────────────────────────
 
   saveUpgrade(key: string): void {
+    if (!(key in UPGRADE_COSTS)) return
+    if (this.getAvailableBones() < (UPGRADE_COSTS[key] ?? 0)) return
     const all    = this.getAll()
     const active = localStorage.getItem(ACTIVE_KEY)
     if (!active) return

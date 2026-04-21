@@ -186,6 +186,12 @@ describe('ProfileManager upgrades', () => {
 
   it('saveUpgrade persiste e hasUpgrade retorna true', () => {
     pm.create('Hugo', 'raya')
+    // heart_plus custa 8 — 3 níveis × 3 bones = 9 disponíveis
+    const fullLevel = { completed: true, medal: 'gold' as const, bestScore: 100, bestTime: 60,
+      goldenBones: [true, true, true], totalDeaths: 0, totalEnemiesKilled: 0, playCount: 1 }
+    pm.saveLevel('1-1', fullLevel)
+    pm.saveLevel('1-2', fullLevel)
+    pm.saveLevel('1-3', fullLevel)
     pm.saveUpgrade('heart_plus')
     expect(pm.hasUpgrade('heart_plus')).toBe(true)
   })
@@ -213,6 +219,10 @@ describe('ProfileManager upgrades', () => {
 
   it('getSpentBones soma custos dos upgrades comprados', () => {
     pm.create('Hugo', 'raya')
+    // heart_plus(8) + dash_fast(6) = 14 — 5 níveis × 3 bones = 15 disponíveis
+    const fullLevel = { completed: true, medal: 'gold' as const, bestScore: 100, bestTime: 60,
+      goldenBones: [true, true, true], totalDeaths: 0, totalEnemiesKilled: 0, playCount: 1 }
+    ;['1-1','1-2','1-3','1-4','1-boss'].forEach(id => pm.saveLevel(id, fullLevel))
     pm.saveUpgrade('heart_plus')  // custo 8
     pm.saveUpgrade('dash_fast')   // custo 6
     expect(pm.getSpentBones()).toBe(14)
@@ -230,8 +240,9 @@ describe('ProfileManager upgrades', () => {
       goldenBones: [true, true, true], totalDeaths: 0, totalEnemiesKilled: 0, playCount: 1,
     })
     expect(pm.getAvailableBones()).toBe(3)
-    pm.saveUpgrade('swap_fast')  // custo 5
-    expect(pm.getAvailableBones()).toBe(-2)
+    pm.saveUpgrade('swap_fast')  // custo 5 > 3 disponíveis — compra rejeitada
+    expect(pm.getAvailableBones()).toBe(3)  // saldo não muda
+    expect(pm.hasUpgrade('swap_fast')).toBe(false)
   })
 
   it('novo perfil inicializa upgrades como objeto vazio', () => {
