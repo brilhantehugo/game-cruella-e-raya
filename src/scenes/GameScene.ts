@@ -33,7 +33,9 @@ import { Morador } from '../entities/enemies/Morador'
 import { ParallaxBackground } from '../background/ParallaxBackground'
 import { SoundManager } from '../audio/SoundManager'
 import { EffectsManager } from '../fx/EffectsManager'
+import { EnemyHPBar } from '../fx/EnemyHPBar'
 import { AchievementManager } from '../achievements/AchievementManager'
+import { profileManager } from '../storage/ProfileManager'
 
 export class GameScene extends Phaser.Scene {
   private player!: Player
@@ -59,6 +61,7 @@ export class GameScene extends Phaser.Scene {
   private _lastTrailAt: number = 0
   private _spotlight: SpotlightOverlay | null = null
   private _am?: AchievementManager      // persists across levels
+  private _enemyHPBar!: EnemyHPBar
   private _bossStartTime = 0
   private _livesAtBossStart = 0
   private _killCountInLevel = 0
@@ -109,6 +112,7 @@ export class GameScene extends Phaser.Scene {
     this._buildTilemap()
     this._spawnPlayer()
     this._fx = new EffectsManager(this)
+    this._enemyHPBar = new EnemyHPBar(this)
     // Efeitos de dust no pulo e aterrissagem
     this.player.raya.on('jumped', () => {
       const body = this.player.raya.body as Phaser.Physics.Arcade.Body
@@ -765,6 +769,11 @@ export class GameScene extends Phaser.Scene {
           if (countered) {
             this._fx.enemyDeathBurst(e.x, e.y)
             this._spawnScorePopup(e.x, e.y - 24, 'COUNTER!', '#22ccff')
+          } else if (e.hp <= 1) {
+            e.takeDamage(999)
+            this._fx.enemyDeathBurst(e.x, e.y)
+            this._spawnScorePopup(e.x, e.y - 24, 'KO! +100', '#22ccff')
+            gameState.addScore(100)
           } else {
             e.stun(2000)
             this._fx.barkImpact(e.x, e.y)
@@ -799,7 +808,15 @@ export class GameScene extends Phaser.Scene {
         this._spawnScorePopup(e.x, e.y - 24, 'COUNTER!', '#f97316')
       }
       e.takeDamage(1)
-      if (!countered) this._spawnScorePopup(e.x, e.y - 20, '+50', '#f97316')
+      if (!countered) {
+        if (e.hp <= 0) {
+          this._spawnScorePopup(e.x, e.y - 20, 'KO! +100', '#f97316')
+          gameState.addScore(100)
+        } else {
+          this._spawnScorePopup(e.x, e.y - 20, '+50', '#f97316')
+          this._enemyHPBar.show(e)
+        }
+      }
     })
   }
 
