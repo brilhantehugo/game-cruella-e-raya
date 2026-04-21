@@ -90,7 +90,7 @@ export class Raya extends Phaser.Physics.Arcade.Sprite {
 
     // Atualiza cooldown no GameState para UIScene exibir
     gameState.abilityUsedAt = this.scene.time.now
-    gameState.abilityCooldownMs = 800
+    gameState.abilityCooldownMs = PHYSICS.DASH_COOLDOWN
 
     // Emite evento para Player registrar janela de combo
     this.emit('dashed', { dir, time: this.scene.time.now })
@@ -107,7 +107,7 @@ export class Raya extends Phaser.Physics.Arcade.Sprite {
       body.setAllowGravity(true)
     })
 
-    this.scene.time.delayedCall(800, () => {
+    this.scene.time.delayedCall(PHYSICS.DASH_COOLDOWN, () => {
       this.dashCooldown = false
     })
   }

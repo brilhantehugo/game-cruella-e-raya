@@ -1,3 +1,5 @@
+import { PHYSICS } from './constants'
+
 export type DogType = 'raya' | 'cruella'
 export type AccessoryType = 'laco' | 'coleira' | 'chapeu' | 'bandana' | null
 
@@ -35,7 +37,7 @@ export class GameState {
   swap(now: number): boolean {
     if (!this.canSwap(now)) return false
     this.activeDog = this.activeDog === 'raya' ? 'cruella' : 'raya'
-    this.swapBlockedUntil = now + 1500
+    this.swapBlockedUntil = now + PHYSICS.SWAP_COOLDOWN
     return true
   }
 
