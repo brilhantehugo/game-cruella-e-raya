@@ -10,6 +10,7 @@ export interface ActivePowerUp {
 
 export class GameState {
   hearts: number = 3
+  maxHearts: number = 3
   score: number = 0
   activeDog: DogType = 'raya'
   swapBlockedUntil: number = 0
@@ -98,7 +99,7 @@ export class GameState {
   }
 
   restoreHeart(): void {
-    if (this.hearts < 3) this.hearts++
+    if (this.hearts < this.maxHearts) this.hearts++
   }
 
   equipAccessory(type: AccessoryType): void {
@@ -113,6 +114,7 @@ export class GameState {
 
   reset(): void {
     this.hearts = 3
+    this.maxHearts = 3
     this.score = 0
     this.activeDog = 'raya'
     this.swapBlockedUntil = 0
@@ -133,7 +135,7 @@ export class GameState {
   }
 
   resetAtCheckpoint(): void {
-    this.hearts = 3
+    this.hearts = this.maxHearts
     this.equippedAccessory = null
     this.activePowerUp = null
     this.swapBlockedUntil = 0
@@ -142,7 +144,7 @@ export class GameState {
   }
 
   resetLevel(): void {
-    this.hearts = 3
+    this.hearts = this.maxHearts
     this.equippedAccessory = null
     this.activePowerUp = null
     this.swapBlockedUntil = 0

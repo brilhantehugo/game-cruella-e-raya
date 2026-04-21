@@ -203,4 +203,38 @@ describe('GameState', () => {
       expect(state.sessionStartTime).toBe(0)
     })
   })
+
+  it('maxHearts começa em 3', () => {
+    expect(state.maxHearts).toBe(3)
+  })
+
+  it('restoreHeart usa maxHearts como limite', () => {
+    state.maxHearts = 4
+    state.hearts = 3
+    state.restoreHeart()
+    expect(state.hearts).toBe(4)
+    state.restoreHeart()
+    expect(state.hearts).toBe(4)  // não ultrapassa maxHearts
+  })
+
+  it('reset restaura maxHearts para 3', () => {
+    state.maxHearts = 4
+    state.reset()
+    expect(state.maxHearts).toBe(3)
+    expect(state.hearts).toBe(3)
+  })
+
+  it('resetAtCheckpoint restaura hearts para maxHearts', () => {
+    state.maxHearts = 4
+    state.hearts = 1
+    state.resetAtCheckpoint()
+    expect(state.hearts).toBe(4)
+  })
+
+  it('resetLevel restaura hearts para maxHearts', () => {
+    state.maxHearts = 4
+    state.hearts = 0
+    state.resetLevel()
+    expect(state.hearts).toBe(4)
+  })
 })
