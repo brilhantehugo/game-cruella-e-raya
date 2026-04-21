@@ -113,6 +113,7 @@ export class GameScene extends Phaser.Scene {
     this._spawnPlayer()
     this._fx = new EffectsManager(this)
     this._enemyHPBar = new EnemyHPBar(this)
+    this._applyUpgrades()
     // Efeitos de dust no pulo e aterrissagem
     this.player.raya.on('jumped', () => {
       const body = this.player.raya.body as Phaser.Physics.Arcade.Body
@@ -988,5 +989,59 @@ export class GameScene extends Phaser.Scene {
         this._lastTrailAt = now
       }
     }
+  }
+
+  private _applyUpgrades(): void {
+    // Reset PHYSICS ao padrão antes de aplicar (evita stacking entre fases)
+    PHYSICS.BARK_RADIUS   = 120
+    PHYSICS.DASH_COOLDOWN = 800
+    PHYSICS.SWAP_COOLDOWN = 1500
+    gameState.maxHearts   = 3
+
+    if (!profileManager.getActive()) return
+
+    if (profileManager.hasUpgrade('heart_plus'))  gameState.maxHearts = 4
+    if (profileManager.hasUpgrade('dash_fast'))   PHYSICS.DASH_COOLDOWN = 500
+    if (profileManager.hasUpgrade('bark_wide'))   PHYSICS.BARK_RADIUS = Math.round(120 * 1.5)
+    if (profileManager.hasUpgrade('swap_fast'))   PHYSICS.SWAP_COOLDOWN = 900
+    if (profileManager.hasUpgrade('bone_radar'))  this._activateBoneRadar()
+  }
+
+  private _activateBoneRadar(): void {
+    const arrow = this.add.text(0, 0, '▶', {
+      fontSize: '18px',
+      color: '#ffd700',
+      stroke: '#000000',
+      strokeThickness: 2,
+    }).setDepth(30).setOrigin(0.5).setVisible(false)
+
+    this.time.addEvent({
+      delay: 1000,
+      loop: true,
+      callback: () => {
+        if (!arrow.active) return
+
+        const bones = (this.itemGroup.getChildren() as Phaser.Physics.Arcade.Image[])
+          .filter(item => item.active && item.getData('type') === 'golden_bone')
+
+        if (bones.length === 0) {
+          arrow.setVisible(false)
+          return
+        }
+
+        const dog = gameState.activeDog === 'raya' ? this.player.raya : this.player.cruella
+        let nearest = bones[0]
+        let minDist = Phaser.Math.Distance.Between(dog.x, dog.y, bones[0].x, bones[0].y)
+        for (const bone of bones) {
+          const d = Phaser.Math.Distance.Between(dog.x, dog.y, bone.x, bone.y)
+          if (d < minDist) { minDist = d; nearest = bone }
+        }
+
+        const angle = Math.atan2(nearest.y - dog.y, nearest.x - dog.x)
+        arrow.setPosition(dog.x, dog.y - 32)
+        arrow.setRotation(angle)
+        arrow.setVisible(true)
+      },
+    })
   }
 }
