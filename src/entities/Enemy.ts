@@ -2,7 +2,8 @@ import Phaser from 'phaser'
 
 export abstract class Enemy extends Phaser.Physics.Arcade.Sprite {
   readonly isNPC: boolean = false
-  protected hp: number
+  public hp: number
+  public readonly maxHp: number
   protected speed: number
   protected direction: number = 1
   protected stunUntil: number = 0
@@ -19,6 +20,7 @@ export abstract class Enemy extends Phaser.Physics.Arcade.Sprite {
     scene.add.existing(this)
     this.setScale(2)
     scene.physics.add.existing(this)
+    this.maxHp = hp
     this.hp = hp
     this.speed = speed
     this.setCollideWorldBounds(true)
