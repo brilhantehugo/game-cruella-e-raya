@@ -587,7 +587,7 @@ export class GameScene extends Phaser.Scene {
     // Spawn Aspirador como mini-boss
     const boss = new Aspirador(this, cfg.spawnX, cfg.spawnY)
     this.enemyGroup.add(boss)
-    const maxHp = boss.getHp()
+    const maxHp = boss.maxHp
 
     // Barreiras estáticas
     this._miniBossBarriers = this.physics.add.staticGroup()
@@ -609,7 +609,7 @@ export class GameScene extends Phaser.Scene {
     const hpPoller = this.time.addEvent({
       delay: 100, loop: true, callback: () => {
         if (!boss.active) { hpPoller.destroy(); return }
-        this.events.emit('updateMiniBossBar', boss.getHp() / maxHp)
+        this.events.emit('updateMiniBossBar', boss.hp / maxHp)
       },
     })
 

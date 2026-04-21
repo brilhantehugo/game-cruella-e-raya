@@ -159,8 +159,7 @@ const cBase: string[] = [
   '........BKKKGSWWWB..........',  // r17 body
   '........BKKKGWWWB...........',  // r18 body
   '........BKKGGGWWB...........',  // r19 body lower
-  '.........BKKGGWWB...........',  // r20 body
-  '.........BKGGGWB............',  // r21 belly bottom
+  '.........BKKGGWWB...........',  // r20 belly bottom
 ]
 
 const cLegs: Record<string, string[]> = {

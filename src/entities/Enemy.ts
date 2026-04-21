@@ -75,6 +75,7 @@ export abstract class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.destroy()
   }
 
+  /** @deprecated Use `.hp` directly — field is now public. */
   getHp(): number { return this.hp }
 
   isStunned(): boolean {

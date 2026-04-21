@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest'
 
-// Enemy é abstract — testamos via subclasse mínima local (não importa Phaser)
+// NOTE: TestEnemy mirrors Enemy's constructor logic because Enemy extends
+// Phaser.Physics.Arcade.Sprite and cannot be instantiated in a Node test
+// environment. Changes to Enemy's constructor must be manually verified here.
 class TestEnemy {
   public hp: number
   public readonly maxHp: number
