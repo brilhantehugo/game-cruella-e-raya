@@ -50,6 +50,8 @@ const MEDAL_EMOJI: Record<string, string> = {
 }
 
 export class WorldMapScene extends Phaser.Scene {
+  private _upgradePanel: Phaser.GameObjects.Container | null = null
+
   constructor() { super(KEYS.WORLD_MAP) }
 
   create(): void {
@@ -163,6 +165,14 @@ export class WorldMapScene extends Phaser.Scene {
       })
     })
 
+    // ── Botão Upgrades ──────────────────────────────────────────────────
+    const upgradeBtn = this.add.text(16, GAME_HEIGHT - 14, '🛒 Upgrades', {
+      fontSize: '11px', color: '#5577cc',
+    }).setOrigin(0, 1).setInteractive()
+    upgradeBtn.on('pointerover', () => upgradeBtn.setColor('#88aaff'))
+    upgradeBtn.on('pointerout',  () => upgradeBtn.setColor('#5577cc'))
+    upgradeBtn.on('pointerdown', () => this._renderUpgradePanel())
+
     // ── Instruções ──────────────────────────────────────────────────────
     this.add.text(GAME_WIDTH / 2, GAME_HEIGHT - 28, 'Clique numa fase para jogar  |  ENTER — iniciar atual  |  ESC — menu', {
       fontSize: '11px', color: '#333355',
@@ -189,6 +199,119 @@ export class WorldMapScene extends Phaser.Scene {
     switchBtn.on('pointerover', () => switchBtn.setColor('#6666aa'))
     switchBtn.on('pointerout',  () => switchBtn.setColor('#333366'))
     switchBtn.on('pointerdown', () => this.scene.start(KEYS.PROFILE_SELECT))
+  }
+
+  private _renderUpgradePanel(): void {
+    if (this._upgradePanel) {
+      this._upgradePanel.destroy()
+      this._upgradePanel = null
+      return
+    }
+
+    const cx = GAME_WIDTH / 2
+    const cy = GAME_HEIGHT / 2
+    const W = 680, H = 330
+
+    const container = this.add.container(cx, cy)
+    this._upgradePanel = container
+
+    // Fundo semi-transparente
+    const bg = this.add.graphics()
+    bg.fillStyle(0x050510, 0.94)
+    bg.fillRect(-W / 2, -H / 2, W, H)
+    bg.lineStyle(2, 0x3a5a8a)
+    bg.strokeRect(-W / 2, -H / 2, W, H)
+    container.add(bg)
+
+    // Título
+    container.add(this.add.text(0, -H / 2 + 20, '⚡ Upgrades Permanentes', {
+      fontSize: '16px', color: '#ffdd88', fontStyle: 'bold',
+    }).setOrigin(0.5))
+
+    // Bones disponíveis
+    const available = profileManager.getAvailableBones()
+    container.add(this.add.text(0, -H / 2 + 44, `🦴 Disponíveis: ${available}`, {
+      fontSize: '12px', color: '#aaccff',
+    }).setOrigin(0.5))
+
+    // Definição dos 5 upgrades
+    const defs = [
+      { key: 'heart_plus', name: '❤️ Coração Extra',  effect: 'HP máx 3→4',              cost: 8 },
+      { key: 'dash_fast',  name: '⚡ Dash Relâmpago', effect: 'Cooldown dash 800→500ms',  cost: 6 },
+      { key: 'bark_wide',  name: '🔊 Latido Amplo',   effect: 'Raio bark ×1.5',           cost: 6 },
+      { key: 'swap_fast',  name: '🔄 Troca Rápida',   effect: 'Cooldown troca 1500→900ms', cost: 5 },
+      { key: 'bone_radar', name: '🦴 Faro Apurado',   effect: 'Seta → bone mais próximo', cost: 7 },
+    ] as const
+
+    const cardW = 124
+    const startX = -(defs.length * cardW) / 2 + cardW / 2
+    const cardCenterY = 28
+
+    defs.forEach((def, i) => {
+      const acquired  = profileManager.hasUpgrade(def.key)
+      const canAfford = !acquired && available >= def.cost
+      const cx2 = startX + i * cardW
+      const top = cardCenterY - 100
+
+      // Fundo do card
+      const card = this.add.graphics()
+      card.fillStyle(acquired ? 0x0a3020 : 0x0a1a30, 0.9)
+      card.lineStyle(1, acquired ? 0x44cc88 : canAfford ? 0x2255aa : 0x1a2a3a)
+      card.fillRect(cx2 - cardW / 2 + 4, top, cardW - 8, 200)
+      card.strokeRect(cx2 - cardW / 2 + 4, top, cardW - 8, 200)
+      container.add(card)
+
+      container.add(this.add.text(cx2, top + 18, def.name, {
+        fontSize: '10px', color: '#e0e8ff',
+        wordWrap: { width: cardW - 16 }, align: 'center',
+      }).setOrigin(0.5))
+
+      container.add(this.add.text(cx2, top + 56, def.effect, {
+        fontSize: '10px', color: '#7898b8',
+        wordWrap: { width: cardW - 16 }, align: 'center',
+      }).setOrigin(0.5))
+
+      container.add(this.add.text(cx2, top + 92, `🦴 ${def.cost}`, {
+        fontSize: '13px', color: '#ffdd88',
+      }).setOrigin(0.5))
+
+      const btnLabel = acquired
+        ? '✓ ADQUIRIDO'
+        : canAfford
+          ? 'COMPRAR'
+          : `Faltam ${def.cost - available}🦴`
+      const btnColor = acquired ? '#44cc88' : canAfford ? '#ffffff' : '#664444'
+
+      const btn = this.add.text(cx2, top + 164, btnLabel, {
+        fontSize: '11px', color: btnColor,
+      }).setOrigin(0.5)
+      container.add(btn)
+
+      if (canAfford) {
+        btn.setInteractive()
+        btn.on('pointerover', () => btn.setColor('#ffdd44'))
+        btn.on('pointerout',  () => btn.setColor('#ffffff'))
+        btn.on('pointerdown', () => {
+          profileManager.saveUpgrade(def.key)
+          // Fecha manualmente antes de reabrir para evitar que o toggle só feche
+          this._upgradePanel?.destroy()
+          this._upgradePanel = null
+          this._renderUpgradePanel()
+        })
+      }
+    })
+
+    // Botão fechar
+    const closeBtn = this.add.text(W / 2 - 12, -H / 2 + 10, '✕', {
+      fontSize: '18px', color: '#cc4444',
+    }).setOrigin(0.5).setInteractive()
+    container.add(closeBtn)
+    closeBtn.on('pointerover', () => closeBtn.setColor('#ff6666'))
+    closeBtn.on('pointerout',  () => closeBtn.setColor('#cc4444'))
+    closeBtn.on('pointerdown', () => {
+      this._upgradePanel?.destroy()
+      this._upgradePanel = null
+    })
   }
 
   private _startLevel(levelId: string): void {
