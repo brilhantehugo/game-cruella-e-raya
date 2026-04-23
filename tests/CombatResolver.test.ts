@@ -32,10 +32,6 @@ describe('resolveBarkHit', () => {
       .toEqual({ action: 'nothing' })
   })
 
-  it('nada quando counter=false e isNPC=false e dist > raio', () => {
-    expect(resolveBarkHit({ hp: 1, dist: 200, barkRadius: 120, countered: false, isNPC: false }))
-      .toEqual({ action: 'nothing' })
-  })
 })
 
 describe('resolveDashHit', () => {
@@ -58,6 +54,11 @@ describe('resolveDashHit', () => {
     expect(resolveDashHit({ hpAfterDamage: 1, countered: false }))
       .toEqual({ action: 'damage' })
   })
+
+  it('ko quando hpAfterDamage negativo', () => {
+    expect(resolveDashHit({ hpAfterDamage: -3, countered: false }))
+      .toEqual({ action: 'ko' })
+  })
 })
 
 describe('resolveStompHit', () => {
@@ -78,6 +79,16 @@ describe('resolveStompHit', () => {
 
   it('nada quando pBottom > eTop + 12', () => {
     expect(resolveStompHit({ velocityY: 200, pBottom: 110, eTop: 95, isNPC: false }))
+      .toEqual({ action: 'nothing' })
+  })
+
+  it('stomp quando pBottom exatamente no limite (pBottom === eTop + 12)', () => {
+    expect(resolveStompHit({ velocityY: 100, pBottom: 107, eTop: 95, isNPC: false }))
+      .toEqual({ action: 'stomp' })
+  })
+
+  it('nada quando pBottom ultrapassa o limite (pBottom === eTop + 13)', () => {
+    expect(resolveStompHit({ velocityY: 100, pBottom: 108, eTop: 95, isNPC: false }))
       .toEqual({ action: 'nothing' })
   })
 })

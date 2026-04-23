@@ -14,6 +14,9 @@ export type StompResult =
   | { action: 'npc_push' }
   | { action: 'nothing' }
 
+const STOMP_MIN_VELOCITY = 50   // minimum downward velocity to register as a stomp
+const STOMP_PIXEL_TOLERANCE = 12 // pixel tolerance for player bottom vs enemy top
+
 export function resolveBarkHit(p: {
   hp: number
   dist: number
@@ -42,7 +45,7 @@ export function resolveStompHit(p: {
   eTop: number
   isNPC: boolean
 }): StompResult {
-  if (p.velocityY <= 50 || p.pBottom > p.eTop + 12) return { action: 'nothing' }
+  if (p.velocityY <= STOMP_MIN_VELOCITY || p.pBottom > p.eTop + STOMP_PIXEL_TOLERANCE) return { action: 'nothing' }
   if (p.isNPC) return { action: 'npc_push' }
   return { action: 'stomp' }
 }
