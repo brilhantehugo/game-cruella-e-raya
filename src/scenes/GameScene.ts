@@ -25,6 +25,7 @@ import { ZeladorBoss } from '../entities/enemies/ZeladorBoss'
 import { HumanEnemy } from '../entities/enemies/HumanEnemy'
 import { Zelador } from '../entities/enemies/Zelador'
 import { LevelBuilder } from '../systems/LevelBuilder'
+import { resolveBarkHit, resolveDashHit, resolveStompHit } from '../systems/CombatResolver'
 import { ParallaxBackground } from '../background/ParallaxBackground'
 import { SoundManager } from '../audio/SoundManager'
 import { EffectsManager } from '../fx/EffectsManager'
@@ -666,25 +667,24 @@ export class GameScene extends Phaser.Scene {
         const pBody = (ps as Phaser.Physics.Arcade.Sprite).body as Phaser.Physics.Arcade.Body
         const eBody = e.body as Phaser.Physics.Arcade.Body
 
-        // Stomp: player falling and centre above enemy centre
-        if (pBody.velocity.y > 50 && pBody.bottom <= eBody.top + 12) {
-          if (!e.isNPC) {
-            const stompCountered = (e as any).tryCounter?.('raya', 'jump') ?? false
-            e.takeDamage(999)
-            SoundManager.play('stomp')
-            if (stompCountered) {
-              this._spawnScorePopup(e.x, e.y - 28, 'COUNTER!', '#22ccff')
-            }
-            // Hit stop: pausa física por 80ms para dar peso ao golpe
-            this.physics.pause()
-            this.time.delayedCall(80, () => this.physics.resume())
-          }
+        // Stomp / NPC push — decisão delegada ao CombatResolver
+        const stompResult = resolveStompHit({
+          velocityY: pBody.velocity.y,
+          pBottom: pBody.bottom,
+          eTop: eBody.top,
+          isNPC: e.isNPC,
+        })
+        if (stompResult.action === 'stomp') {
+          const countered = (e as any).tryCounter?.('raya', 'jump') ?? false
+          e.takeDamage(999)
+          SoundManager.play('stomp')
+          if (countered) this._spawnScorePopup(e.x, e.y - 28, 'COUNTER!', '#22ccff')
+          this.physics.pause()
+          this.time.delayedCall(80, () => this.physics.resume())
           pBody.setVelocityY(-380)
           return
         }
-
-        // NPCs (Hugo/Hannah): empurra o jogador e causa dano — mas não morrem
-        if (e.isNPC) {
+        if (stompResult.action === 'npc_push') {
           const pushDir = (ps as Phaser.Physics.Arcade.Sprite).x < e.x ? -1 : 1
           pBody.setVelocityX(pushDir * 340)
           pBody.setVelocityY(-220)
@@ -750,24 +750,28 @@ export class GameScene extends Phaser.Scene {
       ;(this.enemyGroup.getChildren() as Enemy[]).forEach(e => {
         const dist = Phaser.Math.Distance.Between(bx, by, e.x, e.y)
         if (e instanceof HumanEnemy) {
-          // Humanos: reagem com máquina de estados (hearingRadius próprio)
           e.onBarkHeard(dist)
-        } else if (dist <= PHYSICS.BARK_RADIUS) {
-          // Animais: verifica counter window primeiro
-          const countered = (e as any).tryCounter?.('cruella', 'bark') ?? false
-          if (countered) {
+          return
+        }
+        const countered = (e as any).tryCounter?.('cruella', 'bark') ?? false
+        const result = resolveBarkHit({ hp: e.hp, dist, barkRadius: PHYSICS.BARK_RADIUS, countered, isNPC: e.isNPC })
+        switch (result.action) {
+          case 'counter':
             this._fx.enemyDeathBurst(e.x, e.y)
             this._spawnScorePopup(e.x, e.y - 24, 'COUNTER!', '#22ccff')
-          } else if (e.hp <= 1) {
+            break
+          case 'ko':
             e.takeDamage(999)
             this._fx.enemyDeathBurst(e.x, e.y)
             this._spawnScorePopup(e.x, e.y - 24, 'KO! +100', '#22ccff')
             gameState.addScore(50) // 'died' event already adds +50; net = +100
-          } else {
-            e.stun(2000)
+            break
+          case 'stun':
+            e.stun(result.duration)
             this._fx.barkImpact(e.x, e.y)
             this._spawnScorePopup(e.x, e.y - 24, 'STUN!', '#ffdd00')
-          }
+            break
+          // 'nothing': sem ação
         }
       })
     })
@@ -792,19 +796,21 @@ export class GameScene extends Phaser.Scene {
       const e = enemy as Enemy
       if (!this.player.raya.getIsDashing()) return
       const countered = (e as any).tryCounter?.('raya', 'dash') ?? false
-      if (countered) {
-        this._fx.enemyDeathBurst(e.x, e.y)
-        this._spawnScorePopup(e.x, e.y - 24, 'COUNTER!', '#f97316')
-      }
       e.takeDamage(1)
-      if (!countered) {
-        if (e.hp <= 0) {
+      const result = resolveDashHit({ hpAfterDamage: e.hp, countered })
+      switch (result.action) {
+        case 'counter':
+          this._fx.enemyDeathBurst(e.x, e.y)
+          this._spawnScorePopup(e.x, e.y - 24, 'COUNTER!', '#f97316')
+          break
+        case 'ko':
           this._spawnScorePopup(e.x, e.y - 20, 'KO! +100', '#f97316')
           gameState.addScore(50) // 'died' event already adds +50; net = +100
-        } else {
+          break
+        case 'damage':
           this._spawnScorePopup(e.x, e.y - 20, '+50', '#f97316')
           if (e.active) this._enemyHPBar.show(e)
-        }
+          break
       }
     })
   }
