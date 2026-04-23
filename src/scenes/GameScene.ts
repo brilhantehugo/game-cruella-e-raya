@@ -3,9 +3,6 @@ import { KEYS, TILE_SIZE, GAME_WIDTH, GAME_HEIGHT, PHYSICS, SCORING } from '../c
 import { gameState } from '../GameState'
 import { Player } from '../entities/Player'
 import { Enemy } from '../entities/Enemy'
-import { GatoMalencarado } from '../entities/enemies/GatoMalencarado'
-import { PomboAgitado } from '../entities/enemies/PomboAgitado'
-import { RatoDeCalcada } from '../entities/enemies/RatoDeCalcada'
 import { DonoNervoso } from '../entities/enemies/DonoNervoso'
 import { SeuBigodes } from '../entities/enemies/SeuBigodes'
 import { Bone } from '../items/Bone'
@@ -25,11 +22,9 @@ import { SpotlightOverlay, type LightSource } from '../fx/SpotlightOverlay'
 import { Aspirador } from '../entities/enemies/Aspirador'
 import { Drone } from '../entities/enemies/Drone'
 import { ZeladorBoss } from '../entities/enemies/ZeladorBoss'
-import { Hugo } from '../entities/npc/Hugo'
-import { Hannah } from '../entities/npc/Hannah'
 import { HumanEnemy } from '../entities/enemies/HumanEnemy'
 import { Zelador } from '../entities/enemies/Zelador'
-import { Morador } from '../entities/enemies/Morador'
+import { LevelBuilder } from '../systems/LevelBuilder'
 import { ParallaxBackground } from '../background/ParallaxBackground'
 import { SoundManager } from '../audio/SoundManager'
 import { EffectsManager } from '../fx/EffectsManager'
@@ -335,22 +330,9 @@ export class GameScene extends Phaser.Scene {
 
   private _spawnEnemies(): void {
     this.enemyGroup = this.physics.add.group()
+    const builder = new LevelBuilder(this)
     this.currentLevel.enemies.forEach(spawn => {
-      let enemy: Enemy | undefined
-      switch (spawn.type) {
-        case 'gato':      enemy = new GatoMalencarado(this, spawn.x, spawn.y); break
-        case 'pombo':     enemy = new PomboAgitado(this, spawn.x, spawn.y);    break
-        case 'rato':      enemy = new RatoDeCalcada(this, spawn.x, spawn.y);   break
-        case 'dono':      enemy = new DonoNervoso(this, spawn.x, spawn.y);     break
-        case 'aspirador': enemy = new Aspirador(this, spawn.x, spawn.y);       break
-        case 'hugo':      enemy = new Hugo(this, spawn.x, spawn.y);            break
-        case 'hannah':    enemy = new Hannah(this, spawn.x, spawn.y);          break
-        case 'zelador':   enemy = new Zelador(this, spawn.x, spawn.y);         break
-        case 'morador':   enemy = new Morador(this, spawn.x, spawn.y);         break
-        case 'gato_selvagem': enemy = new GatoSelvagem(this, spawn.x, spawn.y); break
-        case 'seguranca':     enemy = new Seguranca(this, spawn.x, spawn.y);    break
-        case 'porteiro':      enemy = new Porteiro(this, spawn.x, spawn.y);     break
-      }
+      const enemy = builder.createEnemy(spawn.type, spawn.x, spawn.y)
       if (!enemy) return
       this.enemyGroup.add(enemy)
       if (enemy instanceof HumanEnemy) {
