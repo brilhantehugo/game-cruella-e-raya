@@ -77,6 +77,16 @@ describe('resolveStompHit', () => {
       .toEqual({ action: 'nothing' })
   })
 
+  it('nada quando velocityY === 50 (exatamente no limite)', () => {
+    expect(resolveStompHit({ velocityY: 50, pBottom: 100, eTop: 95, isNPC: false }))
+      .toEqual({ action: 'nothing' })
+  })
+
+  it('stomp quando velocityY === 51 (um acima do limite)', () => {
+    expect(resolveStompHit({ velocityY: 51, pBottom: 100, eTop: 95, isNPC: false }))
+      .toEqual({ action: 'stomp' })
+  })
+
   it('nada quando pBottom > eTop + 12', () => {
     expect(resolveStompHit({ velocityY: 200, pBottom: 110, eTop: 95, isNPC: false }))
       .toEqual({ action: 'nothing' })

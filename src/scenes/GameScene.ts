@@ -675,6 +675,8 @@ export class GameScene extends Phaser.Scene {
           isNPC: e.isNPC,
         })
         if (stompResult.action === 'stomp') {
+          // Counter check is intentionally here (not in resolveStompHit): the resolver
+          // only decides IF a stomp occurred; the counter reaction is a post-stomp effect.
           const countered = (e as any).tryCounter?.('raya', 'jump') ?? false
           e.takeDamage(999)
           SoundManager.play('stomp')
