@@ -32,6 +32,16 @@ describe('resolveBarkHit', () => {
       .toEqual({ action: 'nothing' })
   })
 
+  it('stun usa duração padrão 2000 quando stunDuration não é fornecido', () => {
+    expect(resolveBarkHit({ hp: 3, dist: 80, barkRadius: 120, countered: false, isNPC: false }))
+      .toEqual({ action: 'stun', duration: 2000 })
+  })
+
+  it('stun usa duração customizada quando stunDuration é fornecido', () => {
+    expect(resolveBarkHit({ hp: 3, dist: 80, barkRadius: 120, countered: false, isNPC: false, stunDuration: 500 }))
+      .toEqual({ action: 'stun', duration: 500 })
+  })
+
 })
 
 describe('resolveDashHit', () => {

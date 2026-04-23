@@ -23,11 +23,12 @@ export function resolveBarkHit(p: {
   barkRadius: number
   countered: boolean
   isNPC: boolean
+  stunDuration?: number
 }): BarkResult {
   if (p.countered) return { action: 'counter' }
   if (p.isNPC || p.dist > p.barkRadius) return { action: 'nothing' }
   if (p.hp <= 1) return { action: 'ko' }
-  return { action: 'stun', duration: 2000 }
+  return { action: 'stun', duration: p.stunDuration ?? 2000 }
 }
 
 export function resolveDashHit(p: {

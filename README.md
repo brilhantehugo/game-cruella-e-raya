@@ -2,6 +2,8 @@
 
 > Plataforma 2D em TypeScript + Phaser 3 — controla duas cãezinhas numa fuga épica pelo prédio, ruas e telhados da cidade!
 
+🎮 **[Jogar agora](https://brilhantehugo.github.io/game-cruella-e-raya/)**
+
 ---
 
 ## 🎮 Sobre o Jogo
