@@ -63,6 +63,7 @@ export class GameScene extends Phaser.Scene {
   private _bossStartTime = 0
   private _livesAtBossStart = 0
   private _killCountInLevel = 0
+  private _mainBoss: Enemy | null = null
 
   constructor() { super(KEYS.GAME) }
 
@@ -252,6 +253,11 @@ export class GameScene extends Phaser.Scene {
 
     this.time.delayedCall(2000, () => {
       if (!this.scene.isActive(KEYS.GAME)) return
+      // Activa o boss agora que a cinemática terminou
+      if (this._mainBoss) {
+        this._mainBoss.setVisible(true)
+        ;(this._mainBoss.body as Phaser.Physics.Arcade.Body).enable = true
+      }
       this._cinematicActive = false
       // Trava a câmera dentro dos limites da arena
       cam.setBounds(0, 0, mapWidth, GAME_HEIGHT)
@@ -376,6 +382,9 @@ export class GameScene extends Phaser.Scene {
         this._livesAtBossStart = gameState.hearts
         const boss = new ZeladorBoss(this, mapWidth / 2, 352)
         this.enemyGroup.add(boss)
+        boss.setVisible(false)
+        ;(boss.body as Phaser.Physics.Arcade.Body).enable = false
+        this._mainBoss = boss
 
         this._bossProjectileGroup = this.physics.add.group()
 
@@ -444,6 +453,9 @@ export class GameScene extends Phaser.Scene {
         this._livesAtBossStart = gameState.hearts
         const boss = new Drone(this, mapWidth / 2, 180)
         this.enemyGroup.add(boss)
+        boss.setVisible(false)
+        ;(boss.body as Phaser.Physics.Arcade.Body).enable = false
+        this._mainBoss = boss
 
         this._bossProjectileGroup = this.physics.add.group()
 
@@ -494,6 +506,9 @@ export class GameScene extends Phaser.Scene {
         this._livesAtBossStart = gameState.hearts
         const boss = new SegurancaMoto(this, mapWidth - 100, 352)
         this.enemyGroup.add(boss)
+        boss.setVisible(false)
+        ;(boss.body as Phaser.Physics.Arcade.Body).enable = false
+        this._mainBoss = boss
 
         if (!this._bossProjectileGroup) this._bossProjectileGroup = this.physics.add.group()
 
@@ -527,6 +542,9 @@ export class GameScene extends Phaser.Scene {
         this._livesAtBossStart = gameState.hearts
         const boss = new SeuBigodes(this, 480, 360)
         this.enemyGroup.add(boss)
+        boss.setVisible(false)
+        ;(boss.body as Phaser.Physics.Arcade.Body).enable = false
+        this._mainBoss = boss
         boss.on('died', (b: Enemy) => {
           gameState.addScore(1000)
           gameState.sessionEnemiesKilled++

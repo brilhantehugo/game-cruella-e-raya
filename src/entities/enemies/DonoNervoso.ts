@@ -1,6 +1,7 @@
 import Phaser from 'phaser'
 import { KEYS } from '../../constants'
 import { Enemy } from '../Enemy'
+import { donoChaseVelocity } from '../../systems/EnemyMovement'
 
 export class DonoNervoso extends Enemy {
   private targetX: number = 0
@@ -14,13 +15,13 @@ export class DonoNervoso extends Enemy {
   }
   update(_time: number, _delta: number): void {
     if (this.isStunned()) return
+    const body = this.body as Phaser.Physics.Arcade.Body
     const dx = this.targetX - this.x
-    if (Math.abs(dx) > 8) {
-      this.direction = dx > 0 ? 1 : -1
-      this.setVelocityX(this.direction * this.speed)
+    const vx = donoChaseVelocity(dx, this.speed, body.blocked.down)
+    this.setVelocityX(vx)
+    if (vx !== 0) {
+      this.direction = vx > 0 ? 1 : -1
       this.setFlipX(this.direction === -1)
-    } else {
-      this.setVelocityX(0)
     }
   }
 }
