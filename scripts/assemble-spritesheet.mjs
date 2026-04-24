@@ -8,7 +8,8 @@
  *     /tmp/raya/idle-0.png /tmp/raya/idle-1.png ...
  */
 import sharp from 'sharp'
-import { readFileSync } from 'fs'
+import { mkdirSync } from 'fs'
+import { dirname } from 'path'
 
 const [,, output, ...inputs] = process.argv
 if (!output || inputs.length === 0) {
@@ -18,21 +19,39 @@ if (!output || inputs.length === 0) {
 
 const frames = await Promise.all(
   inputs.map(async (p) => {
-    const buf = readFileSync(p)
-    const meta = await sharp(buf).metadata()
-    return { buf, width: meta.width, height: meta.height }
+    let meta
+    try {
+      meta = await sharp(p).metadata()
+    } catch (err) {
+      console.error(`Error: cannot read frame: ${p}`)
+      process.exit(1)
+    }
+    return { path: p, width: meta.width, height: meta.height }
   })
 )
 
 const frameWidth  = frames[0].width
 const frameHeight = frames[0].height
-const totalWidth  = frameWidth * frames.length
+
+for (const f of frames) {
+  if (f.width !== frameWidth || f.height !== frameHeight) {
+    console.error(
+      `Error: inconsistent frame dimensions — expected ${frameWidth}×${frameHeight} ` +
+      `but "${f.path}" is ${f.width}×${f.height}`
+    )
+    process.exit(1)
+  }
+}
+
+const totalWidth = frameWidth * frames.length
 
 const composites = frames.map((f, i) => ({
-  input: f.buf,
+  input: f.path,
   left: i * frameWidth,
   top: 0,
 }))
+
+mkdirSync(dirname(output), { recursive: true })
 
 await sharp({
   create: { width: totalWidth, height: frameHeight, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } }
