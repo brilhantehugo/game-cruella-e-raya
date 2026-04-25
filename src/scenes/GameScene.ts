@@ -668,13 +668,14 @@ export class GameScene extends Phaser.Scene {
     this.physics.add.collider(this.player.raya,   this.platformLayer)
     this.physics.add.collider(this.player.cruella, this.platformLayer)
     this.physics.add.collider(this.enemyGroup, this.groundLayer)
+    this.physics.add.collider(this.enemyGroup, this.platformLayer)
 
     // Decorações sólidas (móveis, grades) bloqueiam personagens e inimigos
     if (this.decorationLayer.getLength() > 0) {
       this.physics.add.collider(this.player.raya,   this.decorationLayer)
       this.physics.add.collider(this.player.cruella, this.decorationLayer)
-      // Boss não colide com decorações para não ficar preso entre os móveis
-      if (!this.currentLevel.isBossLevel) {
+      // Boss e mini-boss não colidem com decorações para não ficarem presos entre os móveis
+      if (!this.currentLevel.isBossLevel && !this.currentLevel.miniBoss) {
         this.physics.add.collider(this.enemyGroup, this.decorationLayer)
       }
     }

@@ -43,7 +43,7 @@ export const LEVEL_0_1: LevelData = {
   checkpointX: 1536, checkpointY: 380,
   miniBoss: {
     triggerX:      1280,
-    spawnX:        1600,
+    spawnX:        1520,
     spawnY:        352,
     leftBarrierX:  1056,
     rightBarrierX: 1984,
