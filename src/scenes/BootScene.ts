@@ -13,11 +13,14 @@ export class BootScene extends Phaser.Scene {
     this.load.audio(KEYS.BGM_WORLD1,  'audio/bgm_world1.mp3')
     this.load.audio(KEYS.BGM_BOSS,    'audio/bgm_boss.mp3')
     this.load.audio(KEYS.BGM_FANFARE, 'audio/bgm_fanfare.mp3')
+
+    // Spritesheets PNG gerados pelo Pixel Lab (substituem _makePixelSprite)
+    this.load.spritesheet(KEYS.RAYA, 'sprites/raya.png', { frameWidth: 32, frameHeight: 32 })
   }
 
   create(): void {
     // ── Pixel sprites ──────────────────────────────────────────────────────────
-    this._makePixelSprite(KEYS.RAYA,    RAYA_SPRITE)
+    // KEYS.RAYA → carregado via preload() como spritesheet PNG
     this._makePixelSprite(KEYS.CRUELLA, CRUELLA_SPRITE)
     this._makePixelSprite(KEYS.GATO,    GATO_SPRITE)
     this._makePixelSprite(KEYS.POMBO,   POMBO_SPRITE)

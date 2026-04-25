@@ -24,10 +24,17 @@ export class Raya extends Phaser.Physics.Arcade.Sprite {
     this.shiftKey = scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT)
 
     // Register animations (safe to call multiple times — Phaser skips if already exists)
+    // Frame map (PNG spritesheet 544×32, 17 frames × 32px):
+    //   idle  → 0–1  | walk → 2–5  | run  → 6–9
+    //   jump  → 10–11| bark → 12–13| stun → 14 | death → 15–16
     if (!scene.anims.exists('raya-idle')) {
-      scene.anims.create({ key: 'raya-idle', frames: scene.anims.generateFrameNumbers(KEYS.RAYA, { frames: [0] }), frameRate: 1, repeat: -1 })
-      scene.anims.create({ key: 'raya-walk', frames: scene.anims.generateFrameNumbers(KEYS.RAYA, { frames: [1, 2, 3, 4] }), frameRate: 8, repeat: -1 })
-      scene.anims.create({ key: 'raya-jump', frames: scene.anims.generateFrameNumbers(KEYS.RAYA, { frames: [5] }), frameRate: 1, repeat: -1 })
+      scene.anims.create({ key: 'raya-idle',  frames: scene.anims.generateFrameNumbers(KEYS.RAYA, { frames: [0, 1] }),          frameRate: 2,  repeat: -1 })
+      scene.anims.create({ key: 'raya-walk',  frames: scene.anims.generateFrameNumbers(KEYS.RAYA, { frames: [2, 3, 4, 5] }),    frameRate: 8,  repeat: -1 })
+      scene.anims.create({ key: 'raya-run',   frames: scene.anims.generateFrameNumbers(KEYS.RAYA, { frames: [6, 7, 8, 9] }),    frameRate: 12, repeat: -1 })
+      scene.anims.create({ key: 'raya-jump',  frames: scene.anims.generateFrameNumbers(KEYS.RAYA, { frames: [10, 11] }),        frameRate: 6,  repeat: -1 })
+      scene.anims.create({ key: 'raya-bark',  frames: scene.anims.generateFrameNumbers(KEYS.RAYA, { frames: [12, 13] }),        frameRate: 6,  repeat: -1 })
+      scene.anims.create({ key: 'raya-stun',  frames: scene.anims.generateFrameNumbers(KEYS.RAYA, { frames: [14] }),            frameRate: 1,  repeat: -1 })
+      scene.anims.create({ key: 'raya-death', frames: scene.anims.generateFrameNumbers(KEYS.RAYA, { frames: [15, 16] }),        frameRate: 4,  repeat: 0  })
     }
     this.play('raya-idle')
   }
@@ -97,6 +104,7 @@ export class Raya extends Phaser.Physics.Arcade.Sprite {
 
     this.isDashing = true
     this.dashCooldown = true
+    this.play('raya-run', true)
     this.setVelocityX(dir * PHYSICS.DASH_VELOCITY)
     this.setVelocityY(0)
     const body = this.body as Phaser.Physics.Arcade.Body
