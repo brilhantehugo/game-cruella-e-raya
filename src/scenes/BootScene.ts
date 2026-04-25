@@ -1,6 +1,6 @@
 import Phaser from 'phaser'
 import { KEYS, TILE_SIZE } from '../constants'
-import { CompiledSprite, RAYA_SPRITE, CRUELLA_SPRITE, GATO_SPRITE, POMBO_SPRITE, RATO_SPRITE, DONO_SPRITE, BIGODES_SPRITE } from '../sprites/SpriteData'
+import { CompiledSprite, GATO_SPRITE, POMBO_SPRITE, RATO_SPRITE, DONO_SPRITE, BIGODES_SPRITE } from '../sprites/SpriteData'
 import { profileManager } from '../storage/ProfileManager'
 
 export class BootScene extends Phaser.Scene {
@@ -15,13 +15,13 @@ export class BootScene extends Phaser.Scene {
     this.load.audio(KEYS.BGM_FANFARE, 'audio/bgm_fanfare.mp3')
 
     // Spritesheets PNG gerados pelo Pixel Lab (substituem _makePixelSprite)
-    this.load.spritesheet(KEYS.RAYA, 'sprites/raya.png', { frameWidth: 32, frameHeight: 32 })
+    this.load.spritesheet(KEYS.RAYA,    'sprites/raya.png',    { frameWidth: 32, frameHeight: 32 })
+    this.load.spritesheet(KEYS.CRUELLA, 'sprites/cruella.png', { frameWidth: 32, frameHeight: 32 })
   }
 
   create(): void {
     // ── Pixel sprites ──────────────────────────────────────────────────────────
-    // KEYS.RAYA → carregado via preload() como spritesheet PNG
-    this._makePixelSprite(KEYS.CRUELLA, CRUELLA_SPRITE)
+    // KEYS.RAYA e KEYS.CRUELLA → carregados via preload() como spritesheets PNG
     this._makePixelSprite(KEYS.GATO,    GATO_SPRITE)
     this._makePixelSprite(KEYS.POMBO,   POMBO_SPRITE)
     this._makePixelSprite(KEYS.RATO,    RATO_SPRITE)
