@@ -14,17 +14,24 @@ export class Cruella extends Phaser.Physics.Arcade.Sprite {
     scene.add.existing(this)
     scene.physics.add.existing(this)
     this.setCollideWorldBounds(true)
-    this.setScale(2.5)
-    // Larger body matches bigger dog proportions
-    this.setBodySize(22, 26)
-    this.setOffset(3, 1)
+    this.setScale(1.2)
+    // Body centered on the dog within the 48×48 MCP canvas
+    this.setBodySize(24, 28)
+    this.setOffset(12, 14)
     this.cursors = scene.input.keyboard!.createCursorKeys()
     this.shiftKey = scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT)
 
+    // Frame map (PNG spritesheet 544×32, 17 frames × 32px):
+    //   idle  → 0–1  | walk → 2–5  | run  → 6–9
+    //   jump  → 10–11| bark → 12–13| stun → 14 | death → 15–16
     if (!scene.anims.exists('cruella-idle')) {
-      scene.anims.create({ key: 'cruella-idle', frames: scene.anims.generateFrameNumbers(KEYS.CRUELLA, { frames: [0] }), frameRate: 1, repeat: -1 })
-      scene.anims.create({ key: 'cruella-walk', frames: scene.anims.generateFrameNumbers(KEYS.CRUELLA, { frames: [1, 2, 3, 4] }), frameRate: 8, repeat: -1 })
-      scene.anims.create({ key: 'cruella-jump', frames: scene.anims.generateFrameNumbers(KEYS.CRUELLA, { frames: [5] }), frameRate: 1, repeat: -1 })
+      scene.anims.create({ key: 'cruella-idle',  frames: scene.anims.generateFrameNumbers(KEYS.CRUELLA, { frames: [0, 1] }),          frameRate: 2,  repeat: -1 })
+      scene.anims.create({ key: 'cruella-walk',  frames: scene.anims.generateFrameNumbers(KEYS.CRUELLA, { frames: [2, 3, 4, 5] }),    frameRate: 8,  repeat: -1 })
+      scene.anims.create({ key: 'cruella-run',   frames: scene.anims.generateFrameNumbers(KEYS.CRUELLA, { frames: [6, 7, 8, 9] }),    frameRate: 12, repeat: -1 })
+      scene.anims.create({ key: 'cruella-jump',  frames: scene.anims.generateFrameNumbers(KEYS.CRUELLA, { frames: [10, 11] }),        frameRate: 6,  repeat: -1 })
+      scene.anims.create({ key: 'cruella-bark',  frames: scene.anims.generateFrameNumbers(KEYS.CRUELLA, { frames: [12, 13] }),        frameRate: 6,  repeat: 0  })
+      scene.anims.create({ key: 'cruella-stun',  frames: scene.anims.generateFrameNumbers(KEYS.CRUELLA, { frames: [14] }),            frameRate: 1,  repeat: -1 })
+      scene.anims.create({ key: 'cruella-death', frames: scene.anims.generateFrameNumbers(KEYS.CRUELLA, { frames: [15, 16] }),        frameRate: 4,  repeat: 0  })
     }
     this.play('cruella-idle')
   }
@@ -75,6 +82,7 @@ export class Cruella extends Phaser.Physics.Arcade.Sprite {
     gameState.abilityUsedAt = this.scene.time.now
     gameState.abilityCooldownMs = 1500
     this.barkCooldown = true
+    this.play('cruella-bark', true)
     this.emit('bark', this.x, this.y)
     this.scene.time.delayedCall(1500, () => { this.barkCooldown = false })
   }

@@ -74,7 +74,6 @@ export const LEVEL_1_1: LevelData = {
     { type: 'loja',    x: 180,  y: G },
     { type: 'poste',   x: 420,  y: G },
     { type: 'banco',   x: 620,  y: G },
-    { type: 'arvore',  x: 850,  y: G },
     { type: 'casa',    x: 1100, y: G },
     { type: 'lixeira', x: 1300, y: G },
     { type: 'placa',   x: 1500, y: G },

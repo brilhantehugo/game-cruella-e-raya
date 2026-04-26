@@ -1,34 +1,27 @@
 import { describe, it, expect } from 'vitest'
-import { RAYA_SPRITE, CRUELLA_SPRITE } from '../src/sprites/SpriteData'
+import { existsSync, statSync } from 'fs'
+import { join } from 'path'
 
-describe('RAYA_SPRITE dimensions', () => {
-  it('has frameWidth=32 and frameHeight=32', () => {
-    expect(RAYA_SPRITE.frameWidth).toBe(32)
-    expect(RAYA_SPRITE.frameHeight).toBe(32)
+const SPRITES_DIR = join(__dirname, '..', 'public', 'sprites')
+
+describe('Raya spritesheet PNG', () => {
+  it('exists at public/sprites/raya.png', () => {
+    expect(existsSync(join(SPRITES_DIR, 'raya.png'))).toBe(true)
   })
 
-  it('every frame has exactly 32 rows, each with exactly 32 columns', () => {
-    RAYA_SPRITE.frames.forEach((frame, fi) => {
-      expect(frame.length).toBe(32)
-      frame.forEach((row, ri) => {
-        expect(row.length).toBe(32)
-      })
-    })
+  it('is a non-empty file (at least 1 KB)', () => {
+    const { size } = statSync(join(SPRITES_DIR, 'raya.png'))
+    expect(size).toBeGreaterThan(1024)
   })
 })
 
-describe('CRUELLA_SPRITE dimensions', () => {
-  it('has frameWidth=28 and frameHeight=28', () => {
-    expect(CRUELLA_SPRITE.frameWidth).toBe(28)
-    expect(CRUELLA_SPRITE.frameHeight).toBe(28)
+describe('Cruella spritesheet PNG', () => {
+  it('exists at public/sprites/cruella.png', () => {
+    expect(existsSync(join(SPRITES_DIR, 'cruella.png'))).toBe(true)
   })
 
-  it('every frame has exactly 28 rows, each with exactly 28 columns', () => {
-    CRUELLA_SPRITE.frames.forEach((frame, fi) => {
-      expect(frame.length).toBe(28)
-      frame.forEach((row, ri) => {
-        expect(row.length).toBe(28)
-      })
-    })
+  it('is a non-empty file (at least 1 KB)', () => {
+    const { size } = statSync(join(SPRITES_DIR, 'cruella.png'))
+    expect(size).toBeGreaterThan(1024)
   })
 })
