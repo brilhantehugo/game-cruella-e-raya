@@ -15,8 +15,8 @@ export class BootScene extends Phaser.Scene {
     this.load.audio(KEYS.BGM_FANFARE, 'audio/bgm_fanfare.mp3')
 
     // Spritesheets PNG gerados pelo Pixel Lab (substituem _makePixelSprite)
-    this.load.spritesheet(KEYS.RAYA,    'sprites/raya.png',    { frameWidth: 32, frameHeight: 32 })
-    this.load.spritesheet(KEYS.CRUELLA, 'sprites/cruella.png', { frameWidth: 32, frameHeight: 32 })
+    this.load.spritesheet(KEYS.RAYA,    'sprites/raya.png',    { frameWidth: 48, frameHeight: 48 })
+    this.load.spritesheet(KEYS.CRUELLA, 'sprites/cruella.png', { frameWidth: 48, frameHeight: 48 })
   }
 
   create(): void {

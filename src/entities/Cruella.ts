@@ -14,10 +14,10 @@ export class Cruella extends Phaser.Physics.Arcade.Sprite {
     scene.add.existing(this)
     scene.physics.add.existing(this)
     this.setCollideWorldBounds(true)
-    this.setScale(2.5)
-    // Larger body matches bigger dog proportions
-    this.setBodySize(22, 26)
-    this.setOffset(3, 1)
+    this.setScale(1.2)
+    // Body centered on the dog within the 48×48 MCP canvas
+    this.setBodySize(24, 28)
+    this.setOffset(12, 14)
     this.cursors = scene.input.keyboard!.createCursorKeys()
     this.shiftKey = scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT)
 
