@@ -42,11 +42,11 @@ export const LEVEL_0_1: LevelData = {
   spawnX: 64, spawnY: 300, exitX: 3008, exitY: 370,
   checkpointX: 1536, checkpointY: 380,
   miniBoss: {
-    triggerX:      1280,
-    spawnX:        1520,
+    triggerX:      2400,   // ~78% do mapa — boss como guardião da casa
+    spawnX:        2640,
     spawnY:        352,
-    leftBarrierX:  1056,
-    rightBarrierX: 1984,
+    leftBarrierX:  2176,
+    rightBarrierX: 3008,
   },
   enemies: [
     { type: 'hugo',    x: 500,  y: 390 },
