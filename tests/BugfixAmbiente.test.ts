@@ -28,14 +28,14 @@ describe('LEVEL_1_1 decorations', () => {
 
 describe('LEVEL_0_1 Aspirador miniBoss bugfix', () => {
   it('triggerX deve ser maior que 2300 (perto do final do mapa)', () => {
-    expect(LEVEL_0_1.miniBoss.triggerX).toBeGreaterThan(2300)
+    expect(LEVEL_0_1.miniBoss!.triggerX).toBeGreaterThan(2300)
   })
 
   it('spawnX deve ser maior que triggerX', () => {
-    expect(LEVEL_0_1.miniBoss.spawnX).toBeGreaterThan(LEVEL_0_1.miniBoss.triggerX)
+    expect(LEVEL_0_1.miniBoss!.spawnX).toBeGreaterThan(LEVEL_0_1.miniBoss!.triggerX)
   })
 
   it('rightBarrierX nao pode exceder 3072 (largura do mapa)', () => {
-    expect(LEVEL_0_1.miniBoss.rightBarrierX).toBeLessThanOrEqual(3072)
+    expect(LEVEL_0_1.miniBoss!.rightBarrierX).toBeLessThanOrEqual(3072)
   })
 })

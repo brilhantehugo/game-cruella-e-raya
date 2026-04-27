@@ -23,6 +23,7 @@ export abstract class HumanEnemy extends Enemy {
   private _detectIcon: Phaser.GameObjects.Text | null = null
   private _attackPhase: 'none' | 'telegraph' | 'hit' = 'none'
   private _attackTimer: number = 0
+  private _groundLayer: Phaser.Physics.Arcade.StaticGroup | null = null
 
   constructor(
     scene: Phaser.Scene,
@@ -38,6 +39,11 @@ export abstract class HumanEnemy extends Enemy {
     this.setScale(1.6)
     this.setDepth(3)
     this.setVelocityX(this.speed)
+  }
+
+  /** Fornece a camada de chão para detecção de borda de plataforma. Chamar uma vez após spawn. */
+  setGroundLayer(layer: Phaser.Physics.Arcade.StaticGroup): void {
+    this._groundLayer = layer
   }
 
   /** Called by GameScene.update() to provide player position. */
@@ -118,6 +124,8 @@ export abstract class HumanEnemy extends Enemy {
       this.direction = 1
     } else if (body.blocked.right || this.x >= this._patrolRight || this.x >= worldRight) {
       this.direction = -1
+    } else if (!this._hasGroundAhead(this.direction)) {
+      this.direction *= -1   // inverter na borda da plataforma
     }
     this.setVelocityX(this.direction * this._config.patrolSpeed)
   }
@@ -130,6 +138,10 @@ export abstract class HumanEnemy extends Enemy {
     this.direction = this._playerX > this.x ? 1 : -1
     if (body.blocked.left)  this.direction = 1
     if (body.blocked.right) this.direction = -1
+    if (!this._hasGroundAhead(this.direction)) {
+      this.setVelocityX(0)   // parar na borda — não cair atrás do jogador
+      return
+    }
     this.setVelocityX(this.direction * this._config.chaseSpeed)
   }
 
@@ -171,6 +183,22 @@ export abstract class HumanEnemy extends Enemy {
   }
 
   // ─── Utilities ──────────────────────────────────────────────────────────────
+
+  /**
+   * Verifica se há um tile de chão ~28px à frente e ~36px abaixo.
+   * Previne que o inimigo caminhe para além da borda de plataformas.
+   * Sem groundLayer configurado, assume que há chão (comportamento legado).
+   */
+  private _hasGroundAhead(dir: number): boolean {
+    if (!this._groundLayer) return true
+    const checkX = this.x + dir * 28
+    const checkY = this.y + 36
+    const TILE   = 32
+    return this._groundLayer.getChildren().some((child) => {
+      const img = child as Phaser.GameObjects.Image
+      return Math.abs(img.x - checkX) < TILE && Math.abs(img.y - checkY) < TILE
+    })
+  }
 
   private _hasReachedLastKnown(): boolean {
     return (

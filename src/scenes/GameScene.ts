@@ -343,6 +343,7 @@ export class GameScene extends Phaser.Scene {
       if (!enemy) return
       this.enemyGroup.add(enemy)
       if (enemy instanceof HumanEnemy) {
+        enemy.setGroundLayer(this.groundLayer)   // ledge detection
         enemy.on('grabPlayer', (knockbackDir: number) => {
           this.player.takeDamage()
           SoundManager.play('damage')
