@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { readFileSync } from 'fs'
 import { join } from 'path'
 import { LEVEL_0_1 } from '../src/levels/World0'
+import { LEVEL_1_1 } from '../src/levels/World1'
 
 const PARALLAX = readFileSync(
   join(__dirname, '..', 'src', 'background', 'ParallaxBackground.ts'),
@@ -11,6 +12,17 @@ const PARALLAX = readFileSync(
 describe('ParallaxBackground', () => {
   it('chama setScrollFactor(0) em cada layer', () => {
     expect(PARALLAX).toContain('setScrollFactor(0)')
+  })
+})
+
+describe('LEVEL_1_1 decorations', () => {
+  it('nenhuma arvore deve estar dentro da faixa visual da casa (x 1100–1900)', () => {
+    const casaX = LEVEL_1_1.decorations?.find(d => d.type === 'casa')?.x ?? 0
+    const arvores = LEVEL_1_1.decorations?.filter(d => d.type === 'arvore') ?? []
+    arvores.forEach(arv => {
+      const insideCasa = arv.x > casaX && arv.x < casaX + 800
+      expect(insideCasa).toBe(false)
+    })
   })
 })
 
