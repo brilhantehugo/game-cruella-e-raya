@@ -73,6 +73,7 @@ export class ParallaxBackground {
       const depth = -5 + i
       const sprite = scene.add.tileSprite(0, cfg.y, GAME_WIDTH, cfg.height, cfg.key)
       sprite.setOrigin(0, 0)
+      sprite.setScrollFactor(0)          // pina o sprite à câmera — sem isso some ao scrollar
       sprite.setDepth(depth)
       if (cfg.alpha !== undefined) {
         sprite.setAlpha(cfg.alpha)
