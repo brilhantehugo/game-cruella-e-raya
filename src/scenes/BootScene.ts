@@ -1,6 +1,6 @@
 import Phaser from 'phaser'
 import { KEYS, TILE_SIZE } from '../constants'
-import { CompiledSprite, GATO_SPRITE, POMBO_SPRITE, RATO_SPRITE, DONO_SPRITE, BIGODES_SPRITE } from '../sprites/SpriteData'
+import { CompiledSprite, POMBO_SPRITE, RATO_SPRITE } from '../sprites/SpriteData'
 import { profileManager } from '../storage/ProfileManager'
 
 export class BootScene extends Phaser.Scene {
@@ -15,18 +15,34 @@ export class BootScene extends Phaser.Scene {
     this.load.audio(KEYS.BGM_FANFARE, 'audio/bgm_fanfare.mp3')
 
     // Spritesheets PNG gerados pelo Pixel Lab (substituem _makePixelSprite)
-    this.load.spritesheet(KEYS.RAYA,    'sprites/raya.png',    { frameWidth: 48, frameHeight: 48 })
-    this.load.spritesheet(KEYS.CRUELLA, 'sprites/cruella.png', { frameWidth: 48, frameHeight: 48 })
+    this.load.spritesheet(KEYS.RAYA,          'sprites/raya.png',          { frameWidth: 48, frameHeight: 48 })
+    this.load.spritesheet(KEYS.CRUELLA,       'sprites/cruella.png',       { frameWidth: 48, frameHeight: 48 })
+    this.load.spritesheet(KEYS.GATO,          'sprites/gato.png',          { frameWidth: 48, frameHeight: 48 })
+    this.load.spritesheet(KEYS.GATO_SELVAGEM, 'sprites/gato-selvagem.png', { frameWidth: 48, frameHeight: 48 })
+    // Sprites estáticos dos NPCs (PNG único — leste)
+    this.load.image(KEYS.BIGODES,   'sprites/bigodes.png')
+    this.load.image(KEYS.HUGO,      'sprites/hugo.png')
+    this.load.image(KEYS.HANNAH,    'sprites/hannah.png')
+    this.load.image(KEYS.MORADOR,   'sprites/morador.png')
+    this.load.image(KEYS.DONO,      'sprites/dono.png')
+    this.load.image(KEYS.SEGURANCA, 'sprites/seguranca.png')
+    this.load.image(KEYS.PORTEIRO,  'sprites/porteiro.png')
   }
 
   create(): void {
     // ── Pixel sprites ──────────────────────────────────────────────────────────
     // KEYS.RAYA e KEYS.CRUELLA → carregados via preload() como spritesheets PNG
-    this._makePixelSprite(KEYS.GATO,    GATO_SPRITE)
-    this._makePixelSprite(KEYS.POMBO,   POMBO_SPRITE)
-    this._makePixelSprite(KEYS.RATO,    RATO_SPRITE)
-    this._makePixelSprite(KEYS.DONO,    DONO_SPRITE)
-    this._makePixelSprite(KEYS.BIGODES, BIGODES_SPRITE)
+    this._makePixelSprite(KEYS.POMBO, POMBO_SPRITE)
+    this._makePixelSprite(KEYS.RATO,  RATO_SPRITE)
+
+    // Animações GATO (17 frames: idle 0-1, walk 2-5, run 6-9, jump 10-11, bark 12-13, stun 14, death 15-16)
+    for (const [texKey, prefix] of [
+      [KEYS.GATO, 'gato'], [KEYS.GATO_SELVAGEM, 'gato_selvagem'],
+    ] as [string, string][]) {
+      this.anims.create({ key: `${prefix}_idle`, frames: this.anims.generateFrameNumbers(texKey, { start: 0, end: 1 }), frameRate: 4, repeat: -1 })
+      this.anims.create({ key: `${prefix}_walk`, frames: this.anims.generateFrameNumbers(texKey, { start: 2, end: 5 }), frameRate: 8, repeat: -1 })
+      this.anims.create({ key: `${prefix}_run`,  frames: this.anims.generateFrameNumbers(texKey, { start: 6, end: 9 }), frameRate: 12, repeat: -1 })
+    }
 
     // ── Graphics textures ──────────────────────────────────────────────────────
     const g = this.make.graphics({ x: 0, y: 0 })
@@ -927,73 +943,7 @@ export class BootScene extends Phaser.Scene {
     g.fillStyle(0xc0c0c0); g.fillRect(1, 2, 6, 2)             // brilho prata no cabo
     gen(KEYS.CHAVE, 12, 6)
 
-    // ── NPCs — HUGO (homem, camisa azul) ─────────────────────────────────────
-    clr()
-    // Cabelo
-    g.fillStyle(0x3a2008); g.fillRect(3, 0, 12, 5)
-    // Cabeça (pele)
-    g.fillStyle(0xf0c090)
-    g.fillRect(3, 3, 12, 11)
-    // Olhos
-    g.fillStyle(0x222222)
-    g.fillRect(5, 7, 2, 2); g.fillRect(11, 7, 2, 2)
-    // Boca
-    g.fillRect(7, 12, 4, 1)
-    // Pescoço
-    g.fillStyle(0xf0c090); g.fillRect(6, 14, 6, 3)
-    // Camisa azul (torso)
-    g.fillStyle(0x3060c0); g.fillRect(2, 17, 14, 10)
-    g.fillStyle(0x2050b0); g.fillRect(2, 17, 14, 3)  // ombros
-    // Braços
-    g.fillStyle(0x3060c0); g.fillRect(0, 17, 2, 8)
-    g.fillStyle(0xf0c090); g.fillRect(0, 25, 2, 3)   // mão esq
-    g.fillStyle(0x3060c0); g.fillRect(16, 17, 2, 8)
-    g.fillStyle(0xf0c090); g.fillRect(16, 25, 2, 3)  // mão dir
-    // Calça cinza
-    g.fillStyle(0x606070); g.fillRect(2, 27, 6, 12)
-    g.fillStyle(0x606070); g.fillRect(10, 27, 6, 12)
-    g.fillStyle(0x707080); g.fillRect(2, 27, 6, 2)   // cinto
-    // Sapatos
-    g.fillStyle(0x302010); g.fillRect(1, 39, 7, 3)
-    g.fillStyle(0x302010); g.fillRect(10, 39, 7, 3)
-    gen(KEYS.HUGO, 18, 42)
-
-    // ── NPCs — SEGURANÇA (uniforme escuro, lanterna amarela) ──────────────────
-    clr()
-    g.fillStyle(0x222222); g.fillRect(3, 0, 12, 5)        // cabelo
-    g.fillStyle(0xf0c090); g.fillRect(3, 3, 12, 11)       // cabeça
-    g.fillStyle(0x222222); g.fillRect(5, 7, 2, 2); g.fillRect(11, 7, 2, 2) // olhos
-    g.fillStyle(0xf0c090); g.fillRect(6, 14, 6, 3)        // pescoço
-    g.fillStyle(0x223344); g.fillRect(2, 17, 14, 10)      // uniforme azul-escuro
-    g.fillStyle(0x112233); g.fillRect(2, 17, 14, 3)       // ombros
-    g.fillStyle(0x223344); g.fillRect(0, 17, 2, 8)        // braço esq
-    g.fillStyle(0xf0c090); g.fillRect(0, 25, 2, 3)        // mão esq
-    g.fillStyle(0x223344); g.fillRect(16, 17, 2, 8)       // braço dir
-    g.fillStyle(0xffee00); g.fillRect(16, 20, 4, 7)       // lanterna amarela
-    g.fillStyle(0x111122); g.fillRect(2, 27, 6, 12)       // calça preta
-    g.fillStyle(0x111122); g.fillRect(10, 27, 6, 12)
-    g.fillStyle(0x110000); g.fillRect(1, 39, 7, 3)        // sapatos
-    g.fillStyle(0x110000); g.fillRect(10, 39, 7, 3)
-    gen(KEYS.SEGURANCA, 20, 42)
-
-    // ── NPCs — PORTEIRO (colete amarelo, braços cruzados) ────────────────────
-    clr()
-    g.fillStyle(0x555555); g.fillRect(3, 0, 12, 5)        // cabelo cinza
-    g.fillStyle(0xf0c090); g.fillRect(3, 3, 12, 11)       // cabeça
-    g.fillStyle(0x222222); g.fillRect(5, 7, 2, 2); g.fillRect(11, 7, 2, 2) // olhos
-    g.fillStyle(0xf0c090); g.fillRect(6, 14, 6, 3)        // pescoço
-    g.fillStyle(0xffffff); g.fillRect(2, 17, 14, 10)      // camisa branca
-    g.fillStyle(0xcc8800); g.fillRect(3, 17, 4, 10)       // colete esq
-    g.fillStyle(0xcc8800); g.fillRect(11, 17, 4, 10)      // colete dir
-    g.fillStyle(0xffffff); g.fillRect(0, 19, 4, 6)        // braço esq
-    g.fillStyle(0xffffff); g.fillRect(14, 19, 4, 6)       // braço dir
-    g.fillStyle(0xf0c090); g.fillRect(0, 25, 4, 3)        // mão esq
-    g.fillStyle(0xf0c090); g.fillRect(14, 25, 4, 3)       // mão dir
-    g.fillStyle(0x444444); g.fillRect(2, 27, 6, 12)       // calça
-    g.fillStyle(0x444444); g.fillRect(10, 27, 6, 12)
-    g.fillStyle(0x222222); g.fillRect(1, 39, 7, 3)        // sapatos
-    g.fillStyle(0x222222); g.fillRect(10, 39, 7, 3)
-    gen(KEYS.PORTEIRO, 18, 42)
+    // HUGO, SEGURANCA, PORTEIRO → carregados via preload() como imagens Pixel Lab
 
     // ── VEÍCULO — SEGURANÇA EM MOTO (moto escura + rider + farol) ────────────
     clr()
@@ -1014,39 +964,7 @@ export class BootScene extends Phaser.Scene {
     g.fillStyle(0xffcc00); g.fillRect(26, 5, 8, 3)         // visor dourado
     gen(KEYS.SEGURANCA_MOTO, 60, 50)
 
-    // ── NPCs — HANNAH (mulher, blusa vermelha) ────────────────────────────────
-    clr()
-    // Cabelo longo (castanho claro)
-    g.fillStyle(0x8b4513)
-    g.fillRect(2, 0, 12, 4)  // topo
-    g.fillRect(1, 4, 3, 14)  // lateral esq
-    g.fillRect(12, 4, 3, 14) // lateral dir
-    // Cabeça (pele)
-    g.fillStyle(0xf0c090)
-    g.fillRect(3, 3, 10, 10)
-    // Olhos
-    g.fillStyle(0x553300)
-    g.fillRect(5, 7, 2, 2); g.fillRect(9, 7, 2, 2)
-    // Boca (sorriso leve)
-    g.fillStyle(0xc05050); g.fillRect(6, 11, 4, 1)
-    // Brinco
-    g.fillStyle(0xffd700); g.fillRect(3, 10, 1, 2); g.fillRect(12, 10, 1, 2)
-    // Pescoço
-    g.fillStyle(0xf0c090); g.fillRect(6, 13, 4, 3)
-    // Blusa vermelha (torso)
-    g.fillStyle(0xcc2233); g.fillRect(2, 16, 12, 10)
-    g.fillStyle(0xdd3344); g.fillRect(3, 16, 10, 3)  // gola
-    // Braços
-    g.fillStyle(0xf0c090); g.fillRect(0, 16, 2, 9)
-    g.fillStyle(0xf0c090); g.fillRect(14, 16, 2, 9)
-    // Calça escura
-    g.fillStyle(0x2a2a4a); g.fillRect(2, 26, 5, 13)
-    g.fillStyle(0x2a2a4a); g.fillRect(9, 26, 5, 13)
-    g.fillStyle(0x3a3a5a); g.fillRect(2, 26, 12, 2)  // cinto
-    // Sapatos
-    g.fillStyle(0x3a1a10); g.fillRect(1, 39, 6, 3)
-    g.fillStyle(0x3a1a10); g.fillRect(9, 39, 6, 3)
-    gen(KEYS.HANNAH, 16, 42)
+    // HANNAH → carregada via preload() como imagem Pixel Lab
 
     g.destroy()
     if (profileManager.getActive() === null) {

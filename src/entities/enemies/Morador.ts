@@ -18,7 +18,7 @@ export class Morador extends HumanEnemy {
       patrolRange: 160,
     }
 
-    super(scene, x, y, KEYS.HANNAH, config)
+    super(scene, x, y, KEYS.MORADOR, config)
     this.setTint(0xffeecc)
   }
 }

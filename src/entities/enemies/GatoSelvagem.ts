@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import { KEYS } from '../../constants'
 import { GatoMalencarado } from './GatoMalencarado'
 import { isNearLight, type LightSource } from '../../fx/SpotlightOverlay'
 
@@ -43,8 +44,8 @@ export class GatoSelvagem extends GatoMalencarado {
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y)
-    // Darker tint + bright eyes to distinguish from normal Gato
-    this.setTint(0x224488)
+    // Use the dedicated Pixel Lab sprite for Gato Selvagem
+    this.setTexture(KEYS.GATO_SELVAGEM)
   }
 
   /** Called by GameScene each frame (same hook as parent). */

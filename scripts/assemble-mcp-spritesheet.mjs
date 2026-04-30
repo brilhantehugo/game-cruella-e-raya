@@ -25,51 +25,65 @@ const FW     = 48
 const FH     = 48
 const TRANSP = { r: 0, g: 0, b: 0, alpha: 0 }
 
-const idle = (n) => join(TMP, 'animations', idleDir, 'east', `frame_00${n}.png`)
-const walk = (n) => join(TMP, 'animations', walkDir, 'east', `frame_00${n}.png`)
+const idlePath = (n) => join(TMP, 'animations', idleDir, 'east', `frame_00${n}.png`)
+const walkPath = (n) => join(TMP, 'animations', walkDir, 'east', `frame_00${n}.png`)
+
+/** Redimensiona frame para FW×FH e retorna buffer */
+async function resized(path) {
+  return sharp(path)
+    .resize(FW, FH, { fit: 'contain', background: TRANSP })
+    .png()
+    .toBuffer()
+}
+
+const idle = (n) => resized(idlePath(n))
+const walk = (n) => resized(walkPath(n))
 
 /** Desloca o conteúdo N pixels para cima (simula salto no ar) */
-async function shiftUp(srcPath, px) {
-  const buf = await sharp(srcPath)
+async function shiftUp(srcBuf, px) {
+  return sharp(srcBuf)
     .extract({ left: 0, top: px, width: FW, height: FH - px })
     .extend({ bottom: px, background: TRANSP })
     .png()
     .toBuffer()
-  return buf
 }
 
 /** Rotaciona a imagem em graus e retorna buffer (fundo transparente) */
-async function rotate(srcPath, degrees) {
-  const buf = await sharp(srcPath)
+async function rotate(srcBuf, degrees) {
+  return sharp(srcBuf)
     .rotate(degrees, { background: TRANSP })
     .resize(FW, FH, { fit: 'contain', background: TRANSP })
     .png()
     .toBuffer()
-  return buf
 }
 
-/** Lê arquivo e retorna buffer raw para composite */
-const file = (path) => ({ input: path })
-const buf  = (b)    => ({ input: b })
+/** Wraps buffer for sharp composite */
+const buf  = (b) => ({ input: b })
 
 async function main() {
   console.log(`\n🎨 Montando spritesheet: ${character}`)
 
+  // Pre-load all needed frames as resized buffers
+  const [i0, i1, i4, i5, w0, w1, w2, w3] = await Promise.all([
+    idle(0), idle(1), idle(4), idle(5),
+    walk(0), walk(1), walk(2), walk(3),
+  ])
+
   // Gera frames transformados
-  const jump0 = await shiftUp(idle(0), 10)   // idle deslocado para cima → "no ar"
-  const jump1 = await shiftUp(idle(1), 10)
-  const stun0 = await rotate(idle(0), 15)    // tilted → tontura
-  const dead0 = await rotate(walk(1), 90)    // deitado → morte frame 1
-  const dead1 = await rotate(walk(2), 90)    // deitado → morte frame 2
+  const jump0 = await shiftUp(i0, 10)   // idle deslocado para cima → "no ar"
+  const jump1 = await shiftUp(i1, 10)
+  const stun0 = await rotate(i0, 15)    // tilted → tontura
+  const dead0 = await rotate(w1, 90)    // deitado → morte frame 1
+  const dead1 = await rotate(w2, 90)    // deitado → morte frame 2
 
   const SLOTS = [
-    file(idle(0)), file(idle(1)),                         // 0-1  idle
-    file(walk(0)), file(walk(1)), file(walk(2)), file(walk(3)), // 2-5 walk
-    file(walk(0)), file(walk(1)), file(walk(2)), file(walk(3)), // 6-9 run (walk rápido)
-    buf(jump0),  buf(jump1),                              // 10-11 jump
-    file(idle(4)), file(idle(5)),                         // 12-13 bark (idle — parado latindo)
-    buf(stun0),                                           // 14   stun
-    buf(dead0),  buf(dead1),                              // 15-16 death
+    buf(i0), buf(i1),                         // 0-1  idle
+    buf(w0), buf(w1), buf(w2), buf(w3),        // 2-5  walk
+    buf(w0), buf(w1), buf(w2), buf(w3),        // 6-9  run (walk rápido)
+    buf(jump0), buf(jump1),                    // 10-11 jump
+    buf(i4), buf(i5),                          // 12-13 bark (idle — parado latindo)
+    buf(stun0),                                // 14   stun
+    buf(dead0), buf(dead1),                    // 15-16 death
   ]
 
   const composites = SLOTS.map((src, i) => ({ ...src, left: i * FW, top: 0 }))

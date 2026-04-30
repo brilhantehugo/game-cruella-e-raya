@@ -36,7 +36,9 @@ export abstract class HumanEnemy extends Enemy {
     this._sm = new EnemyStateMachine(() => this.scene.time.now)
     this._patrolLeft  = x - config.patrolRange
     this._patrolRight = x + config.patrolRange
-    this.setScale(1.6)
+    this.setScale(1.0)
+    // Ajuste de corpo: sprites Pixel Lab têm canvas 68×68 mas personagem ocupa ~28×44px
+    ;(this.body as Phaser.Physics.Arcade.Body).setSize(28, 44, true)
     this.setDepth(3)
     this.setVelocityX(this.speed)
   }
