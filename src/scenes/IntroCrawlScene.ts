@@ -5,10 +5,10 @@ import { SoundManager } from '../audio/SoundManager'
 const CRAWL_TEXT = [
   'Numa cidade qualquer, numa noite de quinta-feira…',
   '',
-  'Cruella De Vil estava em apuros.',
+  'Raya estava em apuros.',
   'Como de costume.',
   '',
-  'A sua única aliada: Raya,',
+  'A sua única aliada: Cruella,',
   'uma lulu da pomerânia de 4 anos com excesso de confiança',
   'e falta de bom gosto.',
   '',
@@ -17,9 +17,9 @@ const CRAWL_TEXT = [
   '',
   'Completamente impossível.',
   '',
-  'Mas Cruella nunca perde.',
+  'Mas Raya nunca desiste.',
   '',
-  'E Raya nunca para de latir.',
+  'E Cruella nunca para de latir.',
 ]
 
 export class IntroCrawlScene extends Phaser.Scene {
