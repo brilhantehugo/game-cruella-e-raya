@@ -9,7 +9,7 @@ const CRAWL_TEXT = [
   'Como de costume.',
   '',
   'A sua única aliada: Raya,',
-  'uma labrador de 4 anos com excesso de confiança',
+  'uma lulu da pomerânia de 4 anos com excesso de confiança',
   'e falta de bom gosto.',
   '',
   'O plano: sair do prédio sem serem vistas.',
@@ -71,7 +71,7 @@ export class IntroCrawlScene extends Phaser.Scene {
     })
 
     // ── "A long time ago…" header ───────────────────────────────────────
-    const headerTxt = this.add.text(GAME_WIDTH / 2, 38, 'Em algures num prédio de Lisboa…', {
+    const headerTxt = this.add.text(GAME_WIDTH / 2, 38, 'Em algures num prédio de Fortaleza/CE…', {
       fontSize: '13px',
       color: '#7799cc',
       fontStyle: 'italic',
