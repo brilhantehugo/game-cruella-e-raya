@@ -1,6 +1,6 @@
 import Phaser from 'phaser'
 import { KEYS, TILE_SIZE } from '../constants'
-import { CompiledSprite, POMBO_SPRITE, RATO_SPRITE } from '../sprites/SpriteData'
+import { CompiledSprite } from '../sprites/SpriteData'
 import { profileManager } from '../storage/ProfileManager'
 
 export class BootScene extends Phaser.Scene {
@@ -19,6 +19,8 @@ export class BootScene extends Phaser.Scene {
     this.load.spritesheet(KEYS.CRUELLA,       'sprites/cruella.png',       { frameWidth: 48, frameHeight: 48 })
     this.load.spritesheet(KEYS.GATO,          'sprites/gato.png',          { frameWidth: 48, frameHeight: 48 })
     this.load.spritesheet(KEYS.GATO_SELVAGEM, 'sprites/gato-selvagem.png', { frameWidth: 48, frameHeight: 48 })
+    this.load.spritesheet(KEYS.POMBO,         'sprites/pombo.png',         { frameWidth: 48, frameHeight: 48 })
+    this.load.spritesheet(KEYS.RATO,          'sprites/rato.png',          { frameWidth: 48, frameHeight: 48 })
     // Sprites estáticos dos NPCs (PNG único — leste)
     this.load.image(KEYS.BIGODES,   'sprites/bigodes.png')
     this.load.image(KEYS.HUGO,      'sprites/hugo.png')
@@ -26,22 +28,20 @@ export class BootScene extends Phaser.Scene {
     this.load.image(KEYS.MORADOR,   'sprites/morador.png')
     this.load.image(KEYS.DONO,      'sprites/dono.png')
     this.load.image(KEYS.SEGURANCA, 'sprites/seguranca.png')
-    this.load.image(KEYS.PORTEIRO,  'sprites/porteiro.png')
+    this.load.image(KEYS.PORTEIRO,    'sprites/porteiro.png')
+    this.load.image(KEYS.ZELADOR_BOSS, 'sprites/zelador-boss.png')
   }
 
   create(): void {
     // ── Pixel sprites ──────────────────────────────────────────────────────────
-    // KEYS.RAYA e KEYS.CRUELLA → carregados via preload() como spritesheets PNG
-    this._makePixelSprite(KEYS.POMBO, POMBO_SPRITE)
-    this._makePixelSprite(KEYS.RATO,  RATO_SPRITE)
-
-    // Animações GATO (17 frames: idle 0-1, walk 2-5, run 6-9, jump 10-11, bark 12-13, stun 14, death 15-16)
+    // Animações para spritesheets Pixel Lab (17 frames: idle 0-1, walk 2-5, run 6-9, ...)
     for (const [texKey, prefix] of [
       [KEYS.GATO, 'gato'], [KEYS.GATO_SELVAGEM, 'gato_selvagem'],
+      [KEYS.POMBO, 'pombo'], [KEYS.RATO, 'rato'],
     ] as [string, string][]) {
-      this.anims.create({ key: `${prefix}_idle`, frames: this.anims.generateFrameNumbers(texKey, { start: 0, end: 1 }), frameRate: 4, repeat: -1 })
-      this.anims.create({ key: `${prefix}_walk`, frames: this.anims.generateFrameNumbers(texKey, { start: 2, end: 5 }), frameRate: 8, repeat: -1 })
-      this.anims.create({ key: `${prefix}_run`,  frames: this.anims.generateFrameNumbers(texKey, { start: 6, end: 9 }), frameRate: 12, repeat: -1 })
+      this.anims.create({ key: `${prefix}_idle`, frames: this.anims.generateFrameNumbers(texKey, { start: 0, end: 1 }),  frameRate: 4,  repeat: -1 })
+      this.anims.create({ key: `${prefix}_walk`, frames: this.anims.generateFrameNumbers(texKey, { start: 2, end: 5 }),  frameRate: 8,  repeat: -1 })
+      this.anims.create({ key: `${prefix}_run`,  frames: this.anims.generateFrameNumbers(texKey, { start: 6, end: 9 }),  frameRate: 12, repeat: -1 })
     }
 
     // ── Graphics textures ──────────────────────────────────────────────────────
@@ -921,19 +921,7 @@ export class BootScene extends Phaser.Scene {
     g.lineStyle(1, 0x5555aa); g.strokeRect(2, 6, 28, 10)
     gen(KEYS.DRONE, 32, 18)
 
-    // ZELADOR_BOSS — zelador maior, avental azul escuro, vassoura
-    clr()
-    // corpo principal
-    g.fillStyle(0x1a3a6b); g.fillRect(6, 8, 20, 20)        // avental azul escuro
-    g.fillStyle(0x8B6914); g.fillRect(10, 2, 12, 8)          // cabeça (castanho)
-    g.fillStyle(0xf0c060); g.fillRect(12, 3, 8, 6)            // rosto
-    // vassoura
-    g.fillStyle(0x8B6914); g.fillRect(24, 4, 3, 24)           // cabo
-    g.fillStyle(0xd4a020); g.fillRect(21, 26, 9, 4)           // cabeça da vassoura
-    // pernas
-    g.fillStyle(0x1a3a6b); g.fillRect(10, 26, 5, 6)           // perna esq
-    g.fillStyle(0x1a3a6b); g.fillRect(17, 26, 5, 6)           // perna dir
-    gen(KEYS.ZELADOR_BOSS, 32, 32)
+    // ZELADOR_BOSS → carregado via preload() como imagem Pixel Lab
 
     // CHAVE — chave metálica dourada/prata (projéctil do Zelador Boss)
     clr()

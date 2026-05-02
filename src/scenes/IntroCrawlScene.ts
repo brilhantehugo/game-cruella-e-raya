@@ -138,6 +138,6 @@ export class IntroCrawlScene extends Phaser.Scene {
     this._started = true
     this.tweens.killAll()
     SoundManager.stopBgm()
-    this.scene.start(KEYS.CHARACTER_SELECT)
+    this.scene.start(KEYS.WORLD_MAP)
   }
 }

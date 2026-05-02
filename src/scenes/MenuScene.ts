@@ -105,11 +105,12 @@ export class MenuScene extends Phaser.Scene {
     drawHydrant(GAME_WIDTH - 38)
 
     // ── Character sprites (with bob animation) ──────────────────────────
-    const rayaSprite = this.add.sprite(72, 270, KEYS.RAYA, 0).setScale(4).setFlipX(false)
-    const cruellaSprite = this.add.sprite(728, 270, KEYS.CRUELLA, 0).setScale(4).setFlipX(true)
+    // Cruella fica à esquerda, Raya à direita
+    const cruellaSprite = this.add.sprite(72, 270, KEYS.CRUELLA, 0).setScale(4).setFlipX(false)
+    const rayaSprite    = this.add.sprite(728, 270, KEYS.RAYA, 0).setScale(4).setFlipX(true)
 
-    this.tweens.add({ targets: rayaSprite,    y: 262, duration: 1100, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' })
-    this.tweens.add({ targets: cruellaSprite, y: 262, duration: 1300, yoyo: true, repeat: -1, ease: 'Sine.easeInOut', delay: 200 })
+    this.tweens.add({ targets: cruellaSprite, y: 262, duration: 1100, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' })
+    this.tweens.add({ targets: rayaSprite,    y: 262, duration: 1300, yoyo: true, repeat: -1, ease: 'Sine.easeInOut', delay: 200 })
 
     // ── Glow halo behind title ──────────────────────────────────────────
     const haloGfx = this.add.graphics()
@@ -189,7 +190,7 @@ export class MenuScene extends Phaser.Scene {
     settingsBtn.on('pointerdown', () => settingsOverlay.show())
 
     // ── Actions ─────────────────────────────────────────────────────────
-    const startGame   = () => { this.scene.start(KEYS.WORLD_MAP) }
+    const startGame   = () => { this.scene.start(KEYS.INTRO_CRAWL) }
     const goGallery   = () => { this.scene.start(KEYS.GALLERY) }
     const goHowToPlay = () => { this.scene.start(KEYS.HOW_TO_PLAY) }
     const goEnemies   = () => { this.scene.start(KEYS.ENEMY_INFO) }

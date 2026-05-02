@@ -27,8 +27,10 @@ export class PomboAgitado extends Enemy {
     super(scene, x, y, KEYS.POMBO, 1, FLY_SPEED)
     this._baseY = y
     ;(this.body as Phaser.Physics.Arcade.Body).setAllowGravity(false)
+    this.setScale(1.4)
     this.setVelocityX(this.speed)
     this._openWindow(WINDOW_RAYA)
+    this.play('pombo_idle')
   }
 
   setPlayerPos(px: number, py: number): void {

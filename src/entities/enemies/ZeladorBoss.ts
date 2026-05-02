@@ -16,9 +16,8 @@ export class ZeladorBoss extends Enemy {
   private _isSliding = false
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
-    super(scene, x, y, KEYS.HUGO, 12, 90)
-    this.setTint(0xff8800)
-    this.setScale(2)
+    super(scene, x, y, KEYS.ZELADOR_BOSS, 12, 90)
+    this.setScale(1.4)  // 68×68 × 1.4 ≈ 95px
     const body = this.body as Phaser.Physics.Arcade.Body
     body.setSize(28, 28).setOffset(2, 2)
     this.setCollideWorldBounds(true)

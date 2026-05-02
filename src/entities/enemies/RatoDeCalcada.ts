@@ -22,7 +22,9 @@ export class RatoDeCalcada extends Enemy {
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y, KEYS.RATO, 1, 60)
+    this.setScale(1.4)
     this.setVelocityX(this.speed)
+    this.play('rato_idle')
   }
 
   setPlayerPos(px: number, py: number): void {
