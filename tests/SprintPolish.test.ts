@@ -101,3 +101,11 @@ describe('Escala de personagens', () => {
     expect(rayaTs).not.toContain('setScale(1.2)')
   })
 })
+
+describe('Escala de inimigos', () => {
+  const gatoTs = readFileSync(join(__dirname, '..', 'src/entities/enemies/GatoMalencarado.ts'), 'utf-8')
+
+  it('GatoMalencarado deve usar setScale(1.6)', () => {
+    expect(gatoTs).toContain('setScale(1.6)')
+  })
+})

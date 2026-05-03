@@ -27,6 +27,8 @@ export class GatoMalencarado extends Enemy {
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y, KEYS.GATO, 1, 80)
+    this.setScale(1.6)  // sobrescreve Enemy base scale 2.0 → gatos menores que bosses
+    ;(this.body as Phaser.Physics.Arcade.Body).setSize(30, 36, true)  // world: 48×58px
     this._patrolStart = x
     this.setVelocityX(this.speed)
   }
