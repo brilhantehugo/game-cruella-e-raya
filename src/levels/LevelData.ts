@@ -56,3 +56,9 @@ export interface LevelData {
   playerAuraRadius?: number   // px — usado por SpotlightOverlay; required when hasSpotlight=true
   miniBoss?: MiniBossConfig
 }
+
+/** Y de spawn para inimigos humanos (escala 1.4, bodyHeight 44px)
+ *  spawnY = 416 − (44 × 1.4) / 2 = 416 − 30.8 ≈ 385
+ *  Garante que o fundo do corpo (385 + 30.8 = 415.8) não penetre o chão (y=416).
+ */
+export const HUMAN_SPAWN_Y = 385
