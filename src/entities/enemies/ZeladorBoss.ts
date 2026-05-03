@@ -17,9 +17,9 @@ export class ZeladorBoss extends Enemy {
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y, KEYS.ZELADOR_BOSS, 12, 90)
-    this.setScale(1.4)  // 68×68 × 1.4 ≈ 95px
+    this.setScale(2.0)  // 68×68 × 2.0 = 136px — boss imponente
     const body = this.body as Phaser.Physics.Arcade.Body
-    body.setSize(28, 28).setOffset(2, 2)
+    body.setSize(28, 40, true)  // world: 56×80px, centrado automaticamente
     this.setCollideWorldBounds(true)
     this.setVelocityX(90)
   }

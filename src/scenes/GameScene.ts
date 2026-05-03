@@ -381,7 +381,7 @@ export class GameScene extends Phaser.Scene {
         const mapWidth = this.currentLevel.tileWidthCols * 32
         this._bossStartTime = this.time.now
         this._livesAtBossStart = gameState.hearts
-        const boss = new ZeladorBoss(this, mapWidth / 2, 352)
+        const boss = new ZeladorBoss(this, mapWidth / 2, 376)
         this.enemyGroup.add(boss)
         boss.setVisible(false)
         ;(boss.body as Phaser.Physics.Arcade.Body).enable = false
@@ -541,7 +541,7 @@ export class GameScene extends Phaser.Scene {
         // Seu Bigodes boss
         this._bossStartTime = this.time.now
         this._livesAtBossStart = gameState.hearts
-        const boss = new SeuBigodes(this, 480, 360)
+        const boss = new SeuBigodes(this, 480, 376)
         this.enemyGroup.add(boss)
         boss.setVisible(false)
         ;(boss.body as Phaser.Physics.Arcade.Body).enable = false

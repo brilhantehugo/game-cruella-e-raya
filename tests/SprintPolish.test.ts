@@ -109,3 +109,33 @@ describe('Escala de inimigos', () => {
     expect(gatoTs).toContain('setScale(1.6)')
   })
 })
+
+describe('Escala dos bosses', () => {
+  const bigodes = readFileSync(join(__dirname, '..', 'src/entities/enemies/SeuBigodes.ts'), 'utf-8')
+  const zelBoss = readFileSync(join(__dirname, '..', 'src/entities/enemies/ZeladorBoss.ts'), 'utf-8')
+  const gameScene = readFileSync(join(__dirname, '..', 'src/scenes/GameScene.ts'), 'utf-8')
+
+  it('SeuBigodes deve usar setScale(2.0)', () => {
+    expect(bigodes).toContain('setScale(2.0)')
+  })
+
+  it('SeuBigodes não deve ter setScale(1.4)', () => {
+    expect(bigodes).not.toContain('setScale(1.4)')
+  })
+
+  it('ZeladorBoss deve usar setScale(2.0)', () => {
+    expect(zelBoss).toContain('setScale(2.0)')
+  })
+
+  it('ZeladorBoss não deve ter setScale(1.4)', () => {
+    expect(zelBoss).not.toContain('setScale(1.4)')
+  })
+
+  it('ZeladorBoss deve spawnar em y=376 no GameScene', () => {
+    expect(gameScene).toContain('new ZeladorBoss(this, mapWidth / 2, 376)')
+  })
+
+  it('SeuBigodes deve spawnar em y=376 no GameScene', () => {
+    expect(gameScene).toContain('new SeuBigodes(this, 480, 376)')
+  })
+})

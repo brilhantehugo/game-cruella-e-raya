@@ -16,7 +16,8 @@ export class SeuBigodes extends Enemy {
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y, KEYS.BIGODES, 12, 60)
-    this.setScale(1.4)  // 68×68 × 1.4 ≈ 95px — equivalente ao sprite anterior 48×48 × 2
+    this.setScale(2.0)  // 68×68 × 2.0 = 136px — boss imponente
+    ;(this.body as Phaser.Physics.Arcade.Body).setSize(28, 40, true)  // world: 56×80px
     // Boss inicia parado
     this.setVelocityX(0)
   }
