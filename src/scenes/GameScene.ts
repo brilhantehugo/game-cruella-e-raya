@@ -277,7 +277,7 @@ export class GameScene extends Phaser.Scene {
         img.setOrigin(0.5, 1).setDepth(0).refreshBody()
       } else {
         // Decoração visual apenas — sem física
-        this.add.image(d.x, d.y, d.type).setOrigin(0.5, 1).setDepth(-1)
+        this.add.image(d.x, d.y, d.type).setOrigin(0.5, 1).setDepth(1)
       }
     })
   }
