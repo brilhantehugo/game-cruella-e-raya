@@ -1,4 +1,4 @@
-import { LevelData, DecorationSpawn } from './LevelData'
+import { LevelData, DecorationSpawn, HUMAN_SPAWN_Y } from './LevelData'
 
 const G = 416 // ground surface y (origin bottom = setOrigin(0.5,1) → y=416)
 
@@ -40,15 +40,15 @@ export const LEVEL_1_1: LevelData = {
   checkpointX: 1280, checkpointY: 380,
   enemies: [
     { type: 'rato',    x: 320,  y: 390 },
-    { type: 'morador', x: 600,  y: 390 },
+    { type: 'morador', x: 600,  y: HUMAN_SPAWN_Y },
     { type: 'rato',    x: 900,  y: 390 },
-    { type: 'morador', x: 1200, y: 390 },
+    { type: 'morador', x: 1200, y: HUMAN_SPAWN_Y },
     { type: 'rato',    x: 1500, y: 390 },
-    { type: 'dono',    x: 1900, y: 390 },
+    { type: 'dono',    x: 1900, y: HUMAN_SPAWN_Y },
     { type: 'rato',    x: 2200, y: 390 },
-    { type: 'morador', x: 1700, y: 390 },
-    { type: 'morador', x: 2000, y: 390 },
-    { type: 'dono',    x: 2400, y: 390 },
+    { type: 'morador', x: 1700, y: HUMAN_SPAWN_Y },
+    { type: 'morador', x: 2000, y: HUMAN_SPAWN_Y },
+    { type: 'dono',    x: 2400, y: HUMAN_SPAWN_Y },
   ],
   items: [
     { type: 'bone', x: 160, y: 380 }, { type: 'bone', x: 352, y: 380 },
@@ -164,16 +164,16 @@ export const LEVEL_1_3: LevelData = {
   checkpointX: 1600, checkpointY: 380,
   enemies: [
     { type: 'pombo',   x: 400,  y: 160 },
-    { type: 'morador', x: 700,  y: 390 },
+    { type: 'morador', x: 700,  y: HUMAN_SPAWN_Y },
     { type: 'pombo',   x: 1000, y: 140 },
     { type: 'rato',    x: 1300, y: 390 },
     { type: 'pombo',   x: 1600, y: 150 },
-    { type: 'dono',    x: 1900, y: 390 },
+    { type: 'dono',    x: 1900, y: HUMAN_SPAWN_Y },
     { type: 'gato',    x: 2200, y: 390 },
     { type: 'pombo',   x: 2400, y: 140 },
-    { type: 'morador', x: 2600, y: 390 },
+    { type: 'morador', x: 2600, y: HUMAN_SPAWN_Y },
     { type: 'pombo',   x: 2800, y: 150 },
-    { type: 'dono',    x: 3000, y: 390 },
+    { type: 'dono',    x: 3000, y: HUMAN_SPAWN_Y },
   ],
   items: [
     { type: 'bone',           x: 200,  y: 380 },
@@ -241,14 +241,14 @@ export const LEVEL_1_4: LevelData = {
   checkpointX: 1504, checkpointY: 380,
   enemies: [
     { type: 'pombo', x: 350,  y: 140 },
-    { type: 'dono',  x: 600,  y: 390 },
+    { type: 'dono',  x: 600,  y: HUMAN_SPAWN_Y },
     { type: 'pombo', x: 850,  y: 150 },
     { type: 'rato',  x: 1100, y: 390 },
-    { type: 'dono',  x: 1350, y: 390 },
+    { type: 'dono',  x: 1350, y: HUMAN_SPAWN_Y },
     { type: 'pombo', x: 1600, y: 140 },
     { type: 'rato',  x: 1850, y: 390 },
     { type: 'pombo', x: 2100, y: 150 },
-    { type: 'dono',  x: 2400, y: 390 },
+    { type: 'dono',  x: 2400, y: HUMAN_SPAWN_Y },
   ],
   items: [
     { type: 'bone',           x: 200,  y: 380 },
@@ -310,15 +310,15 @@ export const LEVEL_1_5: LevelData = {
   checkpointX: 1760, checkpointY: 380,
   enemies: [
     { type: 'rato',    x: 300,  y: 390 }, { type: 'gato',    x: 600,  y: 390 },
-    { type: 'morador', x: 800,  y: 390 }, { type: 'pombo',   x: 1000, y: 120 },
-    { type: 'dono',    x: 1200, y: 390 }, { type: 'rato',    x: 1500, y: 390 },
+    { type: 'morador', x: 800,  y: HUMAN_SPAWN_Y }, { type: 'pombo',   x: 1000, y: 120 },
+    { type: 'dono',    x: 1200, y: HUMAN_SPAWN_Y }, { type: 'rato',    x: 1500, y: 390 },
     { type: 'gato',    x: 1700, y: 390 }, { type: 'pombo',   x: 1900, y: 150 },
-    { type: 'morador', x: 2100, y: 390 },
+    { type: 'morador', x: 2100, y: HUMAN_SPAWN_Y },
     { type: 'gato',    x: 2400, y: 390 },
     { type: 'rato',    x: 2650, y: 390 },
     { type: 'gato',    x: 2900, y: 390 },
-    { type: 'morador', x: 3100, y: 390 },
-    { type: 'dono',    x: 3300, y: 390 },
+    { type: 'morador', x: 3100, y: HUMAN_SPAWN_Y },
+    { type: 'dono',    x: 3300, y: HUMAN_SPAWN_Y },
   ],
   items: [
     { type: 'bone',           x: 160,  y: 380 }, { type: 'petisco',  x: 400,  y: 380 },

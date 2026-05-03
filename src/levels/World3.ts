@@ -1,4 +1,4 @@
-import { LevelData } from './LevelData'
+import { LevelData, HUMAN_SPAWN_Y } from './LevelData'
 
 const COLS = 80
 const BOSS_COLS = 60
@@ -151,11 +151,11 @@ export const LEVEL_3_3: LevelData = {
   spawnX: 64, spawnY: 360, exitX: 2464, exitY: 380,
   checkpointX: 1280, checkpointY: 380,
   enemies: [
-    { type: 'porteiro',  x: 500,  y: 388 },
+    { type: 'porteiro',  x: 500,  y: HUMAN_SPAWN_Y },
     { type: 'rato',      x: 780,  y: 388 },
-    { type: 'porteiro',  x: 1100, y: 388 },
+    { type: 'porteiro',  x: 1100, y: HUMAN_SPAWN_Y },
     { type: 'rato',      x: 1400, y: 388 },
-    { type: 'porteiro',  x: 1750, y: 388 },
+    { type: 'porteiro',  x: 1750, y: HUMAN_SPAWN_Y },
     { type: 'gato',      x: 2100, y: 388 },
   ],
   items: [
@@ -212,12 +212,12 @@ export const LEVEL_3_4: LevelData = {
   spawnX: 64, spawnY: 360, exitX: 2464, exitY: 380,
   checkpointX: 1280, checkpointY: 380,
   enemies: [
-    { type: 'dono',    x: 320,  y: 388 },
-    { type: 'morador', x: 650,  y: 388 },
-    { type: 'dono',    x: 980,  y: 388 },
+    { type: 'dono',    x: 320,  y: HUMAN_SPAWN_Y },
+    { type: 'morador', x: 650,  y: HUMAN_SPAWN_Y },
+    { type: 'dono',    x: 980,  y: HUMAN_SPAWN_Y },
     { type: 'gato',    x: 1280, y: 388 },
-    { type: 'morador', x: 1600, y: 388 },
-    { type: 'dono',    x: 1940, y: 388 },
+    { type: 'morador', x: 1600, y: HUMAN_SPAWN_Y },
+    { type: 'dono',    x: 1940, y: HUMAN_SPAWN_Y },
   ],
   items: [
     { type: 'bone',    x: 200,  y: 380 },
@@ -276,10 +276,10 @@ export const LEVEL_3_5: LevelData = {
   enemies: [
     { type: 'gato_selvagem', x: 300,  y: 388 },
     { type: 'seguranca',     x: 600,  y: 388 },
-    { type: 'porteiro',      x: 920,  y: 388 },
+    { type: 'porteiro',      x: 920,  y: HUMAN_SPAWN_Y },
     { type: 'gato_selvagem', x: 1250, y: 388 },
     { type: 'seguranca',     x: 1600, y: 388 },
-    { type: 'porteiro',      x: 1950, y: 388 },
+    { type: 'porteiro',      x: 1950, y: HUMAN_SPAWN_Y },
     { type: 'gato_selvagem', x: 2200, y: 388 },
   ],
   items: [
