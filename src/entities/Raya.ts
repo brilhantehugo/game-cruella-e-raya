@@ -16,10 +16,9 @@ export class Raya extends Phaser.Physics.Arcade.Sprite {
     scene.add.existing(this)
     scene.physics.add.existing(this)
     this.setCollideWorldBounds(true)
-    this.setScale(1.2)
-    // Body centered on the dog within the 48×48 MCP canvas
-    this.setBodySize(24, 28)
-    this.setOffset(12, 14)
+    this.setScale(1.4)
+    // Body centered: 28×38 local → 39×53px world at scale 1.4
+    ;(this.body as Phaser.Physics.Arcade.Body).setSize(28, 38, true)
     this.cursors = scene.input.keyboard!.createCursorKeys()
     this.shiftKey = scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT)
 

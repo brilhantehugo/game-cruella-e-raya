@@ -80,3 +80,24 @@ describe('LEVEL_1_1: arvore não deve estar perto da casa', () => {
     })
   })
 })
+
+describe('Escala de personagens', () => {
+  const cruellaTs = readFileSync(join(__dirname, '..', 'src/entities/Cruella.ts'), 'utf-8')
+  const rayaTs    = readFileSync(join(__dirname, '..', 'src/entities/Raya.ts'), 'utf-8')
+
+  it('Cruella deve usar setScale(1.4)', () => {
+    expect(cruellaTs).toContain('setScale(1.4)')
+  })
+
+  it('Raya deve usar setScale(1.4)', () => {
+    expect(rayaTs).toContain('setScale(1.4)')
+  })
+
+  it('Cruella não deve ter setScale(1.2)', () => {
+    expect(cruellaTs).not.toContain('setScale(1.2)')
+  })
+
+  it('Raya não deve ter setScale(1.2)', () => {
+    expect(rayaTs).not.toContain('setScale(1.2)')
+  })
+})
