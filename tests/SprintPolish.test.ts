@@ -7,7 +7,7 @@ import { WORLD1_LEVELS } from '../src/levels/World1'
 import { WORLD2_LEVELS } from '../src/levels/World2'
 import { WORLD3_LEVELS } from '../src/levels/World3'
 
-const HUMAN_TYPES = ['hugo', 'hannah', 'zelador', 'morador', 'dono', 'porteiro'] as const
+const HUMAN_TYPES = ['hugo', 'hannah', 'zelador', 'morador', 'dono', 'porteiro', 'seguranca'] as const
 
 const ALL_LEVELS = {
   ...WORLD0_LEVELS,

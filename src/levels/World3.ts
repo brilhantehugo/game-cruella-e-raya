@@ -28,10 +28,10 @@ export const LEVEL_3_1: LevelData = {
   enemies: [
     { type: 'rato',      x: 320,  y: 390 },
     { type: 'gato',      x: 660,  y: 390 },
-    { type: 'seguranca', x: 960,  y: 390 },
+    { type: 'seguranca', x: 960,  y: HUMAN_SPAWN_Y },
     { type: 'rato',      x: 1340, y: 390 },
     { type: 'gato',      x: 1720, y: 390 },
-    { type: 'seguranca', x: 2100, y: 390 },
+    { type: 'seguranca', x: 2100, y: HUMAN_SPAWN_Y },
   ],
   items: [
     { type: 'bone',           x: 200,  y: 380 },
@@ -90,10 +90,10 @@ export const LEVEL_3_2: LevelData = {
   checkpointX: 1280, checkpointY: 380,
   enemies: [
     { type: 'gato_selvagem', x: 350,  y: 390 },
-    { type: 'seguranca',     x: 700,  y: 390 },
+    { type: 'seguranca',     x: 700,  y: HUMAN_SPAWN_Y },
     { type: 'gato_selvagem', x: 1050, y: 390 },
     { type: 'gato_selvagem', x: 1450, y: 390 },
-    { type: 'seguranca',     x: 1800, y: 390 },
+    { type: 'seguranca',     x: 1800, y: HUMAN_SPAWN_Y },
     { type: 'gato',          x: 2150, y: 390 },
   ],
   items: [
@@ -275,10 +275,10 @@ export const LEVEL_3_5: LevelData = {
   checkpointX: 1280, checkpointY: 380,
   enemies: [
     { type: 'gato_selvagem', x: 300,  y: 388 },
-    { type: 'seguranca',     x: 600,  y: 388 },
+    { type: 'seguranca',     x: 600,  y: HUMAN_SPAWN_Y },
     { type: 'porteiro',      x: 920,  y: HUMAN_SPAWN_Y },
     { type: 'gato_selvagem', x: 1250, y: 388 },
-    { type: 'seguranca',     x: 1600, y: 388 },
+    { type: 'seguranca',     x: 1600, y: HUMAN_SPAWN_Y },
     { type: 'porteiro',      x: 1950, y: HUMAN_SPAWN_Y },
     { type: 'gato_selvagem', x: 2200, y: 388 },
   ],
