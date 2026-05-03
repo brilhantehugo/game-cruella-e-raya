@@ -1,4 +1,4 @@
-import { LevelData } from './LevelData'
+import { LevelData, HUMAN_SPAWN_Y } from './LevelData'
 
 const G = 416 // ground surface y
 
@@ -49,13 +49,13 @@ export const LEVEL_0_1: LevelData = {
     rightBarrierX: 3008,
   },
   enemies: [
-    { type: 'hugo',    x: 500,  y: 390 },
-    { type: 'hannah',  x: 1200, y: 390 },
-    { type: 'hugo',    x: 1650, y: 390 },
-    { type: 'hannah',  x: 2100, y: 390 },
-    { type: 'hugo',    x: 2500, y: 390 },
-    { type: 'hannah',  x: 2800, y: 390 },
-    { type: 'zelador', x: 2950, y: 390 },
+    { type: 'hugo',    x: 500,  y: HUMAN_SPAWN_Y },
+    { type: 'hannah',  x: 1200, y: HUMAN_SPAWN_Y },
+    { type: 'hugo',    x: 1650, y: HUMAN_SPAWN_Y },
+    { type: 'hannah',  x: 2100, y: HUMAN_SPAWN_Y },
+    { type: 'hugo',    x: 2500, y: HUMAN_SPAWN_Y },
+    { type: 'hannah',  x: 2800, y: HUMAN_SPAWN_Y },
+    { type: 'zelador', x: 2950, y: HUMAN_SPAWN_Y },
   ],
   items: [
     { type: 'bone',           x: 160,  y: 380 },
@@ -121,10 +121,10 @@ export const LEVEL_0_2: LevelData = {
   spawnX: 64, spawnY: 350, exitX: 2176, exitY: 370,
   checkpointX: 1120, checkpointY: 380,
   enemies: [
-    { type: 'hugo',   x: 420,  y: 390 },
-    { type: 'hannah', x: 840,  y: 390 },
-    { type: 'hugo',   x: 1260, y: 390 },
-    { type: 'hannah', x: 1680, y: 390 },
+    { type: 'hugo',   x: 420,  y: HUMAN_SPAWN_Y },
+    { type: 'hannah', x: 840,  y: HUMAN_SPAWN_Y },
+    { type: 'hugo',   x: 1260, y: HUMAN_SPAWN_Y },
+    { type: 'hannah', x: 1680, y: HUMAN_SPAWN_Y },
     { type: 'gato',   x: 2050, y: 390 },
   ],
   items: [
@@ -176,14 +176,14 @@ export const LEVEL_0_3: LevelData = {
   checkpointX: 1536, checkpointY: 380,
   enemies: [
     { type: 'gato',    x: 400,  y: 390 },
-    { type: 'zelador', x: 700,  y: 390 },
+    { type: 'zelador', x: 700,  y: HUMAN_SPAWN_Y },
     { type: 'gato',    x: 1000, y: 390 },
-    { type: 'morador', x: 1200, y: 390 },
-    { type: 'zelador', x: 1500, y: 390 },
+    { type: 'morador', x: 1200, y: HUMAN_SPAWN_Y },
+    { type: 'zelador', x: 1500, y: HUMAN_SPAWN_Y },
     { type: 'gato',    x: 1750, y: 390 },
-    { type: 'zelador', x: 2000, y: 390 },
+    { type: 'zelador', x: 2000, y: HUMAN_SPAWN_Y },
     { type: 'gato',    x: 2300, y: 390 },
-    { type: 'morador', x: 2550, y: 390 },
+    { type: 'morador', x: 2550, y: HUMAN_SPAWN_Y },
     { type: 'gato',    x: 2800, y: 390 },
   ],
   items: [
@@ -251,14 +251,14 @@ export const LEVEL_0_4: LevelData = {
   spawnX: 64, spawnY: 350, exitX: 2816, exitY: 370,
   checkpointX: 1440, checkpointY: 380,
   enemies: [
-    { type: 'zelador', x: 400,  y: 390 },
+    { type: 'zelador', x: 400,  y: HUMAN_SPAWN_Y },
     { type: 'rato',    x: 700,  y: 390 },
     { type: 'gato',    x: 1000, y: 390 },
-    { type: 'zelador', x: 1300, y: 390 },
+    { type: 'zelador', x: 1300, y: HUMAN_SPAWN_Y },
     { type: 'rato',    x: 1600, y: 390 },
-    { type: 'zelador', x: 1900, y: 390 },
+    { type: 'zelador', x: 1900, y: HUMAN_SPAWN_Y },
     { type: 'gato',    x: 2200, y: 390 },
-    { type: 'zelador', x: 2600, y: 390 },
+    { type: 'zelador', x: 2600, y: HUMAN_SPAWN_Y },
   ],
   items: [
     { type: 'bone',           x: 200,  y: 380 },
@@ -314,16 +314,16 @@ export const LEVEL_0_5: LevelData = {
   spawnX: 64, spawnY: 350, exitX: 3136, exitY: 370,
   checkpointX: 1600, checkpointY: 380,
   enemies: [
-    { type: 'zelador', x: 350,  y: 390 },
+    { type: 'zelador', x: 350,  y: HUMAN_SPAWN_Y },
     { type: 'rato',    x: 650,  y: 390 },
     { type: 'gato',    x: 950,  y: 390 },
-    { type: 'zelador', x: 1200, y: 390 },
+    { type: 'zelador', x: 1200, y: HUMAN_SPAWN_Y },
     { type: 'rato',    x: 1450, y: 390 },
-    { type: 'zelador', x: 1700, y: 390 },
+    { type: 'zelador', x: 1700, y: HUMAN_SPAWN_Y },
     { type: 'rato',    x: 2000, y: 390 },
     { type: 'gato',    x: 2300, y: 390 },
-    { type: 'zelador', x: 2600, y: 390 },
-    { type: 'zelador', x: 2950, y: 390 },
+    { type: 'zelador', x: 2600, y: HUMAN_SPAWN_Y },
+    { type: 'zelador', x: 2950, y: HUMAN_SPAWN_Y },
   ],
   items: [
     { type: 'bone',           x: 200,  y: 380 },
