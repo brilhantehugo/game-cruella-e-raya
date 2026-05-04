@@ -15,11 +15,11 @@ export class Cruella extends Phaser.Physics.Arcade.Sprite {
     scene.physics.add.existing(this)
     this.setCollideWorldBounds(true)
     this.setScale(1.4)
-    // Body bottom-aligned: 28×38 local → 39×53px world at scale 1.4
-    // offset(10,10) alinha o rodapé do body com o rodapé do sprite (48-38=10)
+    // Sprite 48×48: pixels visíveis em y=8..34 (pés em y=34), x=6..38 (31px wide)
+    // Body cobre área visível (26px tall), bottom alinhado aos pés (offset_y=8, 8+26=34)
     const cruellaBody = this.body as Phaser.Physics.Arcade.Body
-    cruellaBody.setSize(28, 38)
-    cruellaBody.setOffset(10, 10)
+    cruellaBody.setSize(28, 26)
+    cruellaBody.setOffset(10, 8)
     this.cursors = scene.input.keyboard!.createCursorKeys()
     this.shiftKey = scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT)
 
