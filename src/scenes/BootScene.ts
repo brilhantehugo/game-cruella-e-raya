@@ -1239,6 +1239,159 @@ export class BootScene extends Phaser.Scene {
     g.fillStyle(0xffcc00); g.fillRect(26, 5, 8, 3)         // visor dourado
     gen(KEYS.SEGURANCA_MOTO, 60, 50)
 
+    // ── DECORAÇÕES NOVAS — APARTAMENTO INTERIOR ──────────────────────────────
+    // QUADRO: quadro/pintura pendurado na parede (48×36)
+    clr()
+    g.fillStyle(0x6b3a10); g.fillRect(0, 0, 48, 36)          // moldura marrom
+    g.fillStyle(0x8b5a30); g.fillRect(0, 0, 48, 4)           // topo moldura
+    g.fillStyle(0x4a8a4a); g.fillRect(4, 4, 40, 28)          // fundo pintura (verde)
+    g.fillStyle(0x6abccc); g.fillRect(4, 4, 40, 12)          // céu azul
+    g.fillStyle(0x5a7a2a); g.fillRect(4, 16, 40, 10)         // colinas verdes
+    g.fillStyle(0x4a6a1a); g.fillRect(4, 22, 40, 10)         // terra / base
+    g.fillStyle(0x3a7a3a); g.fillCircle(16, 18, 5)           // árvore esq
+    g.fillStyle(0x3a7a3a); g.fillCircle(30, 16, 4)           // árvore dir
+    g.fillStyle(0xffee88); g.fillCircle(36, 7, 3)            // sol
+    gen(KEYS.QUADRO, 48, 36)
+
+    // PLANTA: vaso com planta grande (32×48)
+    clr()
+    g.fillStyle(0x8b5c2a); g.fillRect(6, 28, 20, 20)         // vaso
+    g.fillStyle(0x6b3c0a); g.fillRect(4, 44, 24, 4)          // base vaso
+    g.fillStyle(0xaa7040); g.fillRect(8, 30, 6, 4)           // detalhe vaso
+    g.fillStyle(0x1a7a1a); g.fillCircle(16, 20, 14)          // folhagem base
+    g.fillStyle(0x2a9a2a); g.fillCircle(11, 12, 9)           // folhagem esq
+    g.fillStyle(0x2a9a2a); g.fillCircle(22, 14, 8)           // folhagem dir
+    g.fillStyle(0x3aaa3a); g.fillCircle(16, 6, 7)            // topo folhagem
+    g.fillStyle(0x55cc55); g.fillCircle(10, 8, 4); g.fillCircle(22, 7, 3) // destaques
+    gen(KEYS.PLANTA, 32, 48)
+
+    // TAPETE: tapete listrado no chão (60×12)
+    clr()
+    g.fillStyle(0xb03020); g.fillRect(0, 0, 60, 12)          // fundo vermelho
+    g.fillStyle(0xf0c050); g.fillRect(4, 2, 52, 8)           // área dourada
+    for (let i = 0; i < 5; i++) {
+      g.fillStyle(i % 2 === 0 ? 0xc04030 : 0xe05040)
+      g.fillRect(4 + i * 10, 3, 10, 2)                       // listras padrão
+    }
+    g.fillStyle(0x901010); g.fillRect(0, 0, 4, 12)           // borda esq
+    g.fillStyle(0x901010); g.fillRect(56, 0, 4, 12)          // borda dir
+    gen(KEYS.TAPETE, 60, 12)
+
+    // ── DECORAÇÕES NOVAS — ESTACIONAMENTO ────────────────────────────────────
+    // PILAR: pilar de concreto (24×80)
+    clr()
+    g.fillStyle(0x787878); g.fillRect(0, 0, 24, 80)          // corpo cinza
+    g.fillStyle(0x909090); g.fillRect(2, 0, 4, 80)           // brilho lateral
+    g.fillStyle(0x606060); g.fillRect(18, 0, 6, 80)          // sombra lateral
+    g.fillStyle(0xffd040)                                      // listras amarelas de segurança
+    for (let i = 0; i < 3; i++) {
+      g.fillRect(0, i * 6, 24, 3)                             // faixas topo
+    }
+    g.fillStyle(0x505050); g.fillRect(0, 72, 24, 8)          // base
+    gen(KEYS.PILAR, 24, 80)
+
+    // BARREIRA: barreira plástica laranja (48×32)
+    clr()
+    g.fillStyle(0xff6600); g.fillRect(0, 4, 48, 20)          // corpo laranja
+    g.fillStyle(0xffcc00); g.fillRect(0, 4, 48, 5)           // topo amarelo
+    g.fillStyle(0xcc4400); g.fillRect(0, 24, 48, 8)          // base mais escura
+    g.fillStyle(0xff8800); g.fillRect(2, 6, 10, 3)           // brilho
+    gen(KEYS.BARREIRA, 48, 32)
+
+    // ── DECORAÇÕES NOVAS — RUA ────────────────────────────────────────────────
+    // ORELHAO: orelhão azul (24×56)
+    clr()
+    g.fillStyle(0x1a4a8a); g.fillRect(2, 4, 20, 6)           // arredondamento topo
+    g.fillStyle(0x1a5a9a); g.fillRect(4, 8, 16, 44)          // corpo azul
+    g.fillStyle(0x2a7add); g.fillRect(6, 10, 12, 36)         // face frontal
+    g.fillStyle(0x88ccff); g.fillRect(7, 14, 10, 8)          // visor
+    g.fillStyle(0xaaddff); g.fillRect(8, 15, 6, 4)           // reflexo visor
+    g.fillStyle(0xffffff); g.fillRect(7, 26, 10, 14)         // teclado fundo
+    for (let r = 0; r < 3; r++) {
+      for (let c = 0; c < 3; c++) {
+        g.fillStyle(0x888888); g.fillRect(8 + c * 3, 27 + r * 4, 2, 3) // teclas
+      }
+    }
+    g.fillStyle(0x1a4a8a); g.fillRect(8, 52, 8, 4)           // base
+    gen(KEYS.ORELHAO, 24, 56)
+
+    // SEMAFORO: semáforo de rua (16×64)
+    clr()
+    g.fillStyle(0x333333); g.fillRect(6, 20, 4, 44)          // poste
+    g.fillStyle(0x444444); g.fillRect(4, 60, 8, 4)           // base
+    g.fillStyle(0x222222); g.fillRect(2, 0, 12, 26)          // caixa luzes
+    g.fillStyle(0x333333); g.fillRect(3, 1, 10, 24)          // face caixa
+    g.fillStyle(0xff2222); g.fillCircle(8, 6, 4)             // vermelho
+    g.fillStyle(0xffaa00); g.fillCircle(8, 13, 4)            // amarelo
+    g.fillStyle(0x22cc22); g.fillCircle(8, 20, 4)            // verde
+    gen(KEYS.SEMAFORO, 16, 64)
+
+    // BANCA: banca de jornal (60×56)
+    clr()
+    g.fillStyle(0x8b5c2a); g.fillRect(0, 20, 60, 36)         // corpo madeira
+    g.fillStyle(0x7a4e1a); g.fillRect(2, 22, 56, 32)         // face
+    for (let i = 0; i < 4; i++) {                             // toldo listrado
+      g.fillStyle(i % 2 === 0 ? 0xff2200 : 0xffffff)
+      g.fillRect(i * 15, 10, 15, 12)
+    }
+    g.fillStyle(0xcc1100); g.fillRect(0, 20, 60, 2)          // borda toldo
+    g.fillStyle(0xffffff); g.fillRect(4, 26, 52, 22)         // balcão branco
+    g.fillStyle(0x3366cc); g.fillRect(6, 28, 10, 18)         // revista azul
+    g.fillStyle(0xff4422); g.fillRect(18, 26, 10, 18)        // revista vermelha
+    g.fillStyle(0x22aa44); g.fillRect(30, 28, 10, 18)        // revista verde
+    g.fillStyle(0xff8800); g.fillRect(42, 27, 10, 18)        // revista laranja
+    g.fillStyle(0x6b3c0a); g.fillRect(0, 52, 60, 4)          // base
+    gen(KEYS.BANCA, 60, 56)
+
+    // ── DECORAÇÕES NOVAS — PRAÇA ──────────────────────────────────────────────
+    // FONTE: fonte de praça (64×48)
+    clr()
+    g.fillStyle(0xaaaaaa); g.fillRect(4, 24, 56, 16)         // borda base
+    g.fillStyle(0x999999); g.fillRect(8, 20, 48, 8)          // topo borda
+    g.fillStyle(0x4488cc); g.fillRect(10, 22, 44, 12)        // água
+    g.fillStyle(0x66aaee); g.fillRect(12, 24, 40, 6)         // reflexo água
+    g.fillStyle(0x88ccff); g.fillRect(30, 8, 4, 18)          // jato principal
+    g.fillStyle(0x99ddff); g.fillRect(29, 6, 2, 4)           // topo jato
+    g.fillStyle(0xaaddff); g.fillRect(24, 10, 2, 10)         // spray esq
+    g.fillStyle(0xaaddff); g.fillRect(38, 10, 2, 10)         // spray dir
+    g.fillStyle(0x888888); g.fillRect(12, 38, 40, 8)         // plataforma base
+    gen(KEYS.FONTE, 64, 48)
+
+    // FLOREIRA: canteiro com flores (56×28)
+    clr()
+    g.fillStyle(0x8b5c2a); g.fillRect(0, 12, 56, 16)         // canteiro madeira
+    g.fillStyle(0x7a4e1a); g.fillRect(0, 24, 56, 4)          // base canteiro
+    g.fillStyle(0x5a380a); g.fillRect(2, 14, 52, 2)          // detalhe canteiro
+    g.fillStyle(0x4a2a0a); g.fillRect(2, 8, 52, 6)           // terra
+    const floreiraData: [number, number][] = [[6,0xffcc00],[14,0xff4444],[22,0xee44ee],[30,0xff8800],[38,0xffffff],[46,0xff44aa]]
+    for (const [fx, fc] of floreiraData) {
+      g.fillStyle(0x2a8a2a); g.fillRect(fx + 2, 4, 2, 8)    // caule
+      g.fillStyle(fc); g.fillCircle(fx + 3, 3, 4)            // flor
+    }
+    gen(KEYS.FLOREIRA, 56, 28)
+
+    // ── DECORAÇÕES NOVAS — NOITE ──────────────────────────────────────────────
+    // OUTDOOR: outdoor iluminado (80×56)
+    clr()
+    g.fillStyle(0x444444); g.fillRect(34, 36, 6, 20)         // poste central
+    g.fillStyle(0x333333); g.fillRect(28, 52, 18, 4)         // base
+    g.fillStyle(0x222222); g.fillRect(0, 0, 80, 38)          // moldura escura
+    g.fillStyle(0xffffdd); g.fillRect(4, 4, 72, 30)          // painel iluminado
+    g.fillStyle(0x3366cc); g.fillRect(6, 6, 24, 26)          // bloco esq (imagem)
+    g.fillStyle(0x4488ee); g.fillRect(8, 8, 20, 16)          // foto
+    g.fillStyle(0x222222); g.fillRect(34, 8, 38, 8)          // texto linha 1
+    g.fillStyle(0x444444); g.fillRect(34, 20, 28, 6)         // texto linha 2
+    g.fillStyle(0xff4400); g.fillRect(34, 30, 20, 6)         // destaque vermelho
+    gen(KEYS.OUTDOOR, 80, 56)
+
+    // BUEIRO: tampão de bueiro no chão (32×12)
+    clr()
+    g.fillStyle(0x555555); g.fillEllipse(16, 6, 30, 10)      // tampão oval
+    g.fillStyle(0x444444); g.fillEllipse(16, 6, 26, 8)       // face
+    g.fillStyle(0x555555); g.fillRect(4, 5, 24, 2)           // grade horizontal
+    g.fillStyle(0x555555); g.fillRect(15, 1, 2, 10)          // grade vertical
+    gen(KEYS.BUEIRO, 32, 12)
+
     // HANNAH → carregada via preload() como imagem Pixel Lab
 
     g.destroy()
