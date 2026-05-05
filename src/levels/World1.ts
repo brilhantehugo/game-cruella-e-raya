@@ -81,6 +81,11 @@ export const LEVEL_1_1: LevelData = {
     { type: 'poste',   x: 2100, y: G },
     { type: 'poste',   x: 2400, y: G },
     { type: 'lixeira', x: 2350, y: G },
+    { type: 'orelhao',  x: 820,  y: G },
+    { type: 'semaforo', x: 960,  y: G },
+    { type: 'banca',    x: 1600, y: G },
+    { type: 'orelhao',  x: 2200, y: G },
+    { type: 'semaforo', x: 2700, y: G },
   ],
 }
 
@@ -144,6 +149,10 @@ export const LEVEL_1_2: LevelData = {
     { type: 'saco_lixo', x: 1550, y: G },
     { type: 'grade',     x: 1750, y: G, blocking: true },
     { type: 'lixeira',   x: 2000, y: G },
+    { type: 'orelhao',  x: 500,  y: G },
+    { type: 'semaforo', x: 1000, y: G },
+    { type: 'orelhao',  x: 1800, y: G },
+    { type: 'banca',    x: 1400, y: G },
   ],
 }
 
@@ -220,6 +229,10 @@ export const LEVEL_1_3: LevelData = {
     { type: 'arvore',   x: 2720, y: G },
     { type: 'banco',    x: 2940, y: G },
     { type: 'poste',    x: 3100, y: G },
+    { type: 'banca',    x: 600,  y: G },
+    { type: 'semaforo', x: 1200, y: G },
+    { type: 'orelhao',  x: 2000, y: G },
+    { type: 'banca',    x: 2600, y: G },
   ],
 }
 
@@ -290,6 +303,10 @@ export const LEVEL_1_4: LevelData = {
     { type: 'arvore',   x: 2180, y: G },
     { type: 'banco',    x: 2400, y: G },
     { type: 'poste',    x: 2650, y: G },
+    { type: 'orelhao',  x: 400,  y: G },
+    { type: 'semaforo', x: 900,  y: G },
+    { type: 'banca',    x: 1500, y: G },
+    { type: 'semaforo', x: 2200, y: G },
   ],
 }
 
@@ -363,6 +380,10 @@ export const LEVEL_1_5: LevelData = {
     { type: 'barraca',   x: 2950, y: G },
     { type: 'lixeira',   x: 3150, y: G },
     { type: 'barraca',   x: 3350, y: G },
+    { type: 'orelhao',  x: 350,  y: G },
+    { type: 'banca',    x: 800,  y: G },
+    { type: 'semaforo', x: 1400, y: G },
+    { type: 'banca',    x: 2000, y: G },
   ],
 }
 
