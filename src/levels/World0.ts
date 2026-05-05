@@ -103,6 +103,12 @@ export const LEVEL_0_1: LevelData = {
     { type: 'balcao',    x: 2500, y: G, blocking: true },
     { type: 'balcao',    x: 2720, y: G, blocking: true },
     { type: 'grade',     x: 2950, y: G, blocking: true },
+    { type: 'planta',  x: 530,  y: G },
+    { type: 'tapete',  x: 800,  y: G },
+    { type: 'quadro',  x: 1000, y: G - 80 },
+    { type: 'planta',  x: 1630, y: G },
+    { type: 'quadro',  x: 2160, y: G - 80 },
+    { type: 'tapete',  x: 2380, y: G },
   ],
 }
 
@@ -158,6 +164,11 @@ export const LEVEL_0_2: LevelData = {
     { type: 'estante',  x: 1400, y: G },
     { type: 'cadeira',  x: 1680, y: G },
     { type: 'balcao',   x: 1950, y: G, blocking: true },
+    { type: 'tapete',  x: 260,  y: G },
+    { type: 'planta',  x: 500,  y: G },
+    { type: 'quadro',  x: 760,  y: G - 80 },
+    { type: 'tapete',  x: 1250, y: G },
+    { type: 'planta',  x: 1540, y: G },
   ],
 }
 
@@ -232,6 +243,13 @@ export const LEVEL_0_3: LevelData = {
     { type: 'carro',  x: 2800, y: G, blocking: true },
     { type: 'grade',  x: 2900, y: G, blocking: true },
     { type: 'grade',  x: 2985, y: G, blocking: true },
+    { type: 'pilar',    x: 350,  y: G, blocking: true },
+    { type: 'barreira', x: 460,  y: G },
+    { type: 'pilar',    x: 670,  y: G, blocking: true },
+    { type: 'pilar',    x: 1000, y: G, blocking: true },
+    { type: 'barreira', x: 1350, y: G },
+    { type: 'pilar',    x: 1550, y: G, blocking: true },
+    { type: 'pilar',    x: 2350, y: G, blocking: true },
   ],
 }
 
@@ -295,6 +313,13 @@ export const LEVEL_0_4: LevelData = {
     { type: 'carro',  x: 1950, y: G, blocking: true },
     { type: 'poste',  x: 2200, y: G },
     { type: 'carro',  x: 2450, y: G, blocking: true },
+    { type: 'pilar',    x: 350,  y: G, blocking: true },
+    { type: 'barreira', x: 450,  y: G },
+    { type: 'pilar',    x: 650,  y: G, blocking: true },
+    { type: 'pilar',    x: 1050, y: G, blocking: true },
+    { type: 'barreira', x: 1150, y: G },
+    { type: 'pilar',    x: 1750, y: G, blocking: true },
+    { type: 'pilar',    x: 2100, y: G, blocking: true },
   ],
 }
 
@@ -362,6 +387,14 @@ export const LEVEL_0_5: LevelData = {
     { type: 'poste',  x: 2300, y: G },
     { type: 'carro',  x: 2550, y: G, blocking: true },
     { type: 'carro',  x: 2850, y: G, blocking: true },
+    { type: 'pilar',    x: 300,  y: G, blocking: true },
+    { type: 'barreira', x: 500,  y: G },
+    { type: 'pilar',    x: 700,  y: G, blocking: true },
+    { type: 'pilar',    x: 1100, y: G, blocking: true },
+    { type: 'barreira', x: 1300, y: G },
+    { type: 'pilar',    x: 1500, y: G, blocking: true },
+    { type: 'pilar',    x: 1900, y: G, blocking: true },
+    { type: 'pilar',    x: 2600, y: G, blocking: true },
   ],
 }
 
@@ -414,6 +447,11 @@ export const LEVEL_0_BOSS: LevelData = {
     { type: 'cadeira',   x: 1400, y: G },
     { type: 'balcao',    x: 1620, y: G, blocking: true },
     { type: 'grade',     x: 1820, y: G, blocking: true },
+    { type: 'planta',  x: 400,  y: G },
+    { type: 'tapete',  x: 600,  y: G },
+    { type: 'quadro',  x: 700,  y: G - 80 },
+    { type: 'planta',  x: 1000, y: G },
+    { type: 'quadro',  x: 1400, y: G - 80 },
   ],
 }
 
