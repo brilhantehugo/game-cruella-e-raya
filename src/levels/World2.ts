@@ -87,6 +87,10 @@ export const LEVEL_2_1: LevelData = {
     { type: 'grade',   x: 2200, y: G },
     { type: 'placa',   x: 1450, y: G },
     { type: 'grade',   x: 2400, y: G },
+    { type: 'fonte',    x: 600,  y: G },
+    { type: 'floreira', x: 900,  y: G },
+    { type: 'floreira', x: 1500, y: G },
+    { type: 'fonte',    x: 2000, y: G },
   ],
 }
 
@@ -160,6 +164,10 @@ export const LEVEL_2_2: LevelData = {
     { type: 'saco_lixo',x: 2500, y: G },
     { type: 'arvore',   x: 2650, y: G },
     { type: 'grade',    x: 2900, y: G },
+    { type: 'fonte',    x: 800,  y: G },
+    { type: 'floreira', x: 400,  y: G },
+    { type: 'floreira', x: 1500, y: G },
+    { type: 'fonte',    x: 2400, y: G },
   ],
 }
 
@@ -226,6 +234,10 @@ export const LEVEL_2_3: LevelData = {
     { type: 'carro',     x: 2000, y: G, blocking: true },
     { type: 'saco_lixo', x: 2250, y: G },
     { type: 'carro',     x: 2500, y: G, blocking: true },
+    { type: 'floreira', x: 560,  y: G },
+    { type: 'fonte',    x: 900,  y: G },
+    { type: 'floreira', x: 1200, y: G },
+    { type: 'floreira', x: 2100, y: G },
   ],
 }
 
@@ -310,6 +322,9 @@ export const LEVEL_2_4: LevelData = {
     { type: 'placa',    x: 2900, y: G },
     { type: 'lixeira',  x: 3000, y: G },
     { type: 'grade',    x: 3100, y: G },
+    { type: 'fonte',    x: 500,  y: G },
+    { type: 'floreira', x: 800,  y: G },
+    { type: 'floreira', x: 1600, y: G },
   ],
 }
 
@@ -387,6 +402,10 @@ export const LEVEL_2_5: LevelData = {
     { type: 'grade',     x: 2400, y: G, blocking: true },
     { type: 'lixeira',   x: 2650, y: G },
     { type: 'grade',     x: 2900, y: G, blocking: true },
+    { type: 'floreira', x: 400,  y: G },
+    { type: 'fonte',    x: 1000, y: G },
+    { type: 'floreira', x: 1600, y: G },
+    { type: 'floreira', x: 2400, y: G },
   ],
 }
 
