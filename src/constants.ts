@@ -77,6 +77,19 @@ export const KEYS = {
   FOGAO:     'fogao',
   GELADEIRA: 'geladeira',
   BALCAO:    'balcao',
+  // decorações de cenário — novos tipos
+  QUADRO:    'quadro',
+  PLANTA:    'planta',
+  TAPETE:    'tapete',
+  PILAR:     'pilar',
+  BARREIRA:  'barreira',
+  ORELHAO:   'orelhao',
+  SEMAFORO:  'semaforo',
+  BANCA:     'banca',
+  FONTE:     'fonte',
+  FLOREIRA:  'floreira',
+  OUTDOOR:   'outdoor',
+  BUEIRO:    'bueiro',
   // inimigos world-0
   ASPIRADOR: 'aspirador',
   // NPCs world-0
