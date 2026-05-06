@@ -2,6 +2,15 @@ export type EnemyType = 'gato' | 'pombo' | 'rato' | 'dono' | 'aspirador' | 'hugo
   | 'gato_selvagem' | 'seguranca' | 'porteiro'
 export interface DecorationSpawn { type: string; x: number; y: number; blocking?: boolean }
 
+export interface MovingPlatformSpawn {
+  x: number       // posição X inicial (centro da plataforma)
+  y: number       // posição Y inicial (centro da plataforma)
+  width: number   // largura em px (usa tileSprite, não stretching)
+  axis: 'x' | 'y'
+  range: number   // deslocamento máximo em px (positivo = direita/baixo)
+  speed: number   // velocidade em px/s
+}
+
 export type ItemType =
   | 'bone' | 'golden_bone'
   | 'petisco' | 'pipoca' | 'pizza' | 'churrasco'
@@ -55,6 +64,7 @@ export interface LevelData {
   hasSpotlight?: boolean
   playerAuraRadius?: number   // px — usado por SpotlightOverlay; required when hasSpotlight=true
   miniBoss?: MiniBossConfig
+  movingPlatforms?: MovingPlatformSpawn[]
 }
 
 /** Y de spawn para inimigos humanos (escala 1.4, bodyHeight 44px)
