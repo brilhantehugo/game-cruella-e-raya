@@ -76,6 +76,11 @@ export const LEVEL_3_1: LevelData = {
       'Cruella: "Neste bairro? Inimigo."',
     ],
   },
+  movingPlatforms: [
+    { x: 640,  y: 304, width: 96, axis: 'x', range: 140, speed: 90 },
+    { x: 1500, y: 256, width: 96, axis: 'y', range: 64,  speed: 60 },
+    { x: 2200, y: 304, width: 96, axis: 'x', range: 120, speed: 75 },
+  ],
 }
 
 // ── 3-2: Parque de Noite ──────────────────────────────────────────────────────
@@ -145,6 +150,11 @@ export const LEVEL_3_2: LevelData = {
       'Cruella: "Aparentemente só os desta rua."',
     ],
   },
+  movingPlatforms: [
+    { x: 500,  y: 320, width: 96, axis: 'x', range: 130, speed: 85 },
+    { x: 1300, y: 272, width: 96, axis: 'y', range: 56,  speed: 60 },
+    { x: 2000, y: 320, width: 96, axis: 'x', range: 110, speed: 70 },
+  ],
 }
 
 // ── 3-3: Travessa Escura ──────────────────────────────────────────────────────
@@ -212,6 +222,11 @@ export const LEVEL_3_3: LevelData = {
       'Raya: "Estou a tentar."',
     ],
   },
+  movingPlatforms: [
+    { x: 600,  y: 288, width: 96, axis: 'y', range: 60,  speed: 65 },
+    { x: 1400, y: 320, width: 96, axis: 'x', range: 150, speed: 95 },
+    { x: 2100, y: 288, width: 96, axis: 'x', range: 120, speed: 80 },
+  ],
 }
 
 // ── 3-4: Supermercado 24h (SEM OVERLAY) ──────────────────────────────────────
