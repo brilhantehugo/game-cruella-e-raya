@@ -201,3 +201,13 @@ export const MEDAL_THRESHOLDS: Record<string, number> = {
   '3-5':    2500,
   '3-boss':  500,
 }
+
+export interface PowerUpLabel { text: string; color: string }
+
+export const POWERUP_LABEL: Record<string, PowerUpLabel> = {
+  petisco:   { text: '⚡ +10s vel!',   color: '#ff8800' },
+  pipoca:    { text: '🦘 +10s pulo!',  color: '#ffff00' },
+  churrasco: { text: '🥩 +10s força!', color: '#ff4400' },
+  bola:      { text: '🎾 bola!',       color: '#44ff88' },
+  frisbee:   { text: '🥏 frisbee!',    color: '#44ff88' },
+}
