@@ -107,7 +107,7 @@ export const LEVEL_0_1: LevelData = {
     { type: 'estante',   x: 2270, y: G },
     { type: 'balcao',    x: 2500, y: G, blocking: true },
     { type: 'balcao',    x: 2720, y: G, blocking: true },
-    { type: 'grade',     x: 2950, y: G, blocking: true },
+    { type: 'balcao',    x: 2950, y: G, blocking: true },
     { type: 'planta',  x: 530,  y: G },
     { type: 'tapete',  x: 800,  y: G },
     { type: 'quadro',  x: 1000, y: G - 80 },
