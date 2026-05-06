@@ -9,7 +9,7 @@ import { Bone } from '../items/Bone'
 import { GoldenBone } from '../items/GoldenBone'
 import { PowerUp } from '../items/PowerUp'
 import { Accessory } from '../items/Accessory'
-import { LevelData, MiniBossConfig } from '../levels/LevelData'
+import { LevelData, MiniBossConfig, MovingPlatformSpawn } from '../levels/LevelData'
 import { WORLD1_LEVELS } from '../levels/World1'
 import { WORLD0_LEVELS } from '../levels/World0'
 import { WORLD2_LEVELS } from '../levels/World2'
@@ -64,6 +64,15 @@ export class GameScene extends Phaser.Scene {
   private _livesAtBossStart = 0
   private _killCountInLevel = 0
   private _mainBoss: Enemy | null = null
+  private _movingPlatformGroup!: Phaser.Physics.Arcade.Group
+  private _movingPlatformData: Array<{
+    sprite: Phaser.Physics.Arcade.Image
+    axis: 'x' | 'y'
+    range: number
+    speed: number
+    originX: number
+    originY: number
+  }> = []
 
   constructor() { super(KEYS.GAME) }
 
@@ -112,6 +121,7 @@ export class GameScene extends Phaser.Scene {
     })
 
     this._buildDecorations()
+    this._buildMovingPlatforms()
     this._buildTilemap()
     this._spawnPlayer()
     this._fx = new EffectsManager(this)
@@ -280,6 +290,40 @@ export class GameScene extends Phaser.Scene {
         this.add.image(d.x, d.y, d.type).setOrigin(0.5, 1).setDepth(1)
       }
     })
+  }
+
+  private _buildMovingPlatforms(): void {
+    this._movingPlatformGroup = this.physics.add.group()
+    this._movingPlatformData = []
+
+    const defs = this.currentLevel.movingPlatforms ?? []
+    for (const cfg of defs) {
+      const sprite = this.add.tileSprite(cfg.x, cfg.y, cfg.width, 16, KEYS.TILE_PLATFORM)
+        .setOrigin(0.5, 0.5)
+        .setDepth(2)
+
+      this.physics.add.existing(sprite)
+      const body = sprite.body as Phaser.Physics.Arcade.Body
+      body.setImmovable(true)
+      body.setAllowGravity(false)
+
+      const vel = cfg.speed
+      if (cfg.axis === 'x') {
+        body.setVelocityX(vel)
+      } else {
+        body.setVelocityY(vel)
+      }
+
+      this._movingPlatformGroup.add(sprite as any)
+      this._movingPlatformData.push({
+        sprite: sprite as any,
+        axis: cfg.axis,
+        range: cfg.range,
+        speed: cfg.speed,
+        originX: cfg.x,
+        originY: cfg.y,
+      })
+    }
   }
 
   private _buildTilemap(): void {
@@ -671,6 +715,12 @@ export class GameScene extends Phaser.Scene {
     this.physics.add.collider(this.enemyGroup, this.groundLayer)
     this.physics.add.collider(this.enemyGroup, this.platformLayer)
 
+    // Plataformas dinâmicas — jogadores (não inimigos, evita ficarem presos)
+    if (this._movingPlatformGroup.getLength() > 0) {
+      this.physics.add.collider(this.player.raya,    this._movingPlatformGroup)
+      this.physics.add.collider(this.player.cruella, this._movingPlatformGroup)
+    }
+
     // Decorações sólidas (móveis, grades) bloqueiam personagens e inimigos
     if (this.decorationLayer.getLength() > 0) {
       this.physics.add.collider(this.player.raya,   this.decorationLayer)
@@ -997,6 +1047,22 @@ export class GameScene extends Phaser.Scene {
         ;(e as any).setPlayerPos(this.player.x, this.player.y)
       }
     })
+    // Plataformas dinâmicas — inversão de velocidade ao atingir range
+    for (const mp of this._movingPlatformData) {
+      const body = mp.sprite.body as Phaser.Physics.Arcade.Body
+      if (mp.axis === 'x') {
+        const dist = mp.sprite.x - mp.originX
+        if (Math.abs(dist) >= mp.range) {
+          body.setVelocityX(-Math.sign(dist) * mp.speed)
+        }
+      } else {
+        const dist = mp.sprite.y - mp.originY
+        if (Math.abs(dist) >= mp.range) {
+          body.setVelocityY(-Math.sign(dist) * mp.speed)
+        }
+      }
+    }
+
     // Ghost trail no dash
     if (this.player.raya.getIsDashing()) {
       const now = this.time.now
