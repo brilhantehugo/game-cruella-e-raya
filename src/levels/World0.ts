@@ -32,12 +32,17 @@ export const LEVEL_0_1: LevelData = {
   backgroundTheme: 'apartamento' as const, timeLimit: 180, tileWidthCols: COLS,
   tiles: [
     emptyRow(), emptyRow(), emptyRow(),
-    multiPlatRow([6,5],  [65,5]),  emptyRow(),
-    multiPlatRow([16,4], [76,4]),  emptyRow(),
-    multiPlatRow([28,5], [86,5]),  emptyRow(),
-    multiPlatRow([40,4]),          emptyRow(),
-    multiPlatRow([50,5]),          emptyRow(),
-    groundRow(),
+    multiPlatRow([6,5],  [65,5]),            // row 3
+    multiPlatRow([33,4], [80,4]),            // row 4 — ponte: cols 33-36, 80-83
+    multiPlatRow([16,4], [76,4]),            // row 5
+    multiPlatRow([45,4]),                    // row 6 — ponte: cols 45-48
+    multiPlatRow([28,5], [86,5]),            // row 7
+    emptyRow(),                              // row 8
+    multiPlatRow([40,4]),                    // row 9
+    emptyRow(),                              // row 10
+    multiPlatRow([50,5]),                    // row 11
+    emptyRow(),                              // row 12
+    groundRow(),                             // row 13
   ],
   spawnX: 64, spawnY: 300, exitX: 3008, exitY: 370,
   checkpointX: 1536, checkpointY: 380,
@@ -110,6 +115,11 @@ export const LEVEL_0_1: LevelData = {
     { type: 'quadro',  x: 2160, y: G - 80 },
     { type: 'tapete',  x: 2380, y: G },
   ],
+  movingPlatforms: [
+    { x: 1440, y: 304, width: 96, axis: 'x', range: 160, speed: 80 },
+    { x: 2240, y: 368, width: 96, axis: 'y', range: 48,  speed: 55 },
+    { x: 2720, y: 304, width: 96, axis: 'x', range: 120, speed: 70 },
+  ],
 }
 
 // ── 0-2: Corredor 🆕 ─────────────────────────────────────────────────────────
@@ -118,9 +128,11 @@ export const LEVEL_0_2: LevelData = {
   backgroundTheme: 'apartamento' as const, timeLimit: 160, tileWidthCols: 70,
   tiles: [
     c70.e(), c70.e(), c70.e(),
-    c70.mp([5,3], [35,3], [60,3]), c70.e(),
-    c70.mp([15,4], [45,4]), c70.e(),
-    c70.mp([25,3], [55,3]), c70.e(),
+    c70.mp([5,3], [35,3], [60,3]),  // row 3
+    c70.mp([10,4], [40,4]),         // row 4 — ponte: cols 10-13, 40-43
+    c70.mp([15,4], [45,4]),         // row 5
+    c70.mp([22,3], [52,3]),         // row 6 — ponte: cols 22-24, 52-54
+    c70.mp([25,3], [55,3]),         // row 7
     c70.e(), c70.e(), c70.e(), c70.e(),
     c70.g(),
   ],
@@ -169,6 +181,10 @@ export const LEVEL_0_2: LevelData = {
     { type: 'quadro',  x: 760,  y: G - 80 },
     { type: 'tapete',  x: 1250, y: G },
     { type: 'planta',  x: 1540, y: G },
+  ],
+  movingPlatforms: [
+    { x: 640,  y: 304, width: 96, axis: 'x', range: 130, speed: 75 },
+    { x: 1600, y: 336, width: 96, axis: 'y', range: 48,  speed: 50 },
   ],
 }
 
@@ -452,6 +468,10 @@ export const LEVEL_0_BOSS: LevelData = {
     { type: 'quadro',  x: 700,  y: G - 80 },
     { type: 'planta',  x: 1000, y: G },
     { type: 'quadro',  x: 1400, y: G - 80 },
+  ],
+  movingPlatforms: [
+    { x: 800,  y: 320, width: 96, axis: 'x', range: 150, speed: 90 },
+    { x: 1440, y: 280, width: 96, axis: 'y', range: 60,  speed: 60 },
   ],
 }
 
