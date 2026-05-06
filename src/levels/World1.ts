@@ -34,7 +34,7 @@ export const LEVEL_1_1: LevelData = {
     emptyRow(), emptyRow(), emptyRow(),
     platformRow(10, 5), emptyRow(), platformRow(20, 6), emptyRow(),
     platformRow(35, 4), platformRow(48, 5), emptyRow(),
-    platformRow(60, 6), emptyRow(), emptyRow(), groundRow(),
+    platformRow(60, 6), platformRow(74, 4), emptyRow(), groundRow(),
   ],
   spawnX: 64, spawnY: 300, exitX: 2496, exitY: 370,
   checkpointX: 1280, checkpointY: 380,
@@ -86,6 +86,11 @@ export const LEVEL_1_1: LevelData = {
     { type: 'banca',    x: 1600, y: G },
     { type: 'orelhao',  x: 2200, y: G },
     { type: 'semaforo', x: 2700, y: G },
+  ],
+  movingPlatforms: [
+    { x: 480,  y: 336, width: 96, axis: 'x', range: 140, speed: 85 },
+    { x: 1760, y: 272, width: 96, axis: 'y', range: 52,  speed: 60 },
+    { x: 2400, y: 336, width: 96, axis: 'x', range: 120, speed: 75 },
   ],
 }
 
@@ -153,6 +158,11 @@ export const LEVEL_1_2: LevelData = {
     { type: 'semaforo', x: 1000, y: G },
     { type: 'orelhao',  x: 1800, y: G },
     { type: 'banca',    x: 1400, y: G },
+  ],
+  movingPlatforms: [
+    { x: 640,  y: 300, width: 96, axis: 'x', range: 130, speed: 80 },
+    { x: 1500, y: 340, width: 96, axis: 'y', range: 50,  speed: 55 },
+    { x: 2200, y: 300, width: 96, axis: 'x', range: 100, speed: 70 },
   ],
 }
 
@@ -233,6 +243,11 @@ export const LEVEL_1_3: LevelData = {
     { type: 'semaforo', x: 1200, y: G },
     { type: 'orelhao',  x: 2000, y: G },
     { type: 'banca',    x: 2600, y: G },
+  ],
+  movingPlatforms: [
+    { x: 700,  y: 320, width: 96, axis: 'y', range: 60,  speed: 65 },
+    { x: 1400, y: 280, width: 96, axis: 'x', range: 150, speed: 90 },
+    { x: 2100, y: 340, width: 96, axis: 'x', range: 110, speed: 75 },
   ],
 }
 
