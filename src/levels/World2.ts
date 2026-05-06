@@ -92,6 +92,11 @@ export const LEVEL_2_1: LevelData = {
     { type: 'floreira', x: 1500, y: G },
     { type: 'fonte',    x: 2000, y: G },
   ],
+  movingPlatforms: [
+    { x: 480,  y: 336, width: 96, axis: 'x', range: 120, speed: 70 },
+    { x: 1280, y: 288, width: 96, axis: 'y', range: 56,  speed: 60 },
+    { x: 2100, y: 336, width: 96, axis: 'x', range: 130, speed: 80 },
+  ],
 }
 
 export const LEVEL_2_2: LevelData = {
@@ -169,6 +174,11 @@ export const LEVEL_2_2: LevelData = {
     { type: 'floreira', x: 1500, y: G },
     { type: 'fonte',    x: 2400, y: G },
   ],
+  movingPlatforms: [
+    { x: 640,  y: 304, width: 96, axis: 'x', range: 150, speed: 80 },
+    { x: 1600, y: 272, width: 96, axis: 'y', range: 48,  speed: 55 },
+    { x: 2400, y: 320, width: 96, axis: 'x', range: 110, speed: 70 },
+  ],
 }
 
 // ── 2-3: Garagem de Serviço 🆕 ────────────────────────────────────────────────
@@ -238,6 +248,11 @@ export const LEVEL_2_3: LevelData = {
     { type: 'fonte',    x: 900,  y: G },
     { type: 'floreira', x: 1200, y: G },
     { type: 'floreira', x: 2100, y: G },
+  ],
+  movingPlatforms: [
+    { x: 560,  y: 336, width: 96, axis: 'y', range: 60,  speed: 65 },
+    { x: 1440, y: 296, width: 96, axis: 'x', range: 130, speed: 85 },
+    { x: 2200, y: 336, width: 96, axis: 'x', range: 100, speed: 70 },
   ],
 }
 
