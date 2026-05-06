@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { KEYS, TILE_SIZE, GAME_WIDTH, GAME_HEIGHT, PHYSICS, SCORING } from '../constants'
+import { KEYS, TILE_SIZE, GAME_WIDTH, GAME_HEIGHT, PHYSICS, SCORING, POWERUP_LABEL } from '../constants'
 import { gameState } from '../GameState'
 import { Player } from '../entities/Player'
 import { Enemy } from '../entities/Enemy'
@@ -920,16 +920,30 @@ export class GameScene extends Phaser.Scene {
         this._spawnScorePopup(item.x, item.y - 16, '❤️', '#ff6b6b')
         this._am?.notify('item_collected', { type: 'pizza' })
         break
-      case 'laco': case 'coleira': case 'chapeu': case 'bandana':
+      case 'laco':
         gameState.equipAccessory(type as any)
-        this._spawnScorePopup(item.x, item.y - 16, '✨', '#00ffff')
+        this._spawnScorePopup(item.x, item.y - 16, '🎀 laço!',   '#ff88cc')
         break
-      default:
+      case 'coleira':
+        gameState.equipAccessory(type as any)
+        this._spawnScorePopup(item.x, item.y - 16, '📿 coleira!', '#88ccff')
+        break
+      case 'chapeu':
+        gameState.equipAccessory(type as any)
+        this._spawnScorePopup(item.x, item.y - 16, '🎩 chapéu!', '#ccaa44')
+        break
+      case 'bandana':
+        gameState.equipAccessory(type as any)
+        this._spawnScorePopup(item.x, item.y - 16, '🏴 bandana!', '#ff4444')
+        break
+      default: {
         gameState.applyPowerUp(type, now)
         SoundManager.play('powerUp')
         this._fx.powerUpBurst(this.player.x, this.player.y, type)
-        this._spawnScorePopup(item.x, item.y - 16, '✨', '#00ffff')
+        const lbl = POWERUP_LABEL[type] ?? { text: '✨', color: '#00ffff' }
+        this._spawnScorePopup(item.x, item.y - 16, lbl.text, lbl.color)
         this._am?.notify('item_collected', { type })
+      }
     }
     item.destroy()
   }
