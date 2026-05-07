@@ -151,7 +151,22 @@ export class LevelCompleteScene extends Phaser.Scene {
     }
 
     const timeStr = `${Math.floor(elapsedSec/60)}:${String(elapsedSec%60).padStart(2,'0')}`
-    row('Pontuação',  `${score}`,          panelY + 12, '#ffff88')
+    // Label estático (replica o padrão de row())
+    this.add.text(panelX + 16, panelY + 12, 'Pontuação', { fontSize: '14px', color: '#888888' })
+    // Valor animado
+    const scoreValTxt = this.add.text(panelX + panelW - 16, panelY + 12, '0', {
+      fontSize: '14px', color: '#ffff88', align: 'right',
+    }).setOrigin(1, 0)
+    this.tweens.addCounter({
+      from: 0,
+      to: score,
+      duration: 1500,
+      delay: 600,
+      ease: 'Quad.easeOut',
+      onUpdate: (tween) => {
+        scoreValTxt.setText(Math.floor(tween.getValue() ?? 0).toString())
+      },
+    })
     row('Tempo',      timeStr,             panelY + 34, '#aaaaff')
     row('Inimigos',   `${enemiesKilled}`,  panelY + 56, '#ff8844')
     row('Mortes',     `${deaths}`,         panelY + 78, deaths === 0 ? '#44ff88' : '#ff6666')
