@@ -87,9 +87,19 @@ export class GameOverScene extends Phaser.Scene {
     this.add.text(cx, 170, 'Pontuação final', {
       fontSize: '12px', color: '#884444',
     }).setOrigin(0.5)
-    this.add.text(cx, 186, `${gameState.score}`, {
+    const scoreText = this.add.text(cx, 186, '0', {
       fontSize: '18px', color: '#ffaa88', fontStyle: 'bold',
     }).setOrigin(0.5)
+    this.tweens.addCounter({
+      from: 0,
+      to: gameState.score,
+      duration: 1200,
+      delay: 800,
+      ease: 'Quad.easeOut',
+      onUpdate: (tween) => {
+        scoreText.setText(Math.floor(tween.getValue() ?? 0).toString())
+      },
+    })
 
     // ── Buttons ───────────────────────────────────────────────────────────
     const mkBtn = (y: number, txt: string, col: string) =>
