@@ -134,6 +134,17 @@ export class Player {
       this.scene.cameras.main.shake(200, 0.01)
     }
     this.active.setTint(0xff0000)
-    this.scene.time.delayedCall(300, () => this.active.clearTint())
+    this.scene.time.delayedCall(300, () => {
+      this.active.clearTint()
+      this.scene.tweens.add({
+        targets: this.active,
+        alpha: 0.3,
+        duration: 150,
+        yoyo: true,
+        repeat: 5,
+        ease: 'Linear',
+        onComplete: () => { this.active.setAlpha(1) },
+      })
+    })
   }
 }
