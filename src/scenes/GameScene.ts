@@ -55,6 +55,7 @@ export class GameScene extends Phaser.Scene {
   private _miniBossTriggerFired = false
   private _fx!: EffectsManager
   private _lastTrailAt: number = 0
+  private _puAuraGfx!: Phaser.GameObjects.Graphics
   private _spotlight: SpotlightOverlay | null = null
   private _am?: AchievementManager      // persists across levels
   private _enemyHPBar!: EnemyHPBar
@@ -139,6 +140,8 @@ export class GameScene extends Phaser.Scene {
     this.events.on('swap-fx', ({ x, y, isRaya }: { x: number; y: number; isRaya: boolean }) => {
       this._fx.swapBurst(x, y, isRaya)
     })
+    this._puAuraGfx = this.add.graphics()
+    this._puAuraGfx.setDepth(5)
     this._spawnEnemies()
     this._setupMiniBoss()
     this._spawnItems()
@@ -1087,6 +1090,21 @@ export class GameScene extends Phaser.Scene {
         this._fx.ghostTrail(this.player.raya)
         this._lastTrailAt = now
       }
+    }
+
+    // Aura de power-up ativo
+    this._puAuraGfx.clear()
+    if (gameState.hasAnyPowerUp(this.time.now)) {
+      const puEntry = gameState.activePowerUp!
+      const puColors: Record<string, number> = {
+        petisco:   0xff8800,
+        pipoca:    0xffff00,
+        churrasco: 0xff4400,
+      }
+      const puColor = puColors[puEntry.type] ?? 0x00ccff
+      const alpha = 0.2 + 0.5 * (0.5 + 0.5 * Math.sin(this.time.now * 0.005))
+      this._puAuraGfx.lineStyle(2, puColor, alpha)
+      this._puAuraGfx.strokeCircle(this.player.active.x, this.player.active.y, 28)
     }
   }
 
