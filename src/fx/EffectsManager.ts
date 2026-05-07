@@ -1,3 +1,5 @@
+import { KEYS, GAME_WIDTH, SWAP_COLORS } from '../constants'
+
 export class EffectsManager {
   private static readonly PARTICLE_DEPTH = 100
 
@@ -121,6 +123,12 @@ export class EffectsManager {
     }
     const color = colorMap[type] ?? 0x00ccff
     this._burst(x, y, 10, color, 20, 60, 3, 7, 350)
+  }
+
+  /** Burst colorido ao trocar de personagem (Raya=azul, Cruella=vermelho) */
+  swapBurst(x: number, y: number, isRaya: boolean): void {
+    const color = isRaya ? SWAP_COLORS.raya.hex : SWAP_COLORS.cruella.hex
+    this._burst(x, y, 12, color, 20, 80, 3, 6, 400)
   }
 
   /** 4 partículas ciano ao stunar inimigo com bark */
