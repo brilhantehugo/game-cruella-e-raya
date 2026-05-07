@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { PHYSICS } from '../constants'
+import { PHYSICS, SWAP_COLORS } from '../constants'
 import { gameState } from '../GameState'
 import { Raya } from './Raya'
 import { Cruella } from './Cruella'
@@ -95,7 +95,10 @@ export class Player {
     newGhost.setActive(false)
     ;(newGhost.body as Phaser.Physics.Arcade.Body).setEnable(false)
 
-    this.scene.cameras.main.flash(80, 255, 255, 255)
+    const isRaya = gameState.activeDog === 'raya'
+    const c = isRaya ? SWAP_COLORS.raya : SWAP_COLORS.cruella
+    this.scene.cameras.main.flash(c.flash, c.r, c.g, c.b)
+    this.scene.events.emit('swap-fx', { x: newActive.x, y: newActive.y, isRaya })
 
     // Verifica janela de combo: Raya dasheu → swap → impulso em Cruella
     if (this.scene.time.now < this._dashComboWindowUntil && gameState.activeDog === 'cruella') {
