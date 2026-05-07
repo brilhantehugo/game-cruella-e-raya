@@ -1094,8 +1094,8 @@ export class GameScene extends Phaser.Scene {
 
     // Aura de power-up ativo
     this._puAuraGfx.clear()
-    if (gameState.hasAnyPowerUp(this.time.now)) {
-      const puEntry = gameState.activePowerUp!
+    const puEntry = gameState.activePowerUp
+    if (puEntry && gameState.hasAnyPowerUp(this.time.now)) {
       const puColors: Record<string, number> = {
         petisco:   0xff8800,
         pipoca:    0xffff00,
