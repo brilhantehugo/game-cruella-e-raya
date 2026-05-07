@@ -211,3 +211,8 @@ export const POWERUP_LABEL: Record<string, PowerUpLabel> = {
   bola:      { text: '🎾 bola!',       color: '#44ff88' },
   frisbee:   { text: '🥏 frisbee!',    color: '#44ff88' },
 }
+
+export const SWAP_COLORS = {
+  raya:    { hex: 0x44aaff, r: 68,  g: 170, b: 255, flash: 180 },
+  cruella: { hex: 0xff4444, r: 255, g: 68,  b: 68,  flash: 180 },
+} as const
