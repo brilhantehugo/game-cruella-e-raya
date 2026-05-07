@@ -136,6 +136,9 @@ export class GameScene extends Phaser.Scene {
       const body = this.player.raya.body as Phaser.Physics.Arcade.Body
       this._fx.dustPuff(this.player.raya.x, body.bottom, 'large')
     })
+    this.events.on('swap-fx', ({ x, y, isRaya }: { x: number; y: number; isRaya: boolean }) => {
+      this._fx.swapBurst(x, y, isRaya)
+    })
     this._spawnEnemies()
     this._setupMiniBoss()
     this._spawnItems()
