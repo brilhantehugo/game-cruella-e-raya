@@ -901,6 +901,7 @@ export class GameScene extends Phaser.Scene {
           gameState.setCheckpoint(item.x, item.y)
           SoundManager.play('checkpoint')
           this._fx.checkpointSparkle(item.x, item.y)
+          this._spawnScorePopup(item.x, item.y - 32, '✅ checkpoint!', '#00ffcc')
         }
         return // don't destroy
       case 'exit':
