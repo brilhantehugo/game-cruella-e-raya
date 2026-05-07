@@ -133,17 +133,19 @@ export class Player {
     if (heartLost) {
       this.scene.cameras.main.shake(200, 0.01)
     }
-    this.active.setTint(0xff0000)
+    const sprite = this.active   // capture once — this.active is a live getter
+    sprite.setTint(0xff0000)
     this.scene.time.delayedCall(300, () => {
-      this.active.clearTint()
+      sprite.clearTint()
+      this.scene.tweens.killTweensOf(sprite)
       this.scene.tweens.add({
-        targets: this.active,
+        targets: sprite,
         alpha: 0.3,
         duration: 150,
         yoyo: true,
         repeat: 5,
         ease: 'Linear',
-        onComplete: () => { this.active.setAlpha(1) },
+        onComplete: () => { sprite.setAlpha(sprite === this.active ? 1 : 0.35) },
       })
     })
   }
