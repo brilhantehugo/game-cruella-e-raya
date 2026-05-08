@@ -8,6 +8,10 @@ export class Cruella extends Phaser.Physics.Arcade.Sprite {
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys
   private shiftKey!: Phaser.Input.Keyboard.Key
   private barkCooldown: boolean = false
+  private _wasGrounded: boolean = false
+  private _coyoteUntil: number = 0
+  private _jumpBufferUntil: number = 0
+  private _jumpCut: boolean = false
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y, KEYS.CRUELLA)
@@ -56,12 +60,51 @@ export class Cruella extends Phaser.Physics.Arcade.Sprite {
       this.setVelocityX(0)
     }
 
-    if (Phaser.Input.Keyboard.JustDown(this.cursors.space) && onGround) {
-      const jumpVel = gameState.hasPowerUp('pipoca', this.scene.time.now)
+    const now = this.scene.time.now
+
+    // Edge detection: recém pousou → reset coyote e jumpCut + consumir buffer
+    if (onGround && !this._wasGrounded) {
+      this._coyoteUntil = 0
+      this._jumpCut = false
+      if (now < this._jumpBufferUntil) {
+        this._jumpBufferUntil = 0
+        this._jumpCut = false
+        const jumpVel = gameState.hasPowerUp('pipoca', now)
+          ? PHYSICS.JUMP_VELOCITY * 1.45
+          : PHYSICS.JUMP_VELOCITY
+        this.setVelocityY(jumpVel)
+        SoundManager.play('jump')
+      }
+    }
+
+    // Saiu do chão sem pular → ativa coyote time
+    if (!onGround && this._wasGrounded) {
+      this._coyoteUntil = now + 80
+    }
+    this._wasGrounded = onGround
+
+    // Jump buffer: registrar intenção de pulo
+    if (Phaser.Input.Keyboard.JustDown(this.cursors.space)) {
+      this._jumpBufferUntil = now + 100
+    }
+
+    // Pulo: onGround ou coyote time ativo
+    const canJump = onGround || now < this._coyoteUntil
+    if ((Phaser.Input.Keyboard.JustDown(this.cursors.space) || now < this._jumpBufferUntil) && canJump) {
+      this._jumpBufferUntil = 0
+      this._coyoteUntil = 0
+      this._jumpCut = false
+      const jumpVel = gameState.hasPowerUp('pipoca', now)
         ? PHYSICS.JUMP_VELOCITY * 1.45
         : PHYSICS.JUMP_VELOCITY
       this.setVelocityY(jumpVel)
       SoundManager.play('jump')
+    }
+
+    // Variable jump: soltar espaço enquanto sobe corta o pulo (uma vez por pulo)
+    if (!onGround && body.velocity.y < 0 && !this.cursors.space.isDown && !this._jumpCut) {
+      this._jumpCut = true
+      body.setVelocityY(body.velocity.y * 0.4)
     }
 
     if (Phaser.Input.Keyboard.JustDown(this.shiftKey) && !this.barkCooldown) {
