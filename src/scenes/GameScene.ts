@@ -824,6 +824,18 @@ export class GameScene extends Phaser.Scene {
       // ── Camera shake ───────────────────────────────────────────────────
       this.cameras.main.shake(150, 0.007)
 
+      // ── Indicador de raio de intimidação (BARK_RADIUS * 1.5) ───────────────
+      const rangeGfx = this.add.graphics()
+      rangeGfx.setDepth(6)
+      rangeGfx.lineStyle(2, 0xffffff, 0.6)
+      rangeGfx.strokeCircle(bx, by, PHYSICS.BARK_RADIUS * 1.5)
+      this.tweens.add({
+        targets: rangeGfx,
+        alpha: 0,
+        duration: 400,
+        onComplete: () => { if (rangeGfx.active) rangeGfx.destroy() },
+      })
+
       // ── Enemy reactions ao bark ────────────────────────────────────────────
       ;(this.enemyGroup.getChildren() as Enemy[]).forEach(e => {
         const dist = Phaser.Math.Distance.Between(bx, by, e.x, e.y)
