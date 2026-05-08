@@ -441,7 +441,7 @@ export const LEVEL_2_BOSS: LevelData = {
   })(),
   spawnX: 64, spawnY: 300, exitX: 1856, exitY: 370,
   checkpointX: 80, checkpointY: 300,
-  enemies: [], items: [], goldenBones: [],
+  enemies: [], items: [{ type: 'heart', x: 960, y: 380 }], goldenBones: [],
   nextLevel: '3-1', isBossLevel: true,
   worldTransition: [
     'Cruella: "Descemos do telhado. Só falta a rua."',

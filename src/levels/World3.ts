@@ -381,7 +381,7 @@ export const LEVEL_3_BOSS: LevelData = {
   spawnX: 64, spawnY: 360, exitX: 1824, exitY: 380,
   checkpointX: 0, checkpointY: 0,
   enemies: [],
-  items:   [],
+  items:   [{ type: 'heart', x: 960, y: 380 }],
   goldenBones: [],
   decorations: [],
   nextLevel: null,

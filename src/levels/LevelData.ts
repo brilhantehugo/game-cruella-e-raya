@@ -13,7 +13,7 @@ export interface MovingPlatformSpawn {
 
 export type ItemType =
   | 'bone' | 'golden_bone'
-  | 'petisco' | 'pipoca' | 'pizza' | 'churrasco'
+  | 'petisco' | 'pipoca' | 'pizza' | 'churrasco' | 'heart'
   | 'bola' | 'frisbee'
   | 'laco' | 'coleira' | 'chapeu' | 'bandana'
   | 'surprise_block'
