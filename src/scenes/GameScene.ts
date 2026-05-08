@@ -1101,6 +1101,8 @@ export class GameScene extends Phaser.Scene {
         petisco:   0xff8800,
         pipoca:    0xffff00,
         churrasco: 0xff4400,
+        bola:      0x44ff88,
+        frisbee:   0x44ff88,
       }
       const puColor = puColors[puEntry.type] ?? 0x00ccff
       const alpha = 0.2 + 0.5 * (0.5 + 0.5 * Math.sin(this.time.now * 0.005))
