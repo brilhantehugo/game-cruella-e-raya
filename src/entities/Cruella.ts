@@ -68,7 +68,6 @@ export class Cruella extends Phaser.Physics.Arcade.Sprite {
       this._jumpCut = false
       if (now < this._jumpBufferUntil) {
         this._jumpBufferUntil = 0
-        this._jumpCut = false
         const jumpVel = gameState.hasPowerUp('pipoca', now)
           ? PHYSICS.JUMP_VELOCITY * 1.45
           : PHYSICS.JUMP_VELOCITY
