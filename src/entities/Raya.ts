@@ -8,6 +8,9 @@ export class Raya extends Phaser.Physics.Arcade.Sprite {
   private isDashing: boolean = false
   private dashCooldown: boolean = false
   private wasGrounded: boolean = false
+  private _coyoteUntil: number = 0
+  private _jumpBufferUntil: number = 0
+  private _jumpCut: boolean = false
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys
   private shiftKey!: Phaser.Input.Keyboard.Key
 
@@ -47,10 +50,27 @@ export class Raya extends Phaser.Physics.Arcade.Sprite {
     const body = this.body as Phaser.Physics.Arcade.Body
     const onGround = body.blocked.down
 
-    // Edge detection: just landed → reset double jump
+    // Edge detection: just landed → reset double jump + jump buffer
     if (onGround && !this.wasGrounded) {
       this.jumpsLeft = 2
+      this._coyoteUntil = 0
+      this._jumpCut = false
       this.emit('landed')
+      // Jump buffer: pulo pressionado antes de pousar
+      if (this.scene.time.now < this._jumpBufferUntil) {
+        this._jumpBufferUntil = 0
+        const jumpVel = gameState.hasPowerUp('pipoca', this.scene.time.now)
+          ? PHYSICS.JUMP_VELOCITY * 1.45
+          : PHYSICS.JUMP_VELOCITY
+        this.setVelocityY(jumpVel)
+        this.jumpsLeft = 1
+        SoundManager.play('jump')
+        this.emit('jumped')
+      }
+    }
+    // Coyote time: define janela ao sair do chão sem pular
+    if (!onGround && this.wasGrounded) {
+      this._coyoteUntil = this.scene.time.now + 80
     }
     this.wasGrounded = onGround
 
@@ -69,14 +89,36 @@ export class Raya extends Phaser.Physics.Arcade.Sprite {
       this.setVelocityX(0)
     }
 
-    if (Phaser.Input.Keyboard.JustDown(this.cursors.space) && this.jumpsLeft > 0) {
-      const jumpVel = gameState.hasPowerUp('pipoca', this.scene.time.now)
+    const now = this.scene.time.now
+    const coyoteOk = now < this._coyoteUntil && this.jumpsLeft === 2
+    const canJump = this.jumpsLeft > 0 || coyoteOk
+
+    if (Phaser.Input.Keyboard.JustDown(this.cursors.space)) {
+      this._jumpBufferUntil = now + 100
+    }
+
+    if ((Phaser.Input.Keyboard.JustDown(this.cursors.space) || now < this._jumpBufferUntil) && canJump) {
+      this._jumpBufferUntil = 0
+      const jumpVel = gameState.hasPowerUp('pipoca', now)
         ? PHYSICS.JUMP_VELOCITY * 1.45
         : PHYSICS.JUMP_VELOCITY
       this.setVelocityY(jumpVel)
-      this.jumpsLeft--
+      this._jumpCut = false
+
+      if (coyoteOk && !onGround) {
+        this._coyoteUntil = 0
+        this.jumpsLeft = 1
+      } else {
+        this.jumpsLeft--
+      }
       SoundManager.play(this.jumpsLeft === 0 ? 'doubleJump' : 'jump')
       this.emit('jumped')
+    }
+
+    // Variable jump: soltar espaço enquanto sobe corta o pulo (once per jump)
+    if (!onGround && body.velocity.y < 0 && !this.cursors.space.isDown && !this._jumpCut) {
+      this._jumpCut = true
+      body.setVelocityY(body.velocity.y * 0.4)
     }
 
     if (Phaser.Input.Keyboard.JustDown(this.shiftKey) && !this.dashCooldown) {
