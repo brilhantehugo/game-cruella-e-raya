@@ -198,16 +198,19 @@ export class LevelCompleteScene extends Phaser.Scene {
     const isBoss = levelId.endsWith('boss')
 
     if (isBoss && worldLvls.length > 0) {
-      const allGolden = worldLvls.every(id =>
-        (gameState.goldenBones[id] ?? []).every(Boolean)
-      )
+      const allGolden = worldLvls.every(id => {
+        const bones = gameState.goldenBones[id]
+        return Array.isArray(bones) && bones.length > 0 && bones.every(Boolean)
+      })
       if (allGolden) {
-        this.add.rectangle(cx, 340, 320, 36, 0xffd700, 0.15).setScrollFactor(0)
+        const badgeBg = this.add.rectangle(cx, 340, 320, 36, 0xffd700, 0.15)
+          .setScrollFactor(0).setAlpha(0)
         const badgeTxt = this.add.text(cx, 340, `🏆 World ${worldId} — 100% completo!`, {
           fontSize: '15px', color: '#ffd700', fontStyle: 'bold',
           stroke: '#000000', strokeThickness: 2,
         }).setOrigin(0.5).setScrollFactor(0).setAlpha(0)
-        this.tweens.add({ targets: badgeTxt, alpha: 1, delay: 800, duration: 600 })
+        this.tweens.add({ targets: badgeBg,  alpha: 0.15, delay: 800, duration: 600 })
+        this.tweens.add({ targets: badgeTxt, alpha: 1,    delay: 800, duration: 600 })
       }
     }
 
