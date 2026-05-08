@@ -59,6 +59,7 @@ export class Raya extends Phaser.Physics.Arcade.Sprite {
       // Jump buffer: pulo pressionado antes de pousar
       if (this.scene.time.now < this._jumpBufferUntil) {
         this._jumpBufferUntil = 0
+        this._jumpCut = false
         const jumpVel = gameState.hasPowerUp('pipoca', this.scene.time.now)
           ? PHYSICS.JUMP_VELOCITY * 1.45
           : PHYSICS.JUMP_VELOCITY
