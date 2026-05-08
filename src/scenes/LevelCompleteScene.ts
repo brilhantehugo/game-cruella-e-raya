@@ -16,6 +16,13 @@ const ALL_LEVELS: Record<string, LevelData> = {
   ...WORLD3_LEVELS,
 }
 
+const WORLD_LEVELS_WITH_BONES: Record<string, string[]> = {
+  '0': ['0-1', '0-2', '0-4', '0-5'],
+  '1': ['1-1', '1-2', '1-3', '1-4', '1-5'],
+  '2': ['2-1', '2-2', '2-3', '2-5'],
+  '3': ['3-1', '3-2', '3-3', '3-4', '3-5'],
+}
+
 interface LevelCompleteData {
   score:         number
   time:          number       // ms
@@ -184,6 +191,25 @@ export class LevelCompleteScene extends Phaser.Scene {
     const cruella = this.add.sprite(cx + 90, 375, KEYS.CRUELLA, 0).setScale(3.2).setFlipX(true)
     this.tweens.add({ targets: raya,    y: 358, duration: 450, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' })
     this.tweens.add({ targets: cruella, y: 362, duration: 550, yoyo: true, repeat: -1, ease: 'Sine.easeInOut', delay: 120 })
+
+    // ── Badge de 100% do mundo ao completar boss ──────────────────────
+    const worldId = levelId.split('-')[0]
+    const worldLvls = WORLD_LEVELS_WITH_BONES[worldId] ?? []
+    const isBoss = levelId.endsWith('boss')
+
+    if (isBoss && worldLvls.length > 0) {
+      const allGolden = worldLvls.every(id =>
+        (gameState.goldenBones[id] ?? []).every(Boolean)
+      )
+      if (allGolden) {
+        this.add.rectangle(cx, 340, 320, 36, 0xffd700, 0.15).setScrollFactor(0)
+        const badgeTxt = this.add.text(cx, 340, `🏆 World ${worldId} — 100% completo!`, {
+          fontSize: '15px', color: '#ffd700', fontStyle: 'bold',
+          stroke: '#000000', strokeThickness: 2,
+        }).setOrigin(0.5).setScrollFactor(0).setAlpha(0)
+        this.tweens.add({ targets: badgeTxt, alpha: 1, delay: 800, duration: 600 })
+      }
+    }
 
     // ── Botões ────────────────────────────────────────────────────────
     const btnY = GAME_HEIGHT - 22
