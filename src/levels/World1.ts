@@ -133,7 +133,7 @@ export const LEVEL_1_2: LevelData = {
   ],
   goldenBones: [
     { x: 420,  y: 80 },
-    { x: 2100, y: 80 },
+    { x: 2100, y: 48 },
   ],
   nextLevel: '1-3',
   intro: {

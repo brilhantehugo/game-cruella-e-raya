@@ -44,7 +44,7 @@ export const LEVEL_3_1: LevelData = {
   goldenBones: [
     { x: 370,  y: 190 },
     { x: 1220, y: 190 },
-    { x: 2040, y: 190 },
+    { x: 2350, y: 190 },
   ],
   decorations: [
     { type: 'poste',   x: 160,  y: 388 },
