@@ -931,6 +931,7 @@ export class GameScene extends Phaser.Scene {
         gameState.restoreHeart()
         SoundManager.play('collectBone')
         this._spawnScorePopup(item.x, item.y - 16, '❤️ +vida!', '#ff4466')
+        this._am?.notify('item_collected', { type: 'heart' })
         break
       case 'laco':
         gameState.equipAccessory(type as any)

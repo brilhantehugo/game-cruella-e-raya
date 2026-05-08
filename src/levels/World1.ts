@@ -416,7 +416,7 @@ export const LEVEL_1_BOSS: LevelData = {
   ],
   spawnX: 64, spawnY: 300, exitX: 896, exitY: 370,
   checkpointX: 80, checkpointY: 300,
-  enemies: [], items: [{ type: 'heart', x: 960, y: 380 }], goldenBones: [],
+  enemies: [], items: [{ type: 'heart', x: 480, y: 300 }], goldenBones: [],
   nextLevel: '2-1', isBossLevel: true,
   intro: {
     complexity: 3,
