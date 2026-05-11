@@ -35,6 +35,15 @@ export interface MiniBossConfig {
   rightBarrierX: number
 }
 
+export type HazardType = 'spike' | 'fall-zone'
+
+export interface HazardDef {
+  type:  HazardType
+  x:     number
+  y:     number
+  width: number
+}
+
 export interface LevelData {
   id: string
   name: string
@@ -65,6 +74,7 @@ export interface LevelData {
   playerAuraRadius?: number   // px — usado por SpotlightOverlay; required when hasSpotlight=true
   miniBoss?: MiniBossConfig
   movingPlatforms?: MovingPlatformSpawn[]
+  hazards?: HazardDef[]
 }
 
 /** Y de spawn para inimigos humanos (escala 1.4, bodyHeight 44px)
