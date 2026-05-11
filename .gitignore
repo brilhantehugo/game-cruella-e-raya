@@ -5,3 +5,5 @@ dist/
 .DS_Store
 .worktrees/
 .claude/
+.mcp.json
+tests/e2e/screenshots/
