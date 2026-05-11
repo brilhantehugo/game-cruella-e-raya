@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { KEYS, TILE_SIZE, GAME_WIDTH, GAME_HEIGHT, PHYSICS, SCORING, POWERUP_LABEL } from '../constants'
+import { KEYS, TILE_SIZE, GAME_WIDTH, GAME_HEIGHT, PHYSICS, SCORING, POWERUP_LABEL, WORLD_DIFFICULTY, type WorldDifficulty } from '../constants'
 import { gameState } from '../GameState'
 import { Player } from '../entities/Player'
 import { Enemy } from '../entities/Enemy'
@@ -67,6 +67,7 @@ export class GameScene extends Phaser.Scene {
   private _mainBoss: Enemy | null = null
   private _hazardGroup!: Phaser.Physics.Arcade.StaticGroup
   private _hasFallZone: boolean = false
+  private _currentDiff!: WorldDifficulty
   private _movingPlatformGroup!: Phaser.Physics.Arcade.Group
   private _movingPlatformData: Array<{
     sprite: Phaser.Physics.Arcade.Image
@@ -417,9 +418,12 @@ export class GameScene extends Phaser.Scene {
   private _spawnEnemies(): void {
     this.enemyGroup = this.physics.add.group()
     const builder = new LevelBuilder(this)
+    const worldId = gameState.currentLevel.split('-')[0]
+    this._currentDiff = WORLD_DIFFICULTY[worldId] ?? WORLD_DIFFICULTY['0']
     this.currentLevel.enemies.forEach(spawn => {
       const enemy = builder.createEnemy(spawn.type, spawn.x, spawn.y)
       if (!enemy) return
+      enemy.applyDifficulty(this._currentDiff)
       this.enemyGroup.add(enemy)
       if (enemy instanceof HumanEnemy) {
         enemy.setGroundLayer(this.groundLayer)   // ledge detection
@@ -1138,6 +1142,26 @@ export class GameScene extends Phaser.Scene {
         ;(e as any).setPlayerPos(this.player.x, this.player.y)
       }
     })
+    // Pack chase — worlds 2 e 3: inimigo próximo do player alerta vizinhos dentro de 120px
+    if (this._currentDiff?.packChase) {
+      const px = this.player.x
+      const py = this.player.y
+      const activeEnemies = enemies.filter(e => e.active)
+      activeEnemies.forEach(leader => {
+        const dLeader = Phaser.Math.Distance.Between(leader.x, leader.y, px, py)
+        if (dLeader < 80) {
+          activeEnemies.forEach(follower => {
+            if (follower === leader) return
+            const dPair = Phaser.Math.Distance.Between(leader.x, leader.y, follower.x, follower.y)
+            if (dPair <= 120) {
+              // Posição falsa próxima ao follower faz ele "enxergar" o jogador
+              const fakeX = follower.x + Math.sign(px - follower.x) * 50
+              ;(follower as any).setPlayerPos?.(fakeX, py)
+            }
+          })
+        }
+      })
+    }
     // Plataformas dinâmicas — inversão de velocidade ao atingir range
     for (const mp of this._movingPlatformData) {
       const body = mp.sprite.body as Phaser.Physics.Arcade.Body
