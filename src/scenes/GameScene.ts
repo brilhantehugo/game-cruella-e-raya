@@ -101,9 +101,13 @@ export class GameScene extends Phaser.Scene {
     // Parallax (antes das decorações para ordem de profundidade correta)
     this._parallax = new ParallaxBackground(this, this.currentLevel.backgroundTheme)
 
-    // BGM
-    const bgmKey = this.currentLevel.isBossLevel ? KEYS.BGM_BOSS : KEYS.BGM_WORLD1
-    SoundManager.playBgm(bgmKey, this)
+    // BGM procedural por mundo
+    const _worldId = gameState.currentLevel.split('-')[0]  // '0', '1', '2', '3'
+    const _isBoss  = gameState.currentLevel.endsWith('boss')
+    const _bgmType = _isBoss
+      ? 'boss'
+      : (`world${_worldId}` as 'world0' | 'world1' | 'world2' | 'world3')
+    SoundManager.playProceduralBgm(_bgmType)
 
     // Teclas extras
     this._mKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.M)
@@ -666,7 +670,7 @@ export class GameScene extends Phaser.Scene {
     this.physics.add.collider(boss,                this._miniBossBarriers)
 
     // BGM de boss + barra de mini-boss
-    SoundManager.playBgm(KEYS.BGM_BOSS, this)
+    SoundManager.playProceduralBgm('boss')
     this.events.emit('showMiniBossBar')
 
     // Polling para actualizar barra de HP
@@ -684,7 +688,7 @@ export class GameScene extends Phaser.Scene {
         this._miniBossBarriers = null
       }
       this.events.emit('hideMiniBossBar')
-      SoundManager.playBgm(KEYS.BGM_WORLD1, this)
+      SoundManager.playProceduralBgm(`world${gameState.currentLevel.split('-')[0]}` as 'world0' | 'world1' | 'world2' | 'world3')
       gameState.addScore(500)
       gameState.sessionEnemiesKilled++
       this._am?.notify('enemy_killed')
