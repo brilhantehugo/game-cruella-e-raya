@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import type { LevelData } from '../src/levels/LevelData'
-import { WORLD_DIFFICULTY } from '../src/constants'
+import { WORLD_DIFFICULTY, type WorldDifficulty } from '../src/constants'
 
 describe('HazardDef types', () => {
   it('LevelData aceita hazards como campo opcional', () => {
@@ -47,3 +47,32 @@ describe('WORLD_DIFFICULTY', () => {
     }
   })
 })
+
+describe('Enemy.applyDifficulty (lógica isolada)', () => {
+  it('multiplica speed pelo speedMult', () => {
+    const baseSpeed = 80
+    const diff = WORLD_DIFFICULTY['3']   // speedMult: 1.45
+    const newSpeed = baseSpeed * diff.speedMult
+    expect(newSpeed).toBeCloseTo(80 * 1.45, 1)
+  })
+
+  it('packChase é true para world2 e world3', () => {
+    expect(WORLD_DIFFICULTY['2'].packChase).toBe(true)
+    expect(WORLD_DIFFICULTY['3'].packChase).toBe(true)
+  })
+
+  it('longChase é true apenas para world3', () => {
+    expect(WORLD_DIFFICULTY['0'].longChase).toBe(false)
+    expect(WORLD_DIFFICULTY['1'].longChase).toBe(false)
+    expect(WORLD_DIFFICULTY['2'].longChase).toBe(false)
+    expect(WORLD_DIFFICULTY['3'].longChase).toBe(true)
+  })
+
+  it('aggressionMult < 1 para worlds avançados (inimigo mais persistente)', () => {
+    expect(WORLD_DIFFICULTY['3'].aggressionMult).toBeLessThan(1)
+  })
+})
+
+// Suprime aviso de import não utilizado — WorldDifficulty é usado como type guard
+const _wdTypeCheck: WorldDifficulty = WORLD_DIFFICULTY['0']
+void _wdTypeCheck

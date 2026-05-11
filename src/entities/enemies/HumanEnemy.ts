@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import { Enemy } from '../Enemy'
+import type { WorldDifficulty } from '../../constants'
 import {
   EnemyStateMachine,
   computeNextHumanState,
@@ -46,6 +47,16 @@ export abstract class HumanEnemy extends Enemy {
   /** Fornece a camada de chão para detecção de borda de plataforma. Chamar uma vez após spawn. */
   setGroundLayer(layer: Phaser.Physics.Arcade.StaticGroup): void {
     this._groundLayer = layer
+  }
+
+  override applyDifficulty(diff: WorldDifficulty): void {
+    super.applyDifficulty(diff)
+    // Reduz cooldown (aggressionMult < 1 = inimigo mais persistente em chase)
+    this._config.cooldownDuration = Math.round(this._config.cooldownDuration * diff.aggressionMult)
+    // longChase: dobra o cooldown para o inimigo desistir ainda mais tarde
+    if (diff.longChase) {
+      this._config.cooldownDuration = Math.round(this._config.cooldownDuration * 2)
+    }
   }
 
   /** Called by GameScene.update() to provide player position. */

@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import type { WorldDifficulty } from '../constants'
 
 export abstract class Enemy extends Phaser.Physics.Arcade.Sprite {
   readonly isNPC: boolean = false
@@ -8,6 +9,10 @@ export abstract class Enemy extends Phaser.Physics.Arcade.Sprite {
   protected direction: number = 1
   protected stunUntil: number = 0
   protected isFleeing: boolean = false
+
+  // ── Difficulty scaling ────────────────────────────────────────────────────
+  protected _packChase: boolean = false
+  protected _longChase: boolean = false
 
   constructor(
     scene: Phaser.Scene,
@@ -73,6 +78,12 @@ export abstract class Enemy extends Phaser.Physics.Arcade.Sprite {
   protected onDeath(): void {
     this.emit('died', this)
     this.destroy()
+  }
+
+  applyDifficulty(diff: WorldDifficulty): void {
+    this.speed      *= diff.speedMult
+    this._packChase  = diff.packChase
+    this._longChase  = diff.longChase
   }
 
   /** @deprecated Use `.hp` directly — field is now public. */
