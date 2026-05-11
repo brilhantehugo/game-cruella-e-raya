@@ -65,6 +65,8 @@ export class GameScene extends Phaser.Scene {
   private _livesAtBossStart = 0
   private _killCountInLevel = 0
   private _mainBoss: Enemy | null = null
+  private _hazardGroup!: Phaser.Physics.Arcade.StaticGroup
+  private _hasFallZone: boolean = false
   private _movingPlatformGroup!: Phaser.Physics.Arcade.Group
   private _movingPlatformData: Array<{
     sprite: Phaser.Physics.Arcade.Image
@@ -127,6 +129,7 @@ export class GameScene extends Phaser.Scene {
 
     this._buildDecorations()
     this._buildMovingPlatforms()
+    this._buildHazards()
     this._buildTilemap()
     this._spawnPlayer()
     this._fx = new EffectsManager(this)
@@ -334,6 +337,27 @@ export class GameScene extends Phaser.Scene {
         originX: cfg.x,
         originY: cfg.y,
       })
+    }
+  }
+
+  private _buildHazards(): void {
+    this._hazardGroup = this.physics.add.staticGroup()
+    this._hasFallZone = false
+
+    const hazards = this.currentLevel.hazards ?? []
+    for (const h of hazards) {
+      if (h.type === 'fall-zone') {
+        this._hasFallZone = true
+        continue   // sem sprite — detectado por bounds check em update()
+      }
+      // spike — tile_ground recolorido como espinho
+      this._hazardGroup.add(
+        this.physics.add.staticImage(h.x, h.y, KEYS.TILE_GROUND)
+          .setTint(0xff3333)
+          .setDisplaySize(h.width, 16)
+          .setDepth(3)
+          .refreshBody()
+      )
     }
   }
 
@@ -743,6 +767,16 @@ export class GameScene extends Phaser.Scene {
       this.physics.add.collider(this.player.cruella, this._movingPlatformGroup, undefined, carryCallback as any, this)
     }
 
+    // Hazards — spike dá dano; fall-zone detectado em update()
+    if (this._hazardGroup.getLength() > 0) {
+      const onSpikeHit = () => {
+        this.player.takeDamage()
+        if (gameState.isDead()) this._gameOver()
+      }
+      this.physics.add.overlap(this.player.raya,    this._hazardGroup, onSpikeHit, undefined, this)
+      this.physics.add.overlap(this.player.cruella, this._hazardGroup, onSpikeHit, undefined, this)
+    }
+
     // Decorações sólidas (móveis, grades) bloqueiam personagens e inimigos
     if (this.decorationLayer.getLength() > 0) {
       this.physics.add.collider(this.player.raya,   this.decorationLayer)
@@ -1144,6 +1178,24 @@ export class GameScene extends Phaser.Scene {
       const alpha = 0.2 + 0.5 * (0.5 + 0.5 * Math.sin(this.time.now * 0.005))
       this._puAuraGfx.lineStyle(2, puColor, alpha)
       this._puAuraGfx.strokeCircle(this.player.active.x, this.player.active.y, 28)
+    }
+
+    // Fall-zone — jogador cai abaixo da tela → −1 coração + respawn no checkpoint
+    if (this._hasFallZone) {
+      const fallThreshold = GAME_HEIGHT + 64
+      const rayaFell    = this.player.raya.active    && this.player.raya.y    > fallThreshold
+      const cruellaFell = this.player.cruella.active && this.player.cruella.y > fallThreshold
+      if (rayaFell || cruellaFell) {
+        this.player.takeDamage()
+        if (gameState.isDead()) {
+          this._gameOver()
+        } else {
+          const rx = gameState.checkpointReached ? gameState.checkpointX : this.currentLevel.spawnX
+          const ry = gameState.checkpointReached ? gameState.checkpointY - 32 : this.currentLevel.spawnY
+          this.player.raya.setPosition(rx, ry)
+          this.player.cruella.setPosition(rx, ry)
+        }
+      }
     }
   }
 
