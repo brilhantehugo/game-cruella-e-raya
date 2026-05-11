@@ -102,12 +102,12 @@ export class GameScene extends Phaser.Scene {
     this._parallax = new ParallaxBackground(this, this.currentLevel.backgroundTheme)
 
     // BGM procedural por mundo
-    const _worldId = gameState.currentLevel.split('-')[0]  // '0', '1', '2', '3'
-    const _isBoss  = gameState.currentLevel.endsWith('boss')
-    const _bgmType = _isBoss
+    const worldId = gameState.currentLevel.split('-')[0]  // '0', '1', '2', '3'
+    const isBoss  = gameState.currentLevel.endsWith('boss')
+    const bgmType = isBoss
       ? 'boss'
-      : (`world${_worldId}` as 'world0' | 'world1' | 'world2' | 'world3')
-    SoundManager.playProceduralBgm(_bgmType)
+      : (`world${worldId}` as 'world0' | 'world1' | 'world2' | 'world3')
+    SoundManager.playProceduralBgm(bgmType)
 
     // Teclas extras
     this._mKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.M)
@@ -735,7 +735,7 @@ export class GameScene extends Phaser.Scene {
         const pb    = (playerSprite as Phaser.Physics.Arcade.Image).body as Phaser.Physics.Arcade.Body
         const platB = (platform    as Phaser.Physics.Arcade.Image).body as Phaser.Physics.Arcade.Body
         if (pb.blocked.down && platB.velocity.x !== 0) {
-          (playerSprite as Phaser.Physics.Arcade.Image).x += platB.velocity.x / 60
+          (playerSprite as Phaser.Physics.Arcade.Image).x += platB.velocity.x * (this.game.loop.delta / 1000)
         }
         return true
       }

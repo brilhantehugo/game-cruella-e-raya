@@ -327,7 +327,7 @@ const _BOSS_BASS: PBeat[] = [
 
 let _procActive   = false
 let _procTimeout: ReturnType<typeof setTimeout> | null = null
-let _procType: 'menu' | 'intro' | 'world0' | 'world1' | 'world2' | 'world3' | 'boss' | null = null
+let _procType: 'menu' | 'intro' | 'victory' | 'gameover' | 'world0' | 'world1' | 'world2' | 'world3' | 'boss' | null = null
 // Nó de ganho mestre para silenciar notas já agendadas na Web Audio API
 let _procGainNode: GainNode | null = null
 
@@ -460,7 +460,7 @@ export const SoundManager = {
     if (_currentBgm) { _currentBgm.stop(); _currentBgm.destroy(); _currentBgm = null }
     _lastBgmKey = null
     _stopProcLoop()                    // silencia notas antigas imediatamente
-    _procType   = type as 'menu' | 'intro' | 'world0' | 'world1' | 'world2' | 'world3' | 'boss'
+    _procType   = type
     _procActive = true
     if (gameState.muted) return
     // Cria nó mestre novo para esta sessão (notas antigas vão para o nó antigo que está em 0)
