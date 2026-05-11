@@ -120,6 +120,9 @@ export const LEVEL_0_1: LevelData = {
     { x: 2240, y: 368, width: 96, axis: 'y', range: 48,  speed: 55 },
     { x: 2720, y: 304, width: 96, axis: 'x', range: 120, speed: 70 },
   ],
+  hazards: [
+    { type: 'spike', x: 640, y: 408, width: 64 },
+  ],
 }
 
 // ── 0-2: Corredor 🆕 ─────────────────────────────────────────────────────────
@@ -185,6 +188,10 @@ export const LEVEL_0_2: LevelData = {
   movingPlatforms: [
     { x: 640,  y: 304, width: 96, axis: 'x', range: 130, speed: 75 },
     { x: 1600, y: 336, width: 96, axis: 'y', range: 48,  speed: 50 },
+  ],
+  hazards: [
+    { type: 'spike',     x: 960,  y: 408, width: 64 },
+    { type: 'fall-zone', x: 0,    y: 0,   width: 0  },
   ],
 }
 
@@ -267,6 +274,10 @@ export const LEVEL_0_3: LevelData = {
     { type: 'pilar',    x: 1550, y: G, blocking: true },
     { type: 'pilar',    x: 2350, y: G, blocking: true },
   ],
+  hazards: [
+    { type: 'spike', x: 640,  y: 408, width: 32 },
+    { type: 'spike', x: 1280, y: 408, width: 64 },
+  ],
 }
 
 // ── 0-4: Estacionamento Nível 1 🆕 ───────────────────────────────────────────
@@ -336,6 +347,10 @@ export const LEVEL_0_4: LevelData = {
     { type: 'barreira', x: 1150, y: G },
     { type: 'pilar',    x: 1750, y: G, blocking: true },
     { type: 'pilar',    x: 2100, y: G, blocking: true },
+  ],
+  hazards: [
+    { type: 'spike',     x: 896,  y: 408, width: 64 },
+    { type: 'fall-zone', x: 0,    y: 0,   width: 0  },
   ],
 }
 
@@ -411,6 +426,10 @@ export const LEVEL_0_5: LevelData = {
     { type: 'pilar',    x: 1500, y: G, blocking: true },
     { type: 'pilar',    x: 1900, y: G, blocking: true },
     { type: 'pilar',    x: 2600, y: G, blocking: true },
+  ],
+  hazards: [
+    { type: 'spike', x: 800,  y: 408, width: 32 },
+    { type: 'spike', x: 1600, y: 408, width: 64 },
   ],
 }
 

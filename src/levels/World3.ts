@@ -81,6 +81,10 @@ export const LEVEL_3_1: LevelData = {
     { x: 1500, y: 256, width: 96, axis: 'y', range: 64,  speed: 60 },
     { x: 2200, y: 304, width: 96, axis: 'x', range: 120, speed: 75 },
   ],
+  hazards: [
+    { type: 'spike', x: 768,  y: 408, width: 32 },
+    { type: 'spike', x: 1920, y: 408, width: 64 },
+  ],
 }
 
 // ── 3-2: Parque de Noite ──────────────────────────────────────────────────────
@@ -155,6 +159,11 @@ export const LEVEL_3_2: LevelData = {
     { x: 1300, y: 272, width: 96, axis: 'y', range: 56,  speed: 60 },
     { x: 2000, y: 320, width: 96, axis: 'x', range: 110, speed: 70 },
   ],
+  hazards: [
+    { type: 'spike',     x: 896,  y: 408, width: 32 },
+    { type: 'spike',     x: 2176, y: 408, width: 32 },
+    { type: 'fall-zone', x: 0,    y: 0,   width: 0  },
+  ],
 }
 
 // ── 3-3: Travessa Escura ──────────────────────────────────────────────────────
@@ -227,6 +236,11 @@ export const LEVEL_3_3: LevelData = {
     { x: 1400, y: 320, width: 96, axis: 'x', range: 150, speed: 95 },
     { x: 2100, y: 288, width: 96, axis: 'x', range: 120, speed: 80 },
   ],
+  hazards: [
+    { type: 'spike',     x: 1024, y: 408, width: 64 },
+    { type: 'spike',     x: 2432, y: 408, width: 32 },
+    { type: 'fall-zone', x: 0,    y: 0,   width: 0  },
+  ],
 }
 
 // ── 3-4: Supermercado 24h (SEM OVERLAY) ──────────────────────────────────────
@@ -292,6 +306,11 @@ export const LEVEL_3_4: LevelData = {
       'Cruella: "Sim."',
     ],
   },
+  hazards: [
+    { type: 'spike', x: 640,  y: 408, width: 32 },
+    { type: 'spike', x: 1536, y: 408, width: 32 },
+    { type: 'spike', x: 2560, y: 408, width: 64 },
+  ],
 }
 
 // ── 3-5: Regresso ao Prédio ───────────────────────────────────────────────────
@@ -362,6 +381,11 @@ export const LEVEL_3_5: LevelData = {
       'Cruella: "Pela última vez, espero."',
     ],
   },
+  hazards: [
+    { type: 'spike',     x: 1280, y: 408, width: 32 },
+    { type: 'spike',     x: 2688, y: 408, width: 64 },
+    { type: 'fall-zone', x: 0,    y: 0,   width: 0  },
+  ],
 }
 
 // ── 3-boss: Perseguição da Viatura ────────────────────────────────────────────

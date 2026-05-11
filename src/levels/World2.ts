@@ -97,6 +97,10 @@ export const LEVEL_2_1: LevelData = {
     { x: 1280, y: 288, width: 96, axis: 'y', range: 56,  speed: 60 },
     { x: 2100, y: 336, width: 96, axis: 'x', range: 130, speed: 80 },
   ],
+  hazards: [
+    { type: 'spike',     x: 960,  y: 408, width: 32 },
+    { type: 'fall-zone', x: 0,    y: 0,   width: 0  },
+  ],
 }
 
 export const LEVEL_2_2: LevelData = {
@@ -182,6 +186,10 @@ export const LEVEL_2_2: LevelData = {
     { x: 1600, y: 272, width: 96, axis: 'y', range: 48,  speed: 55 },
     { x: 2400, y: 320, width: 96, axis: 'x', range: 110, speed: 70 },
   ],
+  hazards: [
+    { type: 'spike', x: 800,  y: 408, width: 32 },
+    { type: 'spike', x: 2080, y: 408, width: 64 },
+  ],
 }
 
 // ── 2-3: Garagem de Serviço 🆕 ────────────────────────────────────────────────
@@ -256,6 +264,10 @@ export const LEVEL_2_3: LevelData = {
     { x: 560,  y: 336, width: 96, axis: 'y', range: 60,  speed: 65 },
     { x: 1440, y: 296, width: 96, axis: 'x', range: 130, speed: 85 },
     { x: 2200, y: 336, width: 96, axis: 'x', range: 100, speed: 70 },
+  ],
+  hazards: [
+    { type: 'spike',     x: 1152, y: 408, width: 64 },
+    { type: 'fall-zone', x: 0,    y: 0,   width: 0  },
   ],
 }
 
@@ -344,6 +356,11 @@ export const LEVEL_2_4: LevelData = {
     { type: 'floreira', x: 800,  y: G },
     { type: 'floreira', x: 1600, y: G },
   ],
+  hazards: [
+    { type: 'spike',     x: 736,  y: 408, width: 32 },
+    { type: 'spike',     x: 2080, y: 408, width: 32 },
+    { type: 'fall-zone', x: 0,    y: 0,   width: 0  },
+  ],
 }
 
 // ── 2-5: Varandas / Fachada 🆕 ────────────────────────────────────────────────
@@ -424,6 +441,11 @@ export const LEVEL_2_5: LevelData = {
     { type: 'fonte',    x: 1000, y: G },
     { type: 'floreira', x: 1600, y: G },
     { type: 'floreira', x: 2400, y: G },
+  ],
+  hazards: [
+    { type: 'spike',     x: 1024, y: 408, width: 32 },
+    { type: 'spike',     x: 2304, y: 408, width: 64 },
+    { type: 'fall-zone', x: 0,    y: 0,   width: 0  },
   ],
 }
 

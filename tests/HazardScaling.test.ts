@@ -73,6 +73,44 @@ describe('Enemy.applyDifficulty (lógica isolada)', () => {
   })
 })
 
+import { WORLD0_LEVELS } from '../src/levels/World0'
+import { WORLD1_LEVELS } from '../src/levels/World1'
+import { WORLD2_LEVELS } from '../src/levels/World2'
+import { WORLD3_LEVELS } from '../src/levels/World3'
+
+describe('Hazards nos mundos', () => {
+  it('fases não-boss têm pelo menos 1 hazard', () => {
+    const allLevels = [
+      ...Object.values(WORLD0_LEVELS), ...Object.values(WORLD1_LEVELS),
+      ...Object.values(WORLD2_LEVELS), ...Object.values(WORLD3_LEVELS),
+    ]
+    const nonBoss = allLevels.filter(l => !l.isBossLevel)
+    nonBoss.forEach(l => {
+      expect((l.hazards ?? []).length, `${l.id} sem hazard`).toBeGreaterThan(0)
+    })
+  })
+
+  it('boss levels não têm hazards', () => {
+    const allLevels = [
+      ...Object.values(WORLD0_LEVELS), ...Object.values(WORLD1_LEVELS),
+      ...Object.values(WORLD2_LEVELS), ...Object.values(WORLD3_LEVELS),
+    ]
+    allLevels.filter(l => l.isBossLevel).forEach(l => {
+      expect((l.hazards ?? []).length, `boss ${l.id} tem hazard`).toBe(0)
+    })
+  })
+
+  it('spikes têm width > 0', () => {
+    const allLevels = [
+      ...Object.values(WORLD0_LEVELS), ...Object.values(WORLD1_LEVELS),
+      ...Object.values(WORLD2_LEVELS), ...Object.values(WORLD3_LEVELS),
+    ]
+    allLevels.flatMap(l => l.hazards ?? [])
+      .filter(h => h.type === 'spike')
+      .forEach(h => expect(h.width, 'spike sem width').toBeGreaterThan(0))
+  })
+})
+
 // Suprime aviso de import não utilizado — WorldDifficulty é usado como type guard
 const _wdTypeCheck: WorldDifficulty = WORLD_DIFFICULTY['0']
 void _wdTypeCheck

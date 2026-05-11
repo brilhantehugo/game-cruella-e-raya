@@ -92,6 +92,9 @@ export const LEVEL_1_1: LevelData = {
     { x: 1760, y: 272, width: 96, axis: 'y', range: 52,  speed: 60 },
     { x: 2400, y: 336, width: 96, axis: 'x', range: 120, speed: 75 },
   ],
+  hazards: [
+    { type: 'fall-zone', x: 0, y: 0, width: 0 },
+  ],
 }
 
 // ── 1-2: Beco Escuro 🆕 ──────────────────────────────────────────────────────
@@ -163,6 +166,10 @@ export const LEVEL_1_2: LevelData = {
     { x: 640,  y: 300, width: 96, axis: 'x', range: 130, speed: 80 },
     { x: 1500, y: 340, width: 96, axis: 'y', range: 50,  speed: 55 },
     { x: 2200, y: 300, width: 96, axis: 'x', range: 100, speed: 70 },
+  ],
+  hazards: [
+    { type: 'spike',     x: 1280, y: 408, width: 64 },
+    { type: 'fall-zone', x: 0,    y: 0,   width: 0  },
   ],
 }
 
@@ -249,6 +256,10 @@ export const LEVEL_1_3: LevelData = {
     { x: 1400, y: 280, width: 96, axis: 'x', range: 150, speed: 90 },
     { x: 2100, y: 340, width: 96, axis: 'x', range: 110, speed: 75 },
   ],
+  hazards: [
+    { type: 'spike', x: 800,  y: 408, width: 32 },
+    { type: 'spike', x: 1920, y: 408, width: 64 },
+  ],
 }
 
 // ── 1-4: Parque da Cidade 🆕 ──────────────────────────────────────────────────
@@ -322,6 +333,10 @@ export const LEVEL_1_4: LevelData = {
     { type: 'semaforo', x: 900,  y: G },
     { type: 'banca',    x: 1500, y: G },
     { type: 'semaforo', x: 2200, y: G },
+  ],
+  hazards: [
+    { type: 'spike',     x: 1024, y: 408, width: 64 },
+    { type: 'fall-zone', x: 0,    y: 0,   width: 0  },
   ],
 }
 
@@ -399,6 +414,10 @@ export const LEVEL_1_5: LevelData = {
     { type: 'banca',    x: 800,  y: G },
     { type: 'semaforo', x: 1400, y: G },
     { type: 'banca',    x: 2000, y: G },
+  ],
+  hazards: [
+    { type: 'spike', x: 960,  y: 408, width: 32 },
+    { type: 'spike', x: 2240, y: 408, width: 64 },
   ],
 }
 
