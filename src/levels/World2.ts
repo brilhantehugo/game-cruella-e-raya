@@ -120,7 +120,7 @@ export const LEVEL_2_2: LevelData = {
     { type: 'rato',    x: 1200, y: 390 },
     { type: 'rato',    x: 1270, y: 390 },
     { type: 'gato',    x: 1320, y: 390 },
-    { type: 'rato',    x: 1300, y: 390 },
+    { type: 'rato',    x: 1400, y: 390 },
     { type: 'zelador', x: 1600, y: HUMAN_SPAWN_Y },
     { type: 'gato',    x: 1800, y: 390 },
     { type: 'rato',    x: 2200, y: 390 },

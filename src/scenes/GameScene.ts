@@ -825,6 +825,8 @@ export class GameScene extends Phaser.Scene {
       this.cameras.main.shake(150, 0.007)
 
       // ── Indicador de raio de intimidação (BARK_RADIUS * 1.5) ───────────────
+      // O raio visual é 1.5× maior que o hit radius do bark (BARK_RADIUS)
+      // para mostrar o alcance de checkIntimidation(), que usa * 1.5.
       const rangeGfx = this.add.graphics()
       rangeGfx.setDepth(6)
       rangeGfx.lineStyle(2, 0xffffff, 0.6)
@@ -941,7 +943,7 @@ export class GameScene extends Phaser.Scene {
         break
       case 'heart':
         gameState.restoreHeart()
-        SoundManager.play('collectBone')
+        SoundManager.play('powerUp')
         this._spawnScorePopup(item.x, item.y - 16, '❤️ +vida!', '#ff4466')
         this._am?.notify('item_collected', { type: 'heart' })
         break
