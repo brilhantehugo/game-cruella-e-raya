@@ -185,9 +185,149 @@ const _INTRO_BASS: PBeat[] = [
   [98.0,  14, 1.8, 0.18], // G2
 ]
 
+// ── World 0 — Dó maior, 72 BPM, loop 16 beats (calmo, doméstico) ───────────
+const _WORLD0_BPM  = 72
+const _WORLD0_LOOP = 16
+const _WORLD0_MEL: PBeat[] = [
+  [261.6, 0,    1.0, 0.14], // C4
+  [329.6, 1,    0.7, 0.12], // E4
+  [392.0, 2,    0.7, 0.13], // G4
+  [349.2, 3,    1.0, 0.12], // F4
+  [329.6, 4,    1.2, 0.13], // E4
+  [261.6, 5.5,  0.6, 0.11], // C4
+  [293.7, 6,    0.7, 0.12], // D4
+  [329.6, 7,    1.3, 0.13], // E4
+  [392.0, 9,    0.7, 0.14], // G4
+  [440.0, 10,   0.7, 0.13], // A4
+  [392.0, 11,   0.6, 0.12], // G4
+  [349.2, 12,   1.0, 0.13], // F4
+  [329.6, 13,   0.7, 0.12], // E4
+  [261.6, 14,   1.8, 0.14], // C4
+]
+const _WORLD0_BASS: PBeat[] = [
+  [65.4,  0,  3.5, 0.16], // C2
+  [87.3,  4,  3.5, 0.15], // F2
+  [65.4,  8,  3.5, 0.16], // C2
+  [98.0,  12, 3.5, 0.15], // G2
+]
+
+// ── World 1 — Fá maior, 104 BPM, loop 8 beats (animado, walking) ────────────
+const _WORLD1_BPM  = 104
+const _WORLD1_LOOP = 8
+const _WORLD1_MEL: PBeat[] = [
+  [349.2, 0,    0.35, 0.15], // F4
+  [440.0, 0.5,  0.35, 0.13], // A4
+  [523.3, 1,    0.35, 0.15], // C5
+  [493.9, 1.5,  0.35, 0.13], // B4
+  [440.0, 2,    0.50, 0.14], // A4
+  [392.0, 2.75, 0.30, 0.12], // G4
+  [349.2, 3,    0.70, 0.15], // F4
+  [392.0, 4,    0.35, 0.13], // G4
+  [440.0, 4.5,  0.35, 0.14], // A4
+  [466.2, 5,    0.35, 0.13], // Bb4
+  [523.3, 5.5,  0.35, 0.15], // C5
+  [466.2, 6,    0.35, 0.13], // Bb4
+  [440.0, 6.5,  0.30, 0.12], // A4
+  [349.2, 7,    0.80, 0.15], // F4
+]
+const _WORLD1_BASS: PBeat[] = [
+  [87.3,  0, 0.6, 0.17], // F2
+  [130.8, 1, 0.6, 0.16], // C3
+  [87.3,  2, 0.6, 0.17], // F2
+  [110.0, 3, 0.6, 0.16], // A2
+  [87.3,  4, 0.6, 0.17], // F2
+  [130.8, 5, 0.6, 0.16], // C3
+  [174.6, 6, 0.6, 0.17], // F3
+  [196.0, 7, 0.6, 0.16], // G3
+]
+
+// ── World 2 — Sol mixolídio, 112 BPM, loop 8 beats (tenso, sincopado) ───────
+const _WORLD2_BPM  = 112
+const _WORLD2_LOOP = 8
+const _WORLD2_MEL: PBeat[] = [
+  [392.0, 0,    0.30, 0.16], // G4
+  [440.0, 0.5,  0.30, 0.14], // A4
+  [523.3, 1,    0.40, 0.16], // C5
+  [523.3, 1.5,  0.30, 0.14], // C5
+  [493.9, 2,    0.60, 0.15], // B4
+  [466.2, 3,    0.40, 0.14], // Bb4
+  [440.0, 3.5,  0.40, 0.14], // A4
+  [392.0, 4,    0.30, 0.16], // G4
+  [349.2, 4.5,  0.30, 0.14], // F4
+  [392.0, 5,    0.50, 0.15], // G4
+  [466.2, 6,    0.40, 0.14], // Bb4
+  [440.0, 6.5,  0.30, 0.13], // A4
+  [392.0, 7,    0.80, 0.16], // G4
+]
+const _WORLD2_BASS: PBeat[] = [
+  [98.0,  0, 0.55, 0.18], // G2
+  [130.8, 1, 0.55, 0.17], // C3
+  [98.0,  2, 0.55, 0.18], // G2
+  [87.3,  3, 0.55, 0.17], // F2
+  [98.0,  4, 0.55, 0.18], // G2
+  [130.8, 5, 0.55, 0.17], // C3
+  [87.3,  6, 0.55, 0.18], // F2
+  [98.0,  7, 0.55, 0.17], // G2
+]
+
+// ── World 3 — Lá menor, 80 BPM, loop 16 beats (sombrio, esparso) ────────────
+const _WORLD3_BPM  = 80
+const _WORLD3_LOOP = 16
+const _WORLD3_MEL: PBeat[] = [
+  [440.0, 0,    1.2, 0.13], // A4
+  [392.0, 2,    0.8, 0.12], // G4
+  [349.2, 3,    1.0, 0.12], // F4
+  [329.6, 4,    1.5, 0.14], // E4
+  [293.7, 6,    0.8, 0.12], // D4
+  [261.6, 7,    1.0, 0.11], // C4
+  [220.0, 8,    2.0, 0.14], // A3
+  [261.6, 11,   0.8, 0.11], // C4
+  [293.7, 12,   0.7, 0.12], // D4
+  [329.6, 13,   0.7, 0.12], // E4
+  [349.2, 14,   0.6, 0.11], // F4
+  [440.0, 15,   0.8, 0.13], // A4
+]
+const _WORLD3_BASS: PBeat[] = [
+  [55.0,  0,  5.5, 0.18], // A1
+  [65.4,  6,  4.5, 0.16], // C2
+  [55.0,  12, 3.5, 0.18], // A1
+  [61.7,  15, 0.8, 0.16], // B1
+]
+
+// ── Boss — Mi menor, 140 BPM, loop 8 beats (urgente, ostinato) ───────────────
+const _BOSS_BPM  = 140
+const _BOSS_LOOP = 8
+const _BOSS_MEL: PBeat[] = [
+  [329.6, 0,    0.25, 0.18], // E4
+  [329.6, 0.5,  0.25, 0.17], // E4
+  [392.0, 1,    0.25, 0.18], // G4
+  [440.0, 1.5,  0.35, 0.19], // A4
+  [392.0, 2,    0.25, 0.17], // G4
+  [329.6, 2.5,  0.25, 0.17], // E4
+  [293.7, 3,    0.45, 0.18], // D4
+  [329.6, 3.5,  0.25, 0.17], // E4
+  [349.2, 4,    0.25, 0.18], // F4
+  [329.6, 4.5,  0.25, 0.16], // E4
+  [293.7, 5,    0.35, 0.18], // D4
+  [261.6, 5.5,  0.25, 0.17], // C4
+  [329.6, 6,    0.25, 0.18], // E4
+  [293.7, 6.5,  0.25, 0.16], // D4
+  [261.6, 7,    0.50, 0.19], // C4
+]
+const _BOSS_BASS: PBeat[] = [
+  [82.4, 0, 0.4, 0.20], // E2
+  [82.4, 1, 0.4, 0.20], // E2
+  [98.0, 2, 0.4, 0.19], // G2
+  [82.4, 3, 0.4, 0.20], // E2
+  [82.4, 4, 0.4, 0.20], // E2
+  [82.4, 5, 0.4, 0.19], // E2
+  [73.4, 6, 0.4, 0.20], // D2
+  [82.4, 7, 0.4, 0.20], // E2
+]
+
 let _procActive   = false
 let _procTimeout: ReturnType<typeof setTimeout> | null = null
-let _procType: 'menu' | 'intro' | null = null
+let _procType: 'menu' | 'intro' | 'world0' | 'world1' | 'world2' | 'world3' | 'boss' | null = null
 // Nó de ganho mestre para silenciar notas já agendadas na Web Audio API
 let _procGainNode: GainNode | null = null
 
@@ -316,11 +456,11 @@ export const SoundManager = {
   },
 
   /** BGM gerado proceduralmente via Web Audio — funciona sem arquivos MP3 */
-  playProceduralBgm(type: 'menu' | 'intro' | 'victory' | 'gameover'): void {
+  playProceduralBgm(type: 'menu' | 'intro' | 'victory' | 'gameover' | 'world0' | 'world1' | 'world2' | 'world3' | 'boss'): void {
     if (_currentBgm) { _currentBgm.stop(); _currentBgm.destroy(); _currentBgm = null }
     _lastBgmKey = null
     _stopProcLoop()                    // silencia notas antigas imediatamente
-    _procType   = type as 'menu' | 'intro'
+    _procType   = type as 'menu' | 'intro' | 'world0' | 'world1' | 'world2' | 'world3' | 'boss'
     _procActive = true
     if (gameState.muted) return
     // Cria nó mestre novo para esta sessão (notas antigas vão para o nó antigo que está em 0)
@@ -333,6 +473,11 @@ export const SoundManager = {
       intro:    [_INTRO_MEL,    _INTRO_BASS,    _INTRO_BPM,    _INTRO_LOOP],
       victory:  [_VICTORY_MEL,  _VICTORY_BASS,  _VICTORY_BPM,  _VICTORY_LOOP],
       gameover: [_GAMEOVER_MEL, _GAMEOVER_BASS, _GAMEOVER_BPM, _GAMEOVER_LOOP],
+      world0:   [_WORLD0_MEL,   _WORLD0_BASS,   _WORLD0_BPM,   _WORLD0_LOOP],
+      world1:   [_WORLD1_MEL,   _WORLD1_BASS,   _WORLD1_BPM,   _WORLD1_LOOP],
+      world2:   [_WORLD2_MEL,   _WORLD2_BASS,   _WORLD2_BPM,   _WORLD2_LOOP],
+      world3:   [_WORLD3_MEL,   _WORLD3_BASS,   _WORLD3_BPM,   _WORLD3_LOOP],
+      boss:     [_BOSS_MEL,     _BOSS_BASS,     _BOSS_BPM,     _BOSS_LOOP],
     }
     const [mel, bass, bpm, loop] = map[type]
     _runProc(mel, bass, bpm, loop)
@@ -370,6 +515,11 @@ export const SoundManager = {
         intro:    [_INTRO_MEL,    _INTRO_BASS,    _INTRO_BPM,    _INTRO_LOOP],
         victory:  [_VICTORY_MEL,  _VICTORY_BASS,  _VICTORY_BPM,  _VICTORY_LOOP],
         gameover: [_GAMEOVER_MEL, _GAMEOVER_BASS, _GAMEOVER_BPM, _GAMEOVER_LOOP],
+        world0:   [_WORLD0_MEL,   _WORLD0_BASS,   _WORLD0_BPM,   _WORLD0_LOOP],
+        world1:   [_WORLD1_MEL,   _WORLD1_BASS,   _WORLD1_BPM,   _WORLD1_LOOP],
+        world2:   [_WORLD2_MEL,   _WORLD2_BASS,   _WORLD2_BPM,   _WORLD2_LOOP],
+        world3:   [_WORLD3_MEL,   _WORLD3_BASS,   _WORLD3_BPM,   _WORLD3_LOOP],
+        boss:     [_BOSS_MEL,     _BOSS_BASS,     _BOSS_BPM,     _BOSS_LOOP],
       }
       const [mel, bass, bpm, loop] = map[_procType]
       _runProc(mel, bass, bpm, loop)
