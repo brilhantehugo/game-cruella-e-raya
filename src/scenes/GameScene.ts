@@ -304,12 +304,13 @@ export class GameScene extends Phaser.Scene {
 
     const defs = this.currentLevel.movingPlatforms ?? []
     for (const cfg of defs) {
-      const sprite = this.add.tileSprite(cfg.x, cfg.y, cfg.width, 16, KEYS.TILE_PLATFORM)
+      const sprite = this.physics.add.image(cfg.x, cfg.y, KEYS.TILE_PLATFORM)
         .setOrigin(0.5, 0.5)
         .setDepth(2)
+        .setDisplaySize(cfg.width, 16)
 
-      this.physics.add.existing(sprite)
       const body = sprite.body as Phaser.Physics.Arcade.Body
+      body.setSize(cfg.width, 16)
       body.setImmovable(true)
       body.setAllowGravity(false)
 
@@ -723,8 +724,19 @@ export class GameScene extends Phaser.Scene {
 
     // Plataformas dinâmicas — jogadores (não inimigos, evita ficarem presos)
     if (this._movingPlatformGroup.getLength() > 0) {
-      this.physics.add.collider(this.player.raya,    this._movingPlatformGroup)
-      this.physics.add.collider(this.player.cruella, this._movingPlatformGroup)
+      const carryCallback = (
+        playerSprite: Phaser.GameObjects.GameObject,
+        platform: Phaser.GameObjects.GameObject
+      ): boolean => {
+        const pb    = (playerSprite as Phaser.Physics.Arcade.Image).body as Phaser.Physics.Arcade.Body
+        const platB = (platform    as Phaser.Physics.Arcade.Image).body as Phaser.Physics.Arcade.Body
+        if (pb.blocked.down && platB.velocity.x !== 0) {
+          (playerSprite as Phaser.Physics.Arcade.Image).x += platB.velocity.x / 60
+        }
+        return true
+      }
+      this.physics.add.collider(this.player.raya,   this._movingPlatformGroup, undefined, carryCallback as any, this)
+      this.physics.add.collider(this.player.cruella, this._movingPlatformGroup, undefined, carryCallback as any, this)
     }
 
     // Decorações sólidas (móveis, grades) bloqueiam personagens e inimigos
