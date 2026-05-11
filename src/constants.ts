@@ -216,3 +216,17 @@ export const SWAP_COLORS = {
   raya:    { hex: 0x44aaff, r: 68,  g: 170, b: 255, flash: 180 },
   cruella: { hex: 0xff4444, r: 255, g: 68,  b: 68,  flash: 180 },
 } as const
+
+export interface WorldDifficulty {
+  speedMult:      number   // multiplica this.speed de cada inimigo no spawn
+  aggressionMult: number   // fator inverso do cooldownDuration de HumanEnemy (< 1 = mais agressivo)
+  packChase:      boolean  // inimigos próximos entram em chase juntos
+  longChase:      boolean  // HumanEnemy persiste em chase (cooldown × 0.5)
+}
+
+export const WORLD_DIFFICULTY: Record<string, WorldDifficulty> = {
+  '0': { speedMult: 1.00, aggressionMult: 1.00, packChase: false, longChase: false },
+  '1': { speedMult: 1.15, aggressionMult: 0.90, packChase: false, longChase: false },
+  '2': { speedMult: 1.30, aggressionMult: 0.75, packChase: true,  longChase: false },
+  '3': { speedMult: 1.45, aggressionMult: 0.60, packChase: true,  longChase: true  },
+}
