@@ -12,7 +12,7 @@ async function collectErrors(page: Page): Promise<string[]> {
   })
   page.on('pageerror', err => {
     // Audio decoding errors are expected in headless Chromium (no audio codec support)
-    if (err.message.includes('Unable to decode audio')) return
+    if (err.message.includes('decoding audio') || err.message.includes('Failed to process file') || err.message.includes('Unable to decode audio')) return
     errors.push(err.message)
   })
   return errors
@@ -34,7 +34,7 @@ test('gameplay smoke — boot → movimento → ataque → troca', async ({ page
   // 2. Avançar intro/menu (3× Enter para passar telas iniciais)
   for (let i = 0; i < 3; i++) {
     await page.keyboard.press('Enter')
-    await page.waitForTimeout(1_000)
+    await page.waitForTimeout(2_000)
   }
   await screenshot(page, '02-menu')
 

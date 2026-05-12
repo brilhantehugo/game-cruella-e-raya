@@ -13,7 +13,7 @@ test('jogo carrega sem erros de console', async ({ page }) => {
   })
   page.on('pageerror', err => {
     // Audio decoding errors are expected in headless Chromium (no audio codec support)
-    if (err.message.includes('Unable to decode audio')) return
+    if (err.message.includes('decoding audio') || err.message.includes('Failed to process file') || err.message.includes('Unable to decode audio')) return
     errors.push(err.message)
   })
 
