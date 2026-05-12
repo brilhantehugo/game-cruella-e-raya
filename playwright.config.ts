@@ -7,11 +7,24 @@ export default defineConfig({
     baseURL: 'http://localhost:4173/game-cruella-e-raya/',
     screenshot: 'only-on-failure',
   },
-  projects: [{ name: 'chromium', use: { browserName: 'chromium' } }],
+  projects: [
+    {
+      name: 'chromium',
+      use: {
+        browserName: 'chromium',
+        launchOptions: {
+          args: [
+            '--use-gl=swiftshader',
+            '--enable-unsafe-swiftshader',
+          ],
+        },
+      },
+    },
+  ],
   webServer: {
     command: 'npm run build && npm run preview',
     url: 'http://localhost:4173/game-cruella-e-raya/',
     reuseExistingServer: !process.env.CI,
-    timeout: 60_000,
+    timeout: 120_000,
   },
 })
