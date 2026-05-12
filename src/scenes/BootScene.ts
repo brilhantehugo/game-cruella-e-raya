@@ -30,6 +30,11 @@ export class BootScene extends Phaser.Scene {
     this.load.image(KEYS.SEGURANCA, 'sprites/seguranca.png')
     this.load.image(KEYS.PORTEIRO,    'sprites/porteiro.png')
     this.load.image(KEYS.ZELADOR_BOSS, 'sprites/zelador-boss.png')
+    // Sprites gerados com GPT Image 2.0 — fallback procedural em create() se PNG não existir
+    this.load.image(KEYS.ASPIRADOR,      'sprites/aspirador.png')
+    this.load.image(KEYS.DRONE,          'sprites/drone.png')
+    this.load.image(KEYS.SEGURANCA_MOTO, 'sprites/seguranca-moto.png')
+    this.load.image(KEYS.ZELADOR,        'sprites/zelador.png')
   }
 
   create(): void {
@@ -1147,6 +1152,7 @@ export class BootScene extends Phaser.Scene {
     })
     gen(KEYS.BG_RUA_NOITE_3, 480, 450)
 
+    if (!this.textures.exists(KEYS.ASPIRADOR)) {
     // ── ASPIRADOR: robô aspirador (disco branco, vista lateral) ──────────────
     // Inspirado em robô Xiaomi: corpo oval achatado, sensor LiDAR laranja,
     // câmera ciano, ventilação lateral, rodas embaixo
@@ -1197,16 +1203,19 @@ export class BootScene extends Phaser.Scene {
     g.lineStyle(1, 0xaaaaaa, 0.6)
     g.strokeEllipse(AW / 2, AH / 2 - 1, AW - 2, AH - 6)
     gen(KEYS.ASPIRADOR, AW, AH)
+    }
 
-    // DRONE: robô voador — corpo cinza escuro com câmera ciana 32×18
-    clr()
-    g.fillStyle(0x333344); g.fillRect(2, 6, 28, 10)
-    g.fillStyle(0x444455); g.fillRect(4, 7, 24, 8)
-    g.fillStyle(0x22ccff); g.fillRect(13, 8, 6, 6)
-    g.fillStyle(0x222233); g.fillRect(0, 4, 6, 4)
-    g.fillStyle(0x222233); g.fillRect(26, 4, 6, 4)
-    g.lineStyle(1, 0x5555aa); g.strokeRect(2, 6, 28, 10)
-    gen(KEYS.DRONE, 32, 18)
+    if (!this.textures.exists(KEYS.DRONE)) {
+      // DRONE: robô voador — corpo cinza escuro com câmera ciana 32×18
+      clr()
+      g.fillStyle(0x333344); g.fillRect(2, 6, 28, 10)
+      g.fillStyle(0x444455); g.fillRect(4, 7, 24, 8)
+      g.fillStyle(0x22ccff); g.fillRect(13, 8, 6, 6)
+      g.fillStyle(0x222233); g.fillRect(0, 4, 6, 4)
+      g.fillStyle(0x222233); g.fillRect(26, 4, 6, 4)
+      g.lineStyle(1, 0x5555aa); g.strokeRect(2, 6, 28, 10)
+      gen(KEYS.DRONE, 32, 18)
+    }
 
     // ZELADOR_BOSS → carregado via preload() como imagem Pixel Lab
 
@@ -1220,24 +1229,26 @@ export class BootScene extends Phaser.Scene {
 
     // HUGO, SEGURANCA, PORTEIRO → carregados via preload() como imagens Pixel Lab
 
-    // ── VEÍCULO — SEGURANÇA EM MOTO (moto escura + rider + farol) ────────────
-    clr()
-    // Moto — corpo
-    g.fillStyle(0x1a1a2a); g.fillRect(10, 22, 40, 16)     // chassis
-    g.fillStyle(0x2a2a3a); g.fillRect(8, 18, 44, 8)       // carenagem
-    // Rodas
-    g.fillStyle(0x111111); g.fillCircle(18, 38, 10)        // roda traseira
-    g.fillStyle(0x111111); g.fillCircle(46, 38, 10)        // roda dianteira
-    g.fillStyle(0x333333); g.fillCircle(18, 38, 6)         // jante traseira
-    g.fillStyle(0x333333); g.fillCircle(46, 38, 6)         // jante dianteira
-    // Farol (frente → esquerda, moto vai para a esquerda)
-    g.fillStyle(0xffee44); g.fillEllipse(8, 22, 12, 8)     // farol amarelo
-    g.fillStyle(0xffffff, 0.6); g.fillEllipse(7, 21, 6, 4) // brilho
-    // Piloto
-    g.fillStyle(0x223344); g.fillRect(24, 8, 14, 14)       // torso uniforme
-    g.fillStyle(0x111111); g.fillRect(25, 4, 10, 7)        // capacete
-    g.fillStyle(0xffcc00); g.fillRect(26, 5, 8, 3)         // visor dourado
-    gen(KEYS.SEGURANCA_MOTO, 60, 50)
+    if (!this.textures.exists(KEYS.SEGURANCA_MOTO)) {
+      // ── VEÍCULO — SEGURANÇA EM MOTO (moto escura + rider + farol) ────────────
+      clr()
+      // Moto — corpo
+      g.fillStyle(0x1a1a2a); g.fillRect(10, 22, 40, 16)     // chassis
+      g.fillStyle(0x2a2a3a); g.fillRect(8, 18, 44, 8)       // carenagem
+      // Rodas
+      g.fillStyle(0x111111); g.fillCircle(18, 38, 10)        // roda traseira
+      g.fillStyle(0x111111); g.fillCircle(46, 38, 10)        // roda dianteira
+      g.fillStyle(0x333333); g.fillCircle(18, 38, 6)         // jante traseira
+      g.fillStyle(0x333333); g.fillCircle(46, 38, 6)         // jante dianteira
+      // Farol (frente → esquerda, moto vai para a esquerda)
+      g.fillStyle(0xffee44); g.fillEllipse(8, 22, 12, 8)     // farol amarelo
+      g.fillStyle(0xffffff, 0.6); g.fillEllipse(7, 21, 6, 4) // brilho
+      // Piloto
+      g.fillStyle(0x223344); g.fillRect(24, 8, 14, 14)       // torso uniforme
+      g.fillStyle(0x111111); g.fillRect(25, 4, 10, 7)        // capacete
+      g.fillStyle(0xffcc00); g.fillRect(26, 5, 8, 3)         // visor dourado
+      gen(KEYS.SEGURANCA_MOTO, 60, 50)
+    }
 
     // ── DECORAÇÕES NOVAS — APARTAMENTO INTERIOR ──────────────────────────────
     // QUADRO: quadro/pintura pendurado na parede (48×36)
