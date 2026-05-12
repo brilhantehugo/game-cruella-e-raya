@@ -3,7 +3,8 @@ import { KEYS } from '../../constants';
 
 /**
  * Zelador — guarda rápido com campo de visão amplo.
- * Usa sprite do Hugo com tint cinzento.
+ * Sprite: public/sprites/zelador.png (48×48, gerado com GPT Image 2.0 + Nano Banana 2).
+ * Fallback: BootScene carrega KEYS.ZELADOR via preload(); se PNG não existir, exibe missing texture.
  */
 export class Zelador extends HumanEnemy {
   constructor(scene: Phaser.Scene, x: number, y: number) {
@@ -18,7 +19,6 @@ export class Zelador extends HumanEnemy {
       patrolRange: 220,
     };
 
-    super(scene, x, y, KEYS.HUGO, config);
-    this.setTint(0xdddddd);
+    super(scene, x, y, KEYS.ZELADOR, config);
   }
 }
