@@ -162,6 +162,10 @@ export abstract class HumanEnemy extends Enemy {
     const dx = this._sm.lastKnownX - this.x
     if (Math.abs(dx) > 8) {
       this.direction = dx > 0 ? 1 : -1
+      if (!this._hasGroundAhead(this.direction)) {
+        body.setVelocityX(0)   // não cair da plataforma durante busca
+        return
+      }
       this.setVelocityX(this.direction * this._config.patrolSpeed)
     } else {
       body.setVelocityX(0)
@@ -192,6 +196,10 @@ export abstract class HumanEnemy extends Enemy {
   private _doCooldown(body: Phaser.Physics.Arcade.Body): void {
     // Briefly back away before returning to patrol
     const retreatDir = this.direction * -1
+    if (!this._hasGroundAhead(retreatDir)) {
+      body.setVelocityX(0)   // não cair da plataforma ao recuar
+      return
+    }
     body.setVelocityX(retreatDir * this._config.patrolSpeed * 0.5)
   }
 

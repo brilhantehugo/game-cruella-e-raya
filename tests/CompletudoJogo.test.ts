@@ -30,6 +30,7 @@ describe('Bloco B2 — Heart items no level data', () => {
 describe('Bloco C1 — Golden bones estratégicos e inimigos agrupados', () => {
   it('LEVEL_1_2 bone #2 (índice 1) está em y <= 48 — requer dash de Raya', () => {
     const bones = LEVEL_1_2.goldenBones ?? []
+    expect(bones.length).toBeGreaterThan(1)
     expect(bones[1].y).toBeLessThanOrEqual(48)
   })
 
@@ -43,6 +44,7 @@ describe('Bloco C1 — Golden bones estratégicos e inimigos agrupados', () => {
 
   it('LEVEL_3_1 bone #3 (índice 2) está em x:2350 — além do raio de visão padrão', () => {
     const bones = LEVEL_3_1.goldenBones ?? []
+    expect(bones.length).toBeGreaterThan(2)
     expect(bones[2].x).toBe(2350)
   })
 })

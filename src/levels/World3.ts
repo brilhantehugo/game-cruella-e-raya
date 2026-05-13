@@ -282,11 +282,11 @@ export const LEVEL_3_4: LevelData = {
   decorations: [
     { type: 'poste',   x: 180,  y: 388 },
     { type: 'lixeira', x: 380,  y: 388 },
-    { type: 'arvore',  x: 580,  y: 388 },
+    { type: 'vaso',    x: 580,  y: 388 },
     { type: 'grade',   x: 780,  y: 388 },
     { type: 'poste',   x: 980,  y: 388 },
     { type: 'lixeira', x: 1180, y: 388 },
-    { type: 'arvore',  x: 1380, y: 388 },
+    { type: 'vaso',    x: 1380, y: 388 },
     { type: 'grade',   x: 1580, y: 388 },
     { type: 'poste',   x: 1780, y: 388 },
     { type: 'lixeira', x: 1980, y: 388 },
