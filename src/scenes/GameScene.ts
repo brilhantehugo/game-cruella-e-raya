@@ -30,6 +30,7 @@ import { ParallaxBackground } from '../background/ParallaxBackground'
 import { SoundManager } from '../audio/SoundManager'
 import { EffectsManager } from '../fx/EffectsManager'
 import { EnemyHPBar } from '../fx/EnemyHPBar'
+import { AmbientFX } from '../fx/AmbientFX'
 import { AchievementManager } from '../achievements/AchievementManager'
 import { profileManager } from '../storage/ProfileManager'
 
@@ -62,6 +63,7 @@ export class GameScene extends Phaser.Scene {
   private _radarArrow: Phaser.GameObjects.Text | null = null
   private _radarTimer: Phaser.Time.TimerEvent | null = null
   private _bossStartTime = 0
+  private _ambientFX: AmbientFX | null = null
   private _livesAtBossStart = 0
   private _killCountInLevel = 0
   private _mainBoss: Enemy | null = null
@@ -103,6 +105,7 @@ export class GameScene extends Phaser.Scene {
 
     // Parallax (antes das decorações para ordem de profundidade correta)
     this._parallax = new ParallaxBackground(this, this.currentLevel.backgroundTheme)
+    this._ambientFX = new AmbientFX(this, this.currentLevel.backgroundTheme)
 
     // BGM procedural por mundo
     const worldId = gameState.currentLevel.split('-')[0]  // '0', '1', '2', '3'
@@ -126,6 +129,8 @@ export class GameScene extends Phaser.Scene {
       this._radarArrow = null
       this._radarTimer?.remove()
       this._radarTimer = null
+      this._ambientFX?.destroy()
+      this._ambientFX = null
     })
 
     this._buildDecorations()
