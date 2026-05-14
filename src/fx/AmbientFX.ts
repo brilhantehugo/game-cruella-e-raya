@@ -41,7 +41,6 @@ export function getAmbientConfig(theme: BackgroundTheme): AmbientConfig | null {
 export class AmbientFX {
   private _timer: Phaser.Time.TimerEvent | null = null
   private _particles: Phaser.GameObjects.Graphics[] = []
-  private _count = 0
 
   constructor(private scene: Phaser.Scene, theme: BackgroundTheme) {
     const cfg = getAmbientConfig(theme)
@@ -55,7 +54,7 @@ export class AmbientFX {
   }
 
   private _spawn(cfg: AmbientConfig): void {
-    if (this._count >= cfg.maxCount) return
+    if (this._particles.length >= cfg.maxCount) return
     switch (cfg.type) {
       case 'rain':   this._spawnRain(cfg);   break
       case 'dust':   this._spawnDust(cfg);   break
@@ -81,13 +80,11 @@ export class AmbientFX {
 
   private _register(g: Phaser.GameObjects.Graphics): void {
     this._particles.push(g)
-    this._count++
   }
 
   private _release(g: Phaser.GameObjects.Graphics): void {
     const idx = this._particles.indexOf(g)
     if (idx !== -1) this._particles.splice(idx, 1)
-    this._count = Math.max(0, this._count - 1)
     if (g.active) g.destroy()
   }
 
@@ -233,9 +230,9 @@ export class AmbientFX {
 
   destroy(): void {
     if (this._timer) { this._timer.destroy(); this._timer = null }
+    this.scene.tweens.killTweensOf(this._particles)
     const toDestroy = [...this._particles]
     toDestroy.forEach(p => { if (p.active) p.destroy() })
     this._particles = []
-    this._count = 0
   }
 }

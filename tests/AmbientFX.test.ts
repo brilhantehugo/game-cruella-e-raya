@@ -86,15 +86,26 @@ describe('AmbientFX', () => {
     expect(config?.speedBase).toBe(15)
   })
 
-  it('validates alphaMax constraint', () => {
-    const config = getAmbientConfig('rua_noite')
-    expect(config?.alphaMax).toBeLessThanOrEqual(1)
-    expect(config?.alphaMax).toBeGreaterThanOrEqual(0)
+  it('alphaMin < alphaMax e alphaMax <= 0.6 em todos os temas', () => {
+    const themes = [
+      'rua_noite', 'apartamento', 'apto_boss', 'rua',
+      'praca', 'patio', 'telhado', 'exterior', 'mercado',
+    ] as const
+    for (const theme of themes) {
+      const cfg = getAmbientConfig(theme)!
+      expect(cfg.alphaMax).toBeLessThanOrEqual(0.6)
+      expect(cfg.alphaMin).toBeLessThan(cfg.alphaMax)
+    }
   })
 
-  it('validates color array is present', () => {
-    const config = getAmbientConfig('rua_noite')
-    expect(config?.colors).toBeDefined()
-    expect(Array.isArray(config?.colors)).toBe(true)
+  it('todos os temas não-boss têm colors.length >= 1', () => {
+    const themes = [
+      'rua_noite', 'apartamento', 'apto_boss', 'rua',
+      'praca', 'patio', 'telhado', 'exterior', 'mercado',
+    ] as const
+    for (const theme of themes) {
+      const cfg = getAmbientConfig(theme)!
+      expect(cfg.colors.length).toBeGreaterThanOrEqual(1)
+    }
   })
 })
