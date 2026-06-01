@@ -41,11 +41,7 @@ export abstract class Enemy extends Phaser.Physics.Arcade.Sprite {
   stun(duration: number): void {
     this.stunUntil = this.scene.time.now + duration
     this.setVelocityX(0)
-
-    // Gold tint while stunned
     this.setTint(0xffdd00)
-
-    // Floating daze icon that bobs above the enemy
     const stunIcon = this.scene.add.text(this.x, this.y - 30, '😵', { fontSize: '16px' })
     stunIcon.setDepth(10)
     this.scene.tweens.add({
@@ -55,9 +51,12 @@ export abstract class Enemy extends Phaser.Physics.Arcade.Sprite {
       yoyo: true,
       repeat: -1,
     })
-
-    // On wake-up: clear tint, reverse direction, destroy icon
+    const tracker = () => {
+      if (stunIcon.active) stunIcon.setPosition(this.x, this.y - 30)
+    }
+    this.scene.events.on('preupdate', tracker)
     this.scene.time.delayedCall(duration, () => {
+      this.scene.events.off('preupdate', tracker)
       if (!this.active) {
         if (stunIcon.active) stunIcon.destroy()
         return
