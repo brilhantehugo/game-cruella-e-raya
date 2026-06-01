@@ -131,6 +131,11 @@ export class GameScene extends Phaser.Scene {
       this._radarTimer = null
       this._ambientFX?.destroy()
       this._ambientFX = null
+      if (this._bossProjectileGroup) {
+        this.time.removeAllEvents()
+        this._bossProjectileGroup.clear(true, true)
+        this._bossProjectileGroup = null
+      }
     })
 
     this._buildDecorations()
