@@ -85,9 +85,6 @@ export abstract class Enemy extends Phaser.Physics.Arcade.Sprite {
     this._longChase  = diff.longChase
   }
 
-  /** @deprecated Use `.hp` directly — field is now public. */
-  getHp(): number { return this.hp }
-
   isStunned(): boolean {
     return this.scene.time.now < this.stunUntil
   }

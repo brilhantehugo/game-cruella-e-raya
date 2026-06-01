@@ -49,3 +49,11 @@ describe('stun tracker — ícone segue a posição do inimigo', () => {
     expect(called).toBe(false)
   })
 })
+
+describe('Enemy.hp — acesso direto (sem getHp deprecated)', () => {
+  it('hp é acessível como campo público', () => {
+    const e = new TestEnemy(4)
+    expect(e.hp).toBe(4)
+    expect('getHp' in e).toBe(false)
+  })
+})
