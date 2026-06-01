@@ -39,24 +39,37 @@ export abstract class Enemy extends Phaser.Physics.Arcade.Sprite {
   }
 
   stun(duration: number): void {
+    // Refresh duration if already stunned — avoid stacking icons/listeners
+    if (this.isStunned()) {
+      this.stunUntil = this.scene.time.now + duration
+      return
+    }
+
     this.stunUntil = this.scene.time.now + duration
     this.setVelocityX(0)
     this.setTint(0xffdd00)
+
+    // Floating daze icon that bobs above the enemy
     const stunIcon = this.scene.add.text(this.x, this.y - 30, '😵', { fontSize: '16px' })
     stunIcon.setDepth(10)
-    this.scene.tweens.add({
+    const bobTween = this.scene.tweens.add({
       targets: stunIcon,
       y: stunIcon.y - 12,
       duration: 400,
       yoyo: true,
       repeat: -1,
     })
+
+    // Tracker: follows enemy X each frame; tween owns Y (preserves bob animation)
     const tracker = () => {
-      if (stunIcon.active) stunIcon.setPosition(this.x, this.y - 30)
+      if (stunIcon.active) stunIcon.x = this.x
     }
     this.scene.events.on('preupdate', tracker)
+
+    // On wake-up: remove tracker, stop tween, clear tint, reverse direction, destroy icon
     this.scene.time.delayedCall(duration, () => {
       this.scene.events.off('preupdate', tracker)
+      bobTween.stop()
       if (!this.active) {
         if (stunIcon.active) stunIcon.destroy()
         return
