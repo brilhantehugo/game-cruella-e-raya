@@ -33,11 +33,11 @@ import { BossSetup } from './BossSetup'
 
 export class GameScene extends Phaser.Scene {
   /*internal*/ player!: Player
-  private groundLayer!: Phaser.Physics.Arcade.StaticGroup
-  private platformLayer!: Phaser.Physics.Arcade.StaticGroup
-  private decorationLayer!: Phaser.Physics.Arcade.StaticGroup
+  /*internal*/ groundLayer!: Phaser.Physics.Arcade.StaticGroup
+  /*internal*/ platformLayer!: Phaser.Physics.Arcade.StaticGroup
+  /*internal*/ decorationLayer!: Phaser.Physics.Arcade.StaticGroup
   /*internal*/ enemyGroup!: Phaser.Physics.Arcade.Group
-  private itemGroup!: Phaser.Physics.Arcade.StaticGroup
+  /*internal*/ itemGroup!: Phaser.Physics.Arcade.StaticGroup
   private escKey!: Phaser.Input.Keyboard.Key
   /*internal*/ currentLevel!: LevelData
   private _gameOverPending = false
@@ -45,8 +45,8 @@ export class GameScene extends Phaser.Scene {
   private _mKey!: Phaser.Input.Keyboard.Key
   private _iKey!: Phaser.Input.Keyboard.Key
   private _camOffsetX: number = 0
-  private _followingSprite: Phaser.Physics.Arcade.Sprite | null = null
-  private _cinematicActive: boolean = false
+  /*internal*/ _followingSprite: Phaser.Physics.Arcade.Sprite | null = null
+  /*internal*/ _cinematicActive: boolean = false
   /*internal*/ _bossExit: Phaser.Physics.Arcade.Image | null = null
   /*internal*/ _bossProjectileGroup: Phaser.Physics.Arcade.Group | null = null
   private _miniBossBarriers: Phaser.Physics.Arcade.StaticGroup | null = null
@@ -56,7 +56,7 @@ export class GameScene extends Phaser.Scene {
   private _puAuraGfx!: Phaser.GameObjects.Graphics
   private _spotlight: SpotlightOverlay | null = null
   /*internal*/ _am?: AchievementManager      // persists across levels
-  private _enemyHPBar!: EnemyHPBar
+  /*internal*/ _enemyHPBar!: EnemyHPBar
   private _radarArrow: Phaser.GameObjects.Text | null = null
   private _radarTimer: Phaser.Time.TimerEvent | null = null
   /*internal*/ _bossStartTime = 0
@@ -64,10 +64,10 @@ export class GameScene extends Phaser.Scene {
   /*internal*/ _livesAtBossStart = 0
   /*internal*/ _killCountInLevel = 0
   /*internal*/ _mainBoss: Enemy | null = null
-  private _hazardGroup!: Phaser.Physics.Arcade.StaticGroup
+  /*internal*/ _hazardGroup!: Phaser.Physics.Arcade.StaticGroup
   private _hasFallZone: boolean = false
   private _currentDiff!: WorldDifficulty
-  private _movingPlatformGroup!: Phaser.Physics.Arcade.Group
+  /*internal*/ _movingPlatformGroup!: Phaser.Physics.Arcade.Group
   private _movingPlatformData: Array<{
     sprite: Phaser.Physics.Arcade.Image
     axis: 'x' | 'y'
@@ -881,7 +881,7 @@ export class GameScene extends Phaser.Scene {
     })
   }
 
-  private _gameOver(): void {
+  /*internal*/ _gameOver(): void {
     if (this._gameOverPending) return
     this._gameOverPending = true
     gameState.sessionDeaths++
