@@ -17,6 +17,7 @@ export class BossSetup {
       case '1-boss': BossSetup._setup1Boss(scene); break
       case '2-boss': BossSetup._setup2Boss(scene); break
       case '3-boss': BossSetup._setup3Boss(scene); break
+      default: console.warn(`[BossSetup] Unknown boss levelId: "${levelId}" — no boss spawned`)
     }
   }
 
