@@ -4,7 +4,6 @@ import { gameState } from '../GameState'
 import { Player } from '../entities/Player'
 import { Enemy } from '../entities/Enemy'
 import { DonoNervoso } from '../entities/enemies/DonoNervoso'
-import { SeuBigodes } from '../entities/enemies/SeuBigodes'
 import { Bone } from '../items/Bone'
 import { GoldenBone } from '../items/GoldenBone'
 import { PowerUp } from '../items/PowerUp'
@@ -20,10 +19,7 @@ import { Porteiro }      from '../entities/enemies/Porteiro'
 import { SegurancaMoto } from '../entities/enemies/SegurancaMoto'
 import { SpotlightOverlay, type LightSource } from '../fx/SpotlightOverlay'
 import { Aspirador } from '../entities/enemies/Aspirador'
-import { Drone } from '../entities/enemies/Drone'
-import { ZeladorBoss } from '../entities/enemies/ZeladorBoss'
 import { HumanEnemy } from '../entities/enemies/HumanEnemy'
-import { Zelador } from '../entities/enemies/Zelador'
 import { LevelBuilder } from '../systems/LevelBuilder'
 import { resolveBarkHit, resolveDashHit, resolveStompHit } from '../systems/CombatResolver'
 import { ParallaxBackground } from '../background/ParallaxBackground'
@@ -33,6 +29,7 @@ import { EnemyHPBar } from '../fx/EnemyHPBar'
 import { AmbientFX } from '../fx/AmbientFX'
 import { AchievementManager } from '../achievements/AchievementManager'
 import { profileManager } from '../storage/ProfileManager'
+import { BossSetup } from './BossSetup'
 
 export class GameScene extends Phaser.Scene {
   /*internal*/ player!: Player
@@ -469,202 +466,7 @@ export class GameScene extends Phaser.Scene {
     })
 
     if (this.currentLevel.isBossLevel) {
-      if (this.currentLevel.id === '0-boss') {
-        // ZeladorBoss — Zelador do Prédio
-        const mapWidth = this.currentLevel.tileWidthCols * 32
-        this._bossStartTime = this.time.now
-        this._livesAtBossStart = gameState.hearts
-        const boss = new ZeladorBoss(this, mapWidth / 2, 376)
-        this.enemyGroup.add(boss)
-        boss.setVisible(false)
-        ;(boss.body as Phaser.Physics.Arcade.Body).enable = false
-        this._mainBoss = boss
-
-        this._bossProjectileGroup = this.physics.add.group()
-
-        boss.on('spawnChave', (data: { x: number; y: number; vx: number; vy: number }) => {
-          if (!this._bossProjectileGroup || !this.scene.isActive(KEYS.GAME)) return
-          const chave = this.physics.add.image(data.x, data.y, KEYS.CHAVE)
-          chave.setDepth(5)
-          const body = chave.body as Phaser.Physics.Arcade.Body
-          body.setVelocity(data.vx, data.vy)
-          this._bossProjectileGroup.add(chave)
-          this.time.delayedCall(4000, () => { if (chave.active) chave.destroy() })
-        })
-
-        boss.on('spawnMinion', (data: { x: number; y: number }) => {
-          const minion = new Zelador(this, data.x, data.y)
-          this.enemyGroup.add(minion)
-          minion.on('died', (e: Enemy) => {
-            gameState.addScore(SCORING.ENEMY_KILL)
-            gameState.sessionEnemiesKilled++
-            this._am?.notify('enemy_killed')
-            this._killCountInLevel++
-            this._fx.enemyDeathBurst(e.x, e.y)
-            this._spawnScorePopup(e.x, e.y - 20, '+50', '#f97316')
-          })
-        })
-
-        boss.on('died', (b: Enemy) => {
-          gameState.addScore(1000)
-          gameState.sessionEnemiesKilled++
-          this._am?.notify('boss_defeated', {
-            levelId: this.currentLevel.id,
-            fightDurationMs: this.time.now - this._bossStartTime,
-            damageTaken: this._livesAtBossStart - gameState.hearts,
-            playerHpFull: gameState.hearts >= 3,
-          })
-          this._fx.enemyDeathBurst(b.x, b.y)
-          this._spawnScorePopup(b.x, b.y - 30, '+1000', '#22ccff')
-          if (this._bossExit) {
-            this._bossExit.setVisible(true)
-            ;(this._bossExit.body as Phaser.Physics.Arcade.StaticBody).enable = true
-            this._bossExit.refreshBody()
-            this.cameras.main.shake(200, 0.006)
-          }
-          const msg = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2,
-            '✓ Caminho livre! Vá para a saída!', {
-            fontSize: '18px', color: '#22ffcc', fontStyle: 'bold',
-            stroke: '#000000', strokeThickness: 3,
-            backgroundColor: '#000000aa', padding: { x: 14, y: 8 },
-          }).setOrigin(0.5).setScrollFactor(0).setDepth(20).setAlpha(0)
-          this.tweens.add({ targets: msg, alpha: 1, duration: 300 })
-          this.time.delayedCall(3000, () => {
-            if (msg.active) this.tweens.add({ targets: msg, alpha: 0, duration: 500,
-              onComplete: () => { if (msg.active) msg.destroy() } })
-          })
-        })
-
-        this.time.addEvent({
-          delay: 100, loop: true, callback: () => {
-            if (boss.active && this.player) boss.setPlayerPos(this.player.x, this.player.y)
-          },
-        })
-      } else if (this.currentLevel.id === '2-boss') {
-        // Drone boss
-        const mapWidth = this.currentLevel.tileWidthCols * 32
-        this._bossStartTime = this.time.now
-        this._livesAtBossStart = gameState.hearts
-        const boss = new Drone(this, mapWidth / 2, 180)
-        this.enemyGroup.add(boss)
-        boss.setVisible(false)
-        ;(boss.body as Phaser.Physics.Arcade.Body).enable = false
-        this._mainBoss = boss
-
-        this._bossProjectileGroup = this.physics.add.group()
-
-        boss.on('spawnBomb', (data: { x: number; y: number; vx: number; vy: number }) => {
-          if (!this._bossProjectileGroup || !this.scene.isActive(KEYS.GAME)) return
-          const bomb = this.physics.add.image(data.x, data.y, KEYS.BOMB)
-          bomb.setDepth(5)
-          const body = bomb.body as Phaser.Physics.Arcade.Body
-          body.setVelocity(data.vx, data.vy)
-          // gravidade normal → projétil cai em parábola
-          this._bossProjectileGroup.add(bomb)
-          this.time.delayedCall(4000, () => { if (bomb.active) bomb.destroy() })
-        })
-
-        boss.on('spawnLaser', (data: { x: number; y: number; vx: number; vy: number }) => {
-          if (!this._bossProjectileGroup || !this.scene.isActive(KEYS.GAME)) return
-          const laser = this.physics.add.image(data.x, data.y, KEYS.LASER)
-          laser.setDepth(5)
-          const body = laser.body as Phaser.Physics.Arcade.Body
-          body.setVelocity(data.vx, data.vy)
-          body.setGravityY(-800)   // tiro reto horizontal
-          this._bossProjectileGroup.add(laser)
-          this.time.delayedCall(3000, () => { if (laser.active) laser.destroy() })
-        })
-
-        boss.on('died', (b: Enemy) => {
-          gameState.addScore(500)
-          gameState.sessionEnemiesKilled++
-          this._am?.notify('boss_defeated', {
-            levelId: this.currentLevel.id,
-            fightDurationMs: this.time.now - this._bossStartTime,
-            damageTaken: this._livesAtBossStart - gameState.hearts,
-            playerHpFull: gameState.hearts >= 3,
-          })
-          this._fx.enemyDeathBurst(b.x, b.y)
-          this._spawnScorePopup(b.x, b.y - 30, '+500', '#ff4444')
-          this._levelComplete()
-        })
-
-        this.time.addEvent({
-          delay: 100, loop: true, callback: () => {
-            if (boss.active && this.player) boss.setPlayerPos(this.player.x, this.player.y)
-          },
-        })
-      } else if (this.currentLevel.id === '3-boss') {
-        const mapWidth = this.currentLevel.tileWidthCols * 32
-        this._bossStartTime = this.time.now
-        this._livesAtBossStart = gameState.hearts
-        const boss = new SegurancaMoto(this, mapWidth - 100, 352)
-        this.enemyGroup.add(boss)
-        boss.setVisible(false)
-        ;(boss.body as Phaser.Physics.Arcade.Body).enable = false
-        this._mainBoss = boss
-
-        if (!this._bossProjectileGroup) this._bossProjectileGroup = this.physics.add.group()
-
-        boss.on('died', (b: Enemy) => {
-          gameState.addScore(1000)
-          gameState.sessionEnemiesKilled++
-          this._am?.notify('boss_defeated', {
-            levelId: this.currentLevel.id,
-            fightDurationMs: this.time.now - this._bossStartTime,
-            damageTaken: this._livesAtBossStart - gameState.hearts,
-            playerHpFull: gameState.hearts >= 3,
-          })
-          this._fx.enemyDeathBurst(b.x, b.y)
-          this._spawnScorePopup(b.x, b.y - 30, '+1000', '#22ccff')
-          if (this._bossExit) {
-            this._bossExit.setVisible(true)
-            ;(this._bossExit.body as Phaser.Physics.Arcade.StaticBody).enable = true
-            this._bossExit.refreshBody()
-            this.cameras.main.shake(200, 0.006)
-          }
-        })
-
-        this.time.addEvent({
-          delay: 100, loop: true, callback: () => {
-            if (boss.active && this.player) boss.setPlayerPos(this.player.x, this.player.y)
-          },
-        })
-      } else {
-        // Seu Bigodes boss
-        this._bossStartTime = this.time.now
-        this._livesAtBossStart = gameState.hearts
-        const boss = new SeuBigodes(this, 480, 376)
-        this.enemyGroup.add(boss)
-        boss.setVisible(false)
-        ;(boss.body as Phaser.Physics.Arcade.Body).enable = false
-        this._mainBoss = boss
-        boss.on('died', (b: Enemy) => {
-          gameState.addScore(1000)
-          gameState.sessionEnemiesKilled++
-          this._am?.notify('boss_defeated', {
-            levelId: this.currentLevel.id,
-            fightDurationMs: this.time.now - this._bossStartTime,
-            damageTaken: this._livesAtBossStart - gameState.hearts,
-            playerHpFull: gameState.hearts >= 3,
-          })
-          gameState.collarOfGold = true
-          this._fx.enemyDeathBurst(b.x, b.y)
-          this._spawnScorePopup(b.x, b.y - 30, '+1000', '#22c55e')
-          this._levelComplete()
-        })
-        boss.on('spawnMinion', (minion: Enemy) => {
-          this.enemyGroup.add(minion)
-          minion.on('died', (e: Enemy) => {
-            gameState.addScore(SCORING.ENEMY_KILL)
-            gameState.sessionEnemiesKilled++
-            this._am?.notify('enemy_killed')
-            this._killCountInLevel++
-            this._fx.enemyDeathBurst(e.x, e.y)
-            this._spawnScorePopup(e.x, e.y - 20, '+50', '#f97316')
-          })
-        })
-      }
+      BossSetup.setup(this, this.currentLevel.id)
     }
   }
 

@@ -114,6 +114,7 @@ describe('Escala dos bosses', () => {
   const bigodes = readFileSync(join(__dirname, '..', 'src/entities/enemies/SeuBigodes.ts'), 'utf-8')
   const zelBoss = readFileSync(join(__dirname, '..', 'src/entities/enemies/ZeladorBoss.ts'), 'utf-8')
   const gameScene = readFileSync(join(__dirname, '..', 'src/scenes/GameScene.ts'), 'utf-8')
+  const bossSetup = readFileSync(join(__dirname, '..', 'src/scenes/BossSetup.ts'), 'utf-8')
 
   it('SeuBigodes deve usar setScale(2.0)', () => {
     expect(bigodes).toContain('setScale(2.0)')
@@ -131,11 +132,11 @@ describe('Escala dos bosses', () => {
     expect(zelBoss).not.toContain('setScale(1.4)')
   })
 
-  it('ZeladorBoss deve spawnar em y=376 no GameScene', () => {
-    expect(gameScene).toContain('new ZeladorBoss(this, mapWidth / 2, 376)')
+  it('ZeladorBoss deve spawnar em y=376 no BossSetup', () => {
+    expect(bossSetup).toContain('new ZeladorBoss(scene, mapWidth / 2, 376)')
   })
 
-  it('SeuBigodes deve spawnar em y=376 no GameScene', () => {
-    expect(gameScene).toContain('new SeuBigodes(this, 480, 376)')
+  it('SeuBigodes deve spawnar em y=376 no BossSetup', () => {
+    expect(bossSetup).toContain('new SeuBigodes(scene, 480, 376)')
   })
 })
