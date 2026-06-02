@@ -35,14 +35,14 @@ import { AchievementManager } from '../achievements/AchievementManager'
 import { profileManager } from '../storage/ProfileManager'
 
 export class GameScene extends Phaser.Scene {
-  private player!: Player
+  /*internal*/ player!: Player
   private groundLayer!: Phaser.Physics.Arcade.StaticGroup
   private platformLayer!: Phaser.Physics.Arcade.StaticGroup
   private decorationLayer!: Phaser.Physics.Arcade.StaticGroup
-  private enemyGroup!: Phaser.Physics.Arcade.Group
+  /*internal*/ enemyGroup!: Phaser.Physics.Arcade.Group
   private itemGroup!: Phaser.Physics.Arcade.StaticGroup
   private escKey!: Phaser.Input.Keyboard.Key
-  private currentLevel!: LevelData
+  /*internal*/ currentLevel!: LevelData
   private _gameOverPending = false
   private _parallax!: ParallaxBackground
   private _mKey!: Phaser.Input.Keyboard.Key
@@ -50,23 +50,23 @@ export class GameScene extends Phaser.Scene {
   private _camOffsetX: number = 0
   private _followingSprite: Phaser.Physics.Arcade.Sprite | null = null
   private _cinematicActive: boolean = false
-  private _bossExit: Phaser.Physics.Arcade.Image | null = null
-  private _bossProjectileGroup: Phaser.Physics.Arcade.Group | null = null
+  /*internal*/ _bossExit: Phaser.Physics.Arcade.Image | null = null
+  /*internal*/ _bossProjectileGroup: Phaser.Physics.Arcade.Group | null = null
   private _miniBossBarriers: Phaser.Physics.Arcade.StaticGroup | null = null
   private _miniBossTriggerFired = false
-  private _fx!: EffectsManager
+  /*internal*/ _fx!: EffectsManager
   private _lastTrailAt: number = 0
   private _puAuraGfx!: Phaser.GameObjects.Graphics
   private _spotlight: SpotlightOverlay | null = null
-  private _am?: AchievementManager      // persists across levels
+  /*internal*/ _am?: AchievementManager      // persists across levels
   private _enemyHPBar!: EnemyHPBar
   private _radarArrow: Phaser.GameObjects.Text | null = null
   private _radarTimer: Phaser.Time.TimerEvent | null = null
-  private _bossStartTime = 0
+  /*internal*/ _bossStartTime = 0
   private _ambientFX: AmbientFX | null = null
-  private _livesAtBossStart = 0
-  private _killCountInLevel = 0
-  private _mainBoss: Enemy | null = null
+  /*internal*/ _livesAtBossStart = 0
+  /*internal*/ _killCountInLevel = 0
+  /*internal*/ _mainBoss: Enemy | null = null
   private _hazardGroup!: Phaser.Physics.Arcade.StaticGroup
   private _hasFallZone: boolean = false
   private _currentDiff!: WorldDifficulty
@@ -298,7 +298,7 @@ export class GameScene extends Phaser.Scene {
     })
   }
 
-  private _spawnScorePopup(x: number, y: number, text: string, color: string = '#ffffff'): void {
+  /*internal*/ _spawnScorePopup(x: number, y: number, text: string, color: string = '#ffffff'): void {
     this._fx.scorePopupBounce(text, x, y, color)
   }
 
@@ -1048,7 +1048,7 @@ export class GameScene extends Phaser.Scene {
     this.cameras.main.startFollow(this._followingSprite, true, 0.1, 0.1)
   }
 
-  private _levelComplete(): void {
+  /*internal*/ _levelComplete(): void {
     this.scene.stop(KEYS.UI)
     const levelId = this.currentLevel.id
     const nextLevel = this.currentLevel.nextLevel
