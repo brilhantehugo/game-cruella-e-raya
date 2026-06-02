@@ -5,6 +5,7 @@ import { Raya } from './Raya'
 import { Cruella } from './Cruella'
 import { Enemy } from './Enemy'
 import { SoundManager } from '../audio/SoundManager'
+import type { EffectsManager } from '../fx/EffectsManager'
 
 export class Player {
   raya: Raya
@@ -13,6 +14,7 @@ export class Player {
   private scene: Phaser.Scene
   private _dashComboWindowUntil: number = 0
   private _lastDashDir: number = 1
+  private _comboHintGfx: Phaser.GameObjects.Graphics | null = null
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     this.scene = scene
@@ -24,6 +26,7 @@ export class Player {
     this.raya.on('dashed', ({ dir, time }: { dir: number; time: number }) => {
       this._dashComboWindowUntil = time + 600
       this._lastDashDir = dir
+      this._showComboHint()
     })
 
     if (gameState.activeDog === 'cruella') {
@@ -35,6 +38,23 @@ export class Player {
       this.cruella.setAlpha(0.35)
       this.cruella.setActive(false)
       ;(this.cruella.body as Phaser.Physics.Arcade.Body).setEnable(false)
+    }
+  }
+
+  private _showComboHint(): void {
+    this._destroyComboHint()   // guard contra dash duplo
+    const fx = (this.scene as any)._fx as EffectsManager | undefined
+    if (!fx) return
+    this._comboHintGfx = fx.comboWindowHint(this.raya, 600)
+    this.scene.time.delayedCall(600, () => this._destroyComboHint())
+  }
+
+  private _destroyComboHint(): void {
+    if (this._comboHintGfx) {
+      const tracker = this._comboHintGfx.getData('tracker')
+      if (tracker) this.scene.events.off('preupdate', tracker)
+      if (this._comboHintGfx.active) this._comboHintGfx.destroy()
+      this._comboHintGfx = null
     }
   }
 
@@ -125,6 +145,7 @@ export class Player {
 
     // Reseta janela para não acionar combo duplo
     this._dashComboWindowUntil = 0
+    this._destroyComboHint()
   }
 
   takeDamage(): void {
