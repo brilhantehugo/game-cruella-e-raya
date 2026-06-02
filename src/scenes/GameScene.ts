@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { KEYS, TILE_SIZE, GAME_WIDTH, GAME_HEIGHT, PHYSICS, SCORING, POWERUP_LABEL, WORLD_DIFFICULTY, type WorldDifficulty } from '../constants'
+import { KEYS, TILE_SIZE, GAME_WIDTH, GAME_HEIGHT, PHYSICS, SCORING, WORLD_DIFFICULTY, type WorldDifficulty } from '../constants'
 import { gameState } from '../GameState'
 import { Player } from '../entities/Player'
 import { Enemy } from '../entities/Enemy'
@@ -21,7 +21,6 @@ import { SpotlightOverlay, type LightSource } from '../fx/SpotlightOverlay'
 import { Aspirador } from '../entities/enemies/Aspirador'
 import { HumanEnemy } from '../entities/enemies/HumanEnemy'
 import { LevelBuilder } from '../systems/LevelBuilder'
-import { resolveBarkHit, resolveDashHit, resolveStompHit } from '../systems/CombatResolver'
 import { ParallaxBackground } from '../background/ParallaxBackground'
 import { SoundManager } from '../audio/SoundManager'
 import { EffectsManager } from '../fx/EffectsManager'
@@ -453,73 +452,6 @@ export class GameScene extends Phaser.Scene {
   }
 
 
-  private _handleItemCollect(type: string, item: Phaser.Physics.Arcade.Image): void {
-    const now = this.time.now
-    switch (type) {
-      case 'checkpoint':
-        if (!gameState.checkpointReached) {
-          gameState.setCheckpoint(item.x, item.y)
-          SoundManager.play('checkpoint')
-          this._fx.checkpointSparkle(item.x, item.y)
-          this._spawnScorePopup(item.x, item.y - 32, '✅ checkpoint!', '#00ffcc')
-        }
-        return // don't destroy
-      case 'exit':
-        this._levelComplete()
-        return
-      case 'bone':
-        gameState.addScore(10)
-        SoundManager.play('collectBone')
-        this._fx.boneSpark(item.x, item.y)
-        this._spawnScorePopup(item.x, item.y - 16, '+10', '#ffff00')
-        this._am?.notify('item_collected', { type: 'bone' })
-        break
-      case 'golden_bone':
-        gameState.collectGoldenBone(gameState.currentLevel, (item as GoldenBone).boneIndex)
-        gameState.addScore(500)
-        SoundManager.play('collectGolden')
-        this._fx.goldenBoneBurst(item.x, item.y)
-        this._spawnScorePopup(item.x, item.y - 16, '+500', '#ffd700')
-        this._am?.notify('golden_bone')
-        break
-      case 'pizza':
-        gameState.restoreHeart()
-        this._spawnScorePopup(item.x, item.y - 16, '❤️', '#ff6b6b')
-        this._am?.notify('item_collected', { type: 'pizza' })
-        break
-      case 'heart':
-        gameState.restoreHeart()
-        SoundManager.play('powerUp')
-        this._spawnScorePopup(item.x, item.y - 16, '❤️ +vida!', '#ff4466')
-        this._am?.notify('item_collected', { type: 'heart' })
-        break
-      case 'laco':
-        gameState.equipAccessory(type as any)
-        this._spawnScorePopup(item.x, item.y - 16, '🎀 laço!',   '#ff88cc')
-        break
-      case 'coleira':
-        gameState.equipAccessory(type as any)
-        this._spawnScorePopup(item.x, item.y - 16, '📿 coleira!', '#88ccff')
-        break
-      case 'chapeu':
-        gameState.equipAccessory(type as any)
-        this._spawnScorePopup(item.x, item.y - 16, '🎩 chapéu!', '#ccaa44')
-        break
-      case 'bandana':
-        gameState.equipAccessory(type as any)
-        this._spawnScorePopup(item.x, item.y - 16, '🏴 bandana!', '#ff4444')
-        break
-      default: {
-        gameState.applyPowerUp(type, now)
-        SoundManager.play('powerUp')
-        this._fx.powerUpBurst(this.player.x, this.player.y, type)
-        const lbl = POWERUP_LABEL[type] ?? { text: '✨', color: '#00ffff' }
-        this._spawnScorePopup(item.x, item.y - 16, lbl.text, lbl.color)
-        this._am?.notify('item_collected', { type })
-      }
-    }
-    item.destroy()
-  }
 
   private _setupCamera(): void {
     const mapWidth = this.currentLevel.tileWidthCols * TILE_SIZE
