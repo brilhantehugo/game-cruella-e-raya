@@ -30,6 +30,7 @@ import { AmbientFX } from '../fx/AmbientFX'
 import { AchievementManager } from '../achievements/AchievementManager'
 import { profileManager } from '../storage/ProfileManager'
 import { BossSetup } from './BossSetup'
+import { BossIntro } from './BossIntro'
 
 export class GameScene extends Phaser.Scene {
   /*internal*/ player!: Player
@@ -171,7 +172,7 @@ export class GameScene extends Phaser.Scene {
     // Boss intro cinemática — deve rodar depois de _setupCamera() para que
     // cam.stopFollow() e setBounds() operem sobre uma câmera já configurada
     if (this.currentLevel.isBossLevel) {
-      this._runBossIntro()
+      BossIntro.run(this)
     }
 
     this.escKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.ESC)
@@ -186,112 +187,6 @@ export class GameScene extends Phaser.Scene {
     // Listener para game-over por tempo
     this.events.on('timer-game-over', () => {
       if (!this._gameOverPending) this._gameOver()
-    })
-  }
-
-  private _runBossIntro(): void {
-    this._cinematicActive = true
-    const cam = this.cameras.main
-    const mapWidth = this.currentLevel.tileWidthCols * TILE_SIZE
-
-    // Etapa 1 (0–500ms): para de seguir o player, zoom out suave
-    cam.stopFollow()
-    this.tweens.add({
-      targets: cam,
-      zoom: 0.85,
-      duration: 500,
-      ease: 'Sine.easeInOut',
-    })
-
-    // Etapa 2 (500–1500ms): pan até o boss
-    // 3-boss nasce à direita; todos os outros ficam no centro da arena
-    const bossWorldX = this.currentLevel.id === '3-boss'
-      ? mapWidth - 100
-      : mapWidth / 2
-    this.time.delayedCall(500, () => {
-      if (!this.scene.isActive(KEYS.GAME)) return
-      const bossX = bossWorldX
-      const bossY = GAME_HEIGHT / 2
-      // scrollX = worldX - (viewportWidth / zoom / 2) para centrar o boss na tela
-      const scrollX = Phaser.Math.Clamp(bossX - GAME_WIDTH / 2 / 0.85, 0, mapWidth - GAME_WIDTH)
-      const scrollY = bossY - GAME_HEIGHT / 2 / 0.85
-      this.tweens.add({
-        targets: cam,
-        scrollX,
-        scrollY,
-        duration: 800,
-        ease: 'Sine.easeInOut',
-        onComplete: () => {
-          cam.shake(200, 0.003)
-        },
-      })
-    })
-
-    // Etapa 2.5 (1100ms): fala do boss — tabela unificada para todos os bosses
-    const BOSS_SPEECHES: Record<string, { header: string; hColor: string; speech: string; sColor: string }> = {
-      '0-boss': { header: '🧹 ZELADOR DO PRÉDIO 🧹', hColor: '#ffa040',
-                  speech: '"Ninguém passa enquanto eu estiver de guarda!"', sColor: '#ffcc88' },
-      '1-boss': { header: '🐱 SEU BIGODES 🐱',       hColor: '#ff8800',
-                  speech: '"Meu território, minha lixeira! Não vão a lugar algum!"', sColor: '#ffcc88' },
-      '2-boss': { header: '🤖 DRONE DE VIGILÂNCIA 🤖', hColor: '#22ccff',
-                  speech: '"Intruso detectado. A activar protocolo de eliminação."', sColor: '#aaeeff' },
-      '3-boss': { header: '🏍️ SEGURANÇA EM MOTO 🏍️', hColor: '#ff4444',
-                  speech: '"Desta vez não escapam. Acabou!"', sColor: '#ffaaaa' },
-    }
-    const bossData = BOSS_SPEECHES[this.currentLevel.id]
-    if (bossData) {
-      this.time.delayedCall(1100, () => {
-        if (!this.scene.isActive(KEYS.GAME)) return
-        const header = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2 - 10,
-          bossData.header, {
-            fontSize: '20px', color: bossData.hColor, fontStyle: 'bold',
-            stroke: '#000000', strokeThickness: 4,
-            backgroundColor: '#000000ee', padding: { x: 16, y: 8 },
-          }).setOrigin(0.5).setScrollFactor(0).setDepth(20).setAlpha(0)
-        const speech = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2 + 36,
-          bossData.speech, {
-            fontSize: '14px', color: bossData.sColor, fontStyle: 'italic',
-            stroke: '#000000', strokeThickness: 3,
-            backgroundColor: '#000000cc', padding: { x: 12, y: 6 },
-          }).setOrigin(0.5).setScrollFactor(0).setDepth(20).setAlpha(0)
-        this.tweens.add({ targets: [header, speech], alpha: 1, duration: 300 })
-        this.time.delayedCall(3000, () => {
-          if (!this.scene.isActive(KEYS.GAME)) return
-          this.tweens.add({
-            targets: [header, speech], alpha: 0, duration: 400,
-            onComplete: () => {
-              if (header.active) header.destroy()
-              if (speech.active) speech.destroy()
-            },
-          })
-        })
-      })
-    }
-
-    // Etapa 3 (1500–2000ms): volta ao player, restaura zoom, libera controle
-    this.time.delayedCall(1500, () => {
-      if (!this.scene.isActive(KEYS.GAME)) return
-      this.tweens.add({
-        targets: cam,
-        zoom: 1,
-        duration: 500,
-        ease: 'Sine.easeInOut',
-      })
-      this._followingSprite = this.player.active
-      cam.startFollow(this._followingSprite, true, 0.1, 0.1)
-      cam.setDeadzone(160, 80)
-    })
-
-    this.time.delayedCall(2000, () => {
-      if (!this.scene.isActive(KEYS.GAME)) return
-      // Activa o boss agora que a cinemática terminou
-      if (this._mainBoss) {
-        this._mainBoss.setVisible(true)
-        ;(this._mainBoss.body as Phaser.Physics.Arcade.Body).enable = true
-      }
-      this._cinematicActive = false
-      // Trava a câmera dentro dos limites da arena
-      cam.setBounds(0, 0, mapWidth, GAME_HEIGHT)
     })
   }
 
