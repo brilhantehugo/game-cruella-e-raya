@@ -136,6 +136,44 @@ export class EffectsManager {
     this._burst(x, y, 4, 0x00ccff, 10, 20, 2, 4, 200)
   }
 
+  /**
+   * Anel ciano pulsante acima do sprite, sinalizando a janela de combo dash→swap.
+   * Retorna o Graphics; o chamador é responsável pelo cleanup:
+   *   const tracker = gfx.getData('tracker')
+   *   if (tracker) scene.events.off('preupdate', tracker)
+   *   gfx.destroy()
+   */
+  comboWindowHint(target: Phaser.GameObjects.Sprite, _durationMs: number): Phaser.GameObjects.Graphics {
+    const gfx = this.scene.add.graphics()
+    gfx.lineStyle(3, 0x44ddff, 0.9)
+    gfx.strokeCircle(0, 0, 14)
+    gfx.setPosition(target.x, target.y - 36)
+    gfx.setDepth(EffectsManager.PARTICLE_DEPTH)
+
+    // Pulse: escala 0.8 ↔ 1.2 + alpha 0.4 ↔ 0.9
+    gfx.setScale(0.8)
+    gfx.setAlpha(0.4)
+    this.scene.tweens.add({
+      targets: gfx,
+      scaleX: 1.2,
+      scaleY: 1.2,
+      alpha: 0.9,
+      duration: 300,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut',
+    })
+
+    // Tracker: segue o sprite a cada frame; anexado ao Graphics para cleanup
+    const tracker = () => {
+      if (gfx.active) gfx.setPosition(target.x, target.y - 36)
+    }
+    this.scene.events.on('preupdate', tracker)
+    gfx.setData('tracker', tracker)
+
+    return gfx
+  }
+
   private _burst(
     x: number, y: number,
     count: number,
