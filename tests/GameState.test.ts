@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { GameState } from '../src/GameState'
+import { GameState, gameState } from '../src/GameState'
 
 describe('GameState', () => {
   let state: GameState
@@ -236,5 +236,15 @@ describe('GameState', () => {
     state.hearts = 0
     state.resetLevel()
     expect(state.hearts).toBe(4)
+  })
+})
+
+describe('applyPowerUp usa POWER_UP_DURATION', () => {
+  it('define expiresAt = now + POWER_UP_DURATION', async () => {
+    const { POWER_UP_DURATION } = await import('../src/constants')
+    const gs = new GameState()
+    gs.applyPowerUp('petisco', 5000)
+    expect(gs.activePowerUp).not.toBeNull()
+    expect(gs.activePowerUp!.expiresAt).toBe(5000 + POWER_UP_DURATION)
   })
 })

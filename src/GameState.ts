@@ -1,4 +1,4 @@
-import { PHYSICS } from './constants'
+import { PHYSICS, POWER_UP_DURATION } from './constants'
 
 export type DogType = 'raya' | 'cruella'
 export type AccessoryType = 'laco' | 'coleira' | 'chapeu' | 'bandana' | null
@@ -95,7 +95,7 @@ export class GameState {
   }
 
   applyPowerUp(type: string, now: number): void {
-    this.activePowerUp = { type, expiresAt: now + 10000 }
+    this.activePowerUp = { type, expiresAt: now + POWER_UP_DURATION }
   }
 
   restoreHeart(): void {

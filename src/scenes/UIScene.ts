@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { KEYS, GAME_WIDTH } from '../constants'
+import { KEYS, GAME_WIDTH, POWER_UP_DURATION } from '../constants'
 import { gameState } from '../GameState'
 
 export class UIScene extends Phaser.Scene {
@@ -152,7 +152,7 @@ export class UIScene extends Phaser.Scene {
       const puIcons: Record<string, string> = {
         petisco: '🍖', pipoca: '🍿', churrasco: '🥩', bola: '🎾', frisbee: '🥏'
       }
-      const fraction = Math.max(0, (gameState.activePowerUp.expiresAt - now) / 10000)
+      const fraction = Math.max(0, (gameState.activePowerUp.expiresAt - now) / POWER_UP_DURATION)
       const barColor = fraction < 0.2 ? 0xef4444 : 0x06b6d4
       this._puIcon.setText(puIcons[gameState.activePowerUp.type] ?? '⚡')
       this._puBar.setDisplaySize(60 * fraction, 7).setFillStyle(barColor)
