@@ -45,8 +45,13 @@ export class Player {
     this._destroyComboHint()   // guard contra dash duplo
     const fx = (this.scene as any)._fx as EffectsManager | undefined
     if (!fx) return
-    this._comboHintGfx = fx.comboWindowHint(this.raya, 600)
-    this.scene.time.delayedCall(600, () => this._destroyComboHint())
+    const gfx = fx.comboWindowHint(this.raya, 600)
+    this._comboHintGfx = gfx
+    // Só destrói se este Graphics ainda for o hint ativo (evita timer antigo
+    // destruir um hint novo criado por dash duplo dentro da janela)
+    this.scene.time.delayedCall(600, () => {
+      if (this._comboHintGfx === gfx) this._destroyComboHint()
+    })
   }
 
   private _destroyComboHint(): void {
