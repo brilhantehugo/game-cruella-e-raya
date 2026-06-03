@@ -2,6 +2,7 @@ import Phaser from 'phaser'
 import { KEYS } from '../../constants'
 import { GatoMalencarado } from './GatoMalencarado'
 import { isNearLight, type LightSource } from '../../fx/SpotlightOverlay'
+import { enemyAnimState } from './enemyAnimState'
 
 // ── Pure state helper (testable) ─────────────────────────────────────────────
 
@@ -98,5 +99,7 @@ export class GatoSelvagem extends GatoMalencarado {
       body.setVelocityX(this._wanderDir * WANDER_SPEED)
       this.setFlipX(this._wanderDir < 0)
     }
+
+    this.play(`gato_selvagem_${enemyAnimState(Math.hypot(body.velocity.x, body.velocity.y))}`, true)
   }
 }

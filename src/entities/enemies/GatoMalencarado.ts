@@ -5,6 +5,7 @@ import {
   checkCounterWindow,
   type CounterWindow,
 } from './EnemyStateMachine'
+import { enemyAnimState } from './enemyAnimState'
 
 type GatoState = 'PATROL' | 'CROUCH' | 'LEAP' | 'RECOVERY'
 
@@ -114,6 +115,8 @@ export class GatoMalencarado extends Enemy {
         break
       }
     }
+
+    this.play(`gato_${enemyAnimState(Math.hypot(body.velocity.x, body.velocity.y))}`, true)
   }
 
   // ─── Utilities ───────────────────────────────────────────────────────────────

@@ -2,6 +2,7 @@ import Phaser from 'phaser'
 import { KEYS } from '../../constants'
 import { Enemy } from '../Enemy'
 import { checkCounterWindow, type CounterWindow } from './EnemyStateMachine'
+import { enemyAnimState } from './enemyAnimState'
 
 type PomboState = 'PATROL_FLY' | 'HOVER' | 'SWOOP' | 'ASCEND'
 
@@ -112,6 +113,8 @@ export class PomboAgitado extends Enemy {
         break
       }
     }
+
+    this.play(`pombo_${enemyAnimState(Math.hypot(body.velocity.x, body.velocity.y))}`, true)
   }
 
   private _toState(s: PomboState): void {

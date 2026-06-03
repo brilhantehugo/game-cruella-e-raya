@@ -2,6 +2,7 @@ import Phaser from 'phaser'
 import { KEYS } from '../../constants'
 import { Enemy } from '../Enemy'
 import { checkCounterWindow, type CounterWindow } from './EnemyStateMachine'
+import { enemyAnimState } from './enemyAnimState'
 
 type RatoState = 'PATROL' | 'CHARGE' | 'DASH' | 'RECOVERY'
 
@@ -107,6 +108,8 @@ export class RatoDeCalcada extends Enemy {
         break
       }
     }
+
+    this.play(`rato_${enemyAnimState(Math.hypot(body.velocity.x, body.velocity.y))}`, true)
   }
 
   private _toState(s: RatoState): void {
