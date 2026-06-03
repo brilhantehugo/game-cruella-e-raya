@@ -1,6 +1,7 @@
 import Phaser from 'phaser'
 import { GAME_WIDTH, GAME_HEIGHT } from '../constants'
 import { BackgroundTheme } from '../levels/LevelData'
+import { gameState } from '../GameState'
 
 export interface AmbientConfig {
   type: 'rain' | 'dust' | 'leaves' | 'wind' | 'acvent'
@@ -45,6 +46,7 @@ export class AmbientFX {
   constructor(private scene: Phaser.Scene, theme: BackgroundTheme) {
     const cfg = getAmbientConfig(theme)
     if (!cfg) return
+    if (gameState.reducedMotion) return   // sem partículas ambientais
 
     this._timer = scene.time.addEvent({
       delay: cfg.intervalMs,

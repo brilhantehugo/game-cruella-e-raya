@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import type { WorldDifficulty } from '../constants'
+import { gameState } from '../GameState'
 
 export abstract class Enemy extends Phaser.Physics.Arcade.Sprite {
   readonly isNPC: boolean = false
@@ -52,13 +53,15 @@ export abstract class Enemy extends Phaser.Physics.Arcade.Sprite {
     // Floating daze icon that bobs above the enemy
     const stunIcon = this.scene.add.text(this.x, this.y - 30, '😵', { fontSize: '16px' })
     stunIcon.setDepth(10)
-    const bobTween = this.scene.tweens.add({
-      targets: stunIcon,
-      y: stunIcon.y - 12,
-      duration: 400,
-      yoyo: true,
-      repeat: -1,
-    })
+    const bobTween = gameState.reducedMotion
+      ? null
+      : this.scene.tweens.add({
+          targets: stunIcon,
+          y: stunIcon.y - 12,
+          duration: 400,
+          yoyo: true,
+          repeat: -1,
+        })
 
     // Tracker: follows enemy X each frame; tween owns Y (preserves bob animation)
     const tracker = () => {
@@ -69,7 +72,7 @@ export abstract class Enemy extends Phaser.Physics.Arcade.Sprite {
     // On wake-up: remove tracker, stop tween, clear tint, reverse direction, destroy icon
     this.scene.time.delayedCall(duration, () => {
       this.scene.events.off('preupdate', tracker)
-      bobTween.stop()
+      bobTween?.stop()
       if (!this.active) {
         if (stunIcon.active) stunIcon.destroy()
         return

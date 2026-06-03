@@ -1,4 +1,5 @@
 import { KEYS, GAME_WIDTH, SWAP_COLORS } from '../constants'
+import { gameState } from '../GameState'
 
 export class EffectsManager {
   private static readonly PARTICLE_DEPTH = 100
@@ -117,6 +118,7 @@ export class EffectsManager {
   /** Marca um checkpoint como ativado: tint ciano + pulse infinito suave. */
   checkpointActivatedGlow(sprite: Phaser.GameObjects.Image): void {
     sprite.setTint(0x66ffdd)
+    if (gameState.reducedMotion) return   // tint fixo, sem pulse de alpha
     this.scene.tweens.add({
       targets: sprite,
       alpha: 0.7,
@@ -164,18 +166,22 @@ export class EffectsManager {
     gfx.setDepth(EffectsManager.PARTICLE_DEPTH)
 
     // Pulse: escala 0.8 ↔ 1.2 + alpha 0.4 ↔ 0.9
-    gfx.setScale(0.8)
-    gfx.setAlpha(0.4)
-    this.scene.tweens.add({
-      targets: gfx,
-      scaleX: 1.2,
-      scaleY: 1.2,
-      alpha: 0.9,
-      duration: 300,
-      yoyo: true,
-      repeat: -1,
-      ease: 'Sine.easeInOut',
-    })
+    gfx.setScale(1)
+    gfx.setAlpha(0.9)
+    if (!gameState.reducedMotion) {
+      gfx.setScale(0.8)
+      gfx.setAlpha(0.4)
+      this.scene.tweens.add({
+        targets: gfx,
+        scaleX: 1.2,
+        scaleY: 1.2,
+        alpha: 0.9,
+        duration: 300,
+        yoyo: true,
+        repeat: -1,
+        ease: 'Sine.easeInOut',
+      })
+    }
 
     // Tracker: segue o sprite a cada frame; anexado ao Graphics para cleanup
     const tracker = () => {
