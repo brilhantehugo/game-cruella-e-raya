@@ -1,6 +1,7 @@
 import Phaser from 'phaser'
 import { Enemy } from '../Enemy'
 import { KEYS } from '../../constants'
+import { cameraShake } from '../../fx/cameraShake'
 
 type Phase = 1 | 2 | 3
 
@@ -99,7 +100,7 @@ export class ZeladorBoss extends Enemy {
     const dir = Math.sign(this._playerX - this.x) || 1
     this.setTint(0xffff00)
     body.setVelocityX(300 * dir)
-    this.scene.cameras.main.shake(80, 0.004)
+    cameraShake(this.scene, 80, 0.004)
     this.scene.time.delayedCall(400, () => {
       if (!this.active) return
       this._isSliding = false

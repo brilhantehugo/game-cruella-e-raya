@@ -2,6 +2,7 @@ import Phaser from 'phaser'
 import { Enemy } from '../Enemy'
 import { type LightSource } from '../../fx/SpotlightOverlay'
 import { KEYS } from '../../constants'
+import { cameraShake } from '../../fx/cameraShake'
 
 // ── Pure helper (testable) ────────────────────────────────────────────────────
 
@@ -114,7 +115,7 @@ export class SegurancaMoto extends Enemy {
     this._isDying = true
     const body = this.body as Phaser.Physics.Arcade.Body
     body.setEnable(false)
-    this.scene.cameras.main.shake(200, 0.008)
+    cameraShake(this.scene, 200, 0.008)
     this.scene.tweens.add({
       targets:  this,
       scaleX:   0, scaleY: 0, alpha: 0, angle: -180,

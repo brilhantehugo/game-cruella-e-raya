@@ -1,6 +1,7 @@
 import Phaser from 'phaser'
 import { KEYS } from '../../constants'
 import { Enemy } from '../Enemy'
+import { cameraShake } from '../../fx/cameraShake'
 
 type Phase = 1 | 2 | 3
 
@@ -164,7 +165,7 @@ export class Aspirador extends Enemy {
       }
     })
     // Screen shake on charge
-    this.scene.cameras.main.shake(100, 0.005)
+    cameraShake(this.scene, 100, 0.005)
   }
 
   protected onDeath(): void {

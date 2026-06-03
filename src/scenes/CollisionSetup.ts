@@ -7,6 +7,7 @@ import { SoundManager } from '../audio/SoundManager'
 import { resolveBarkHit, resolveDashHit, resolveStompHit } from '../systems/CombatResolver'
 import { ItemCollectHandler } from './ItemCollectHandler'
 import type { GameScene } from './GameScene'
+import { cameraShake } from '../fx/cameraShake'
 
 export class CollisionSetup {
   /** Registra todos os colliders e overlaps da cena. Chamado por GameScene.create(). */
@@ -142,7 +143,7 @@ export class CollisionSetup {
       })
 
       // ── Camera shake ───────────────────────────────────────────────────
-      scene.cameras.main.shake(150, 0.007)
+      cameraShake(scene, 150, 0.007)
 
       // ── Indicador de raio de intimidação (BARK_RADIUS * 1.5) ───────────────
       // O raio visual é 1.5× maior que o hit radius do bark (BARK_RADIUS)

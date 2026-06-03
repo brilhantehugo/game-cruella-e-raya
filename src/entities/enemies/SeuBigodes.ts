@@ -2,6 +2,7 @@ import Phaser from 'phaser'
 import { KEYS } from '../../constants'
 import { Enemy } from '../Enemy'
 import { GatoMalencarado } from './GatoMalencarado'
+import { cameraShake } from '../../fx/cameraShake'
 
 type BossPhase = 1 | 2 | 3
 
@@ -77,7 +78,7 @@ export class SeuBigodes extends Enemy {
         // Camera shake ao pousar
         this.scene.time.delayedCall(600, () => {
           if (this.scene && this.active) {
-            this.scene.cameras.main.shake(150, 0.008)
+            cameraShake(this.scene, 150, 0.008)
           }
         })
       }

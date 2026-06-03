@@ -8,6 +8,7 @@ import { SeuBigodes } from '../entities/enemies/SeuBigodes'
 import { Drone } from '../entities/enemies/Drone'
 import { SegurancaMoto } from '../entities/enemies/SegurancaMoto'
 import type { GameScene } from './GameScene'
+import { cameraShake } from '../fx/cameraShake'
 
 export class BossSetup {
   /** Configura o boss principal da fase. Chamado por GameScene._spawnEnemies(). */
@@ -72,7 +73,7 @@ export class BossSetup {
         scene._bossExit.setVisible(true)
         ;(scene._bossExit.body as Phaser.Physics.Arcade.StaticBody).enable = true
         scene._bossExit.refreshBody()
-        scene.cameras.main.shake(200, 0.006)
+        cameraShake(scene, 200, 0.006)
       }
       const msg = scene.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2,
         '✓ Caminho livre! Vá para a saída!', {
@@ -216,7 +217,7 @@ export class BossSetup {
         scene._bossExit.setVisible(true)
         ;(scene._bossExit.body as Phaser.Physics.Arcade.StaticBody).enable = true
         scene._bossExit.refreshBody()
-        scene.cameras.main.shake(200, 0.006)
+        cameraShake(scene, 200, 0.006)
       }
     })
 

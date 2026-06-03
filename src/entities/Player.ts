@@ -6,6 +6,7 @@ import { Cruella } from './Cruella'
 import { Enemy } from './Enemy'
 import { SoundManager } from '../audio/SoundManager'
 import type { EffectsManager } from '../fx/EffectsManager'
+import { cameraShake } from '../fx/cameraShake'
 
 export class Player {
   raya: Raya
@@ -157,7 +158,7 @@ export class Player {
     const now = this.scene.time.now
     const heartLost = gameState.takeDamage(now)
     if (heartLost) {
-      this.scene.cameras.main.shake(200, 0.01)
+      cameraShake(this.scene, 200, 0.01)
     }
     const sprite = this.active   // capture once — this.active is a live getter
     sprite.setTint(0xff0000)

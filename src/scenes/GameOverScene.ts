@@ -3,6 +3,7 @@ import { KEYS, GAME_WIDTH, GAME_HEIGHT } from '../constants'
 import { gameState } from '../GameState'
 import { SoundManager } from '../audio/SoundManager'
 import { checkpointButtonLabel } from './checkpointButtonLabel'
+import { cameraShake } from '../fx/cameraShake'
 
 export class GameOverScene extends Phaser.Scene {
   constructor() { super(KEYS.GAME_OVER) }
@@ -65,7 +66,7 @@ export class GameOverScene extends Phaser.Scene {
     this.tweens.add({
       targets: titleTxt, alpha: 1, duration: 600, ease: 'Quad.easeOut',
       onComplete: () => {
-        this.cameras.main.shake(300, 0.012)
+        cameraShake(this, 300, 0.012)
         this.tweens.add({
           targets: titleTxt,
           scaleX: 1.04, scaleY: 1.04,

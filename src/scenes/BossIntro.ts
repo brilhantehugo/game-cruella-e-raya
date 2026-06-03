@@ -1,6 +1,7 @@
 import Phaser from 'phaser'
 import { KEYS, GAME_WIDTH, GAME_HEIGHT, TILE_SIZE } from '../constants'
 import type { GameScene } from './GameScene'
+import { cameraShake } from '../fx/cameraShake'
 
 const BOSS_SPEECHES: Record<string, { header: string; hColor: string; speech: string; sColor: string }> = {
   '0-boss': { header: '🧹 ZELADOR DO PRÉDIO 🧹', hColor: '#ffa040',
@@ -48,7 +49,7 @@ export class BossIntro {
         duration: 800,
         ease: 'Sine.easeInOut',
         onComplete: () => {
-          cam.shake(200, 0.003)
+          cameraShake(scene, 200, 0.003)
         },
       })
     })
