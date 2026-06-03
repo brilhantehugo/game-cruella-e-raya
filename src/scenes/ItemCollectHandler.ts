@@ -16,6 +16,7 @@ export class ItemCollectHandler {
           SoundManager.play('checkpoint')
           scene._fx.checkpointSparkle(item.x, item.y)
           scene._spawnScorePopup(item.x, item.y - 32, '✅ checkpoint!', '#00ffcc')
+          scene._fx.checkpointActivatedGlow(item)
         }
         return // don't destroy
       case 'exit':

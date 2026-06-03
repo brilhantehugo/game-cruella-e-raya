@@ -139,9 +139,9 @@ export class GameScene extends Phaser.Scene {
     this._buildDecorations()
     this._buildMovingPlatforms()
     this._buildHazards()
+    this._fx = new EffectsManager(this)
     this._buildTilemap()
     this._spawnPlayer()
-    this._fx = new EffectsManager(this)
     this._enemyHPBar = new EnemyHPBar(this)
     this._applyUpgrades()
     // Efeitos de dust no pulo e aterrissagem
@@ -296,6 +296,9 @@ export class GameScene extends Phaser.Scene {
       cp.setOrigin(0.5, 1).refreshBody()
       cp.setData('type', 'checkpoint')
       this.itemGroup.add(cp)
+      if (gameState.checkpointReached) {
+        this._fx.checkpointActivatedGlow(cp)
+      }
     }
 
     // Saída — base alinhada ao chão

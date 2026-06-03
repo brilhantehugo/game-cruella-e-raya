@@ -114,6 +114,19 @@ export class EffectsManager {
     this._burst(x, y, 8, 0xffffff, 20, 40, 2, 5, 500, -Math.PI / 2)
   }
 
+  /** Marca um checkpoint como ativado: tint ciano + pulse infinito suave. */
+  checkpointActivatedGlow(sprite: Phaser.GameObjects.Image): void {
+    sprite.setTint(0x66ffdd)
+    this.scene.tweens.add({
+      targets: sprite,
+      alpha: 0.7,
+      duration: 700,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut',
+    })
+  }
+
   /** 10 partículas coloridas ao coletar power-up (cor por tipo) */
   powerUpBurst(x: number, y: number, type: string): void {
     const colorMap: Record<string, number> = {

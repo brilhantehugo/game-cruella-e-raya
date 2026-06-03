@@ -2,6 +2,7 @@ import Phaser from 'phaser'
 import { KEYS, GAME_WIDTH, GAME_HEIGHT } from '../constants'
 import { gameState } from '../GameState'
 import { SoundManager } from '../audio/SoundManager'
+import { checkpointButtonLabel } from './checkpointButtonLabel'
 
 export class GameOverScene extends Phaser.Scene {
   constructor() { super(KEYS.GAME_OVER) }
@@ -108,7 +109,7 @@ export class GameOverScene extends Phaser.Scene {
         stroke: '#000000', strokeThickness: 2,
       }).setOrigin(0.5).setInteractive()
 
-    const enterBtn = mkBtn(300, '[ ENTER — retomar do checkpoint ]', '#ffffff')
+    const enterBtn = mkBtn(300, checkpointButtonLabel(gameState.checkpointReached), '#ffffff')
     const rBtn     = mkBtn(342, '[ R — recomeçar a fase ]',          '#aaaaaa')
     const escTxt   = this.add.text(cx, 388, 'ESC — mapa do mundo',  {
       fontSize: '13px', color: '#555555',
