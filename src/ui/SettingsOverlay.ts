@@ -6,6 +6,7 @@ import { SoundManager } from '../audio/SoundManager'
 export class SettingsOverlay {
   private _container: Phaser.GameObjects.Container
   private _muteBtn: Phaser.GameObjects.Text
+  private _reduceBtn: Phaser.GameObjects.Text
 
   constructor(scene: Phaser.Scene) {
     const cx = GAME_WIDTH / 2   // 400
@@ -34,13 +35,23 @@ export class SettingsOverlay {
       this._muteBtn.setColor(this._muteColor())
     })
 
+    // 3b. Reduce-motion toggle
+    this._reduceBtn = scene.add.text(px + 20, py + 86, this._reduceLabel(), {
+      fontSize: '15px', color: this._reduceColor(),
+    }).setInteractive({ useHandCursor: true })
+    this._reduceBtn.on('pointerdown', () => {
+      gameState.reducedMotion = !gameState.reducedMotion
+      this._reduceBtn.setText(this._reduceLabel())
+      this._reduceBtn.setColor(this._reduceColor())
+    })
+
     // 4. Separator line
     const sep = scene.add.graphics()
     sep.lineStyle(1, 0x555555, 1)
-    sep.lineBetween(px + 20, py + 100, cx + w / 2 - 20, py + 100)
+    sep.lineBetween(px + 20, py + 126, cx + w / 2 - 20, py + 126)
 
     // 5. Controls section title
-    const ctrlTitle = scene.add.text(px + 20, py + 112, 'CONTROLES', {
+    const ctrlTitle = scene.add.text(px + 20, py + 138, 'CONTROLES', {
       fontSize: '13px', color: '#aaaaaa',
     })
 
@@ -54,7 +65,7 @@ export class SettingsOverlay {
       'M         Silenciar música',
     ]
     const ctrlTexts = CONTROL_LINES.map((line, i) =>
-      scene.add.text(px + 20, py + 130 + i * 20, line, {
+      scene.add.text(px + 20, py + 156 + i * 20, line, {
         fontSize: '12px', color: '#cccccc',
       })
     )
@@ -67,7 +78,7 @@ export class SettingsOverlay {
 
     // Assemble container — hidden by default
     this._container = scene.add.container(0, 0, [
-      bg, title, this._muteBtn, sep, ctrlTitle, ...ctrlTexts, closeBtn,
+      bg, title, this._muteBtn, this._reduceBtn, sep, ctrlTitle, ...ctrlTexts, closeBtn,
     ])
     // Note: setScrollFactor(0) on a Container is a no-op in Phaser 3 — it does not
     // propagate to children. Both host scenes (MenuScene, PauseScene) use fixed cameras,
@@ -83,10 +94,20 @@ export class SettingsOverlay {
     return gameState.muted ? '#ff6666' : '#88ffaa'
   }
 
+  private _reduceLabel(): string {
+    return gameState.reducedMotion ? '♿  Reduzir movimento: ATIVADO' : '♿  Reduzir movimento: DESLIGADO'
+  }
+
+  private _reduceColor(): string {
+    return gameState.reducedMotion ? '#88ffaa' : '#888888'
+  }
+
   /** Refreshes mute button text, then shows the overlay. */
   show(): void {
     this._muteBtn.setText(this._muteLabel())
     this._muteBtn.setColor(this._muteColor())
+    this._reduceBtn.setText(this._reduceLabel())
+    this._reduceBtn.setColor(this._reduceColor())
     this._container.setVisible(true)
   }
 
