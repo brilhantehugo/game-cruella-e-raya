@@ -9,7 +9,7 @@ export default defineConfig({
   },
   test: {
     environment: 'node',
-    exclude: ['tests/e2e/**'],
+    exclude: ['tests/e2e/**', '**/.claude/worktrees/**', '**/node_modules/**'],
     alias: {
       phaser: path.resolve(__dirname, 'tests/__mocks__/phaser.ts'),
     },
