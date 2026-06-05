@@ -5,6 +5,7 @@ import { gameState } from '../GameState'
 export class UIScene extends Phaser.Scene {
   private heartImages: Phaser.GameObjects.Image[] = []
   private scoreText!: Phaser.GameObjects.Text
+  private boneIcon!: Phaser.GameObjects.Image
   private dogText!: Phaser.GameObjects.Text
   private _levelNameText!: Phaser.GameObjects.Text
   private cooldownBar!: Phaser.GameObjects.Rectangle
@@ -35,9 +36,12 @@ export class UIScene extends Phaser.Scene {
     for (let i = 0; i < 3; i++) {
       this.heartImages.push(this.add.image(20 + i * 30, 22, KEYS.HEART).setScrollFactor(0).setScale(1.1))
     }
-    this.scoreText = this.add.text(GAME_WIDTH - 10, 10, 'Ossos: 0', {
+    this.scoreText = this.add.text(GAME_WIDTH - 10, 10, '0', {
       fontSize: '14px', color: '#ffffff', fontStyle: 'bold'
     }).setOrigin(1, 0).setScrollFactor(0)
+    this.boneIcon = this.add.image(0, 17, KEYS.BONE)
+      .setScrollFactor(0).setScale(1.0).setOrigin(1, 0.5)
+    this._positionBoneIcon()
     this.dogText = this.add.text(GAME_WIDTH / 2, 10, 'RAYA', {
       fontSize: '14px', color: '#ff6b6b', fontStyle: 'bold'
     }).setOrigin(0.5, 0).setScrollFactor(0)
@@ -137,7 +141,8 @@ export class UIScene extends Phaser.Scene {
       })
     }
 
-    this.scoreText.setText(`Ossos: ${gameState.score}`)
+    this.scoreText.setText(`${gameState.score}`)
+    this._positionBoneIcon()
     const isDog = gameState.activeDog === 'raya'
     this.dogText.setText(isDog ? 'RAYA' : 'CRUELLA').setColor(isDog ? '#ff6b6b' : '#6b6bff')
     const swapRemaining = Math.max(0, gameState.swapBlockedUntil - now)
@@ -219,6 +224,10 @@ export class UIScene extends Phaser.Scene {
   showAchievementToast(icon: string, title: string, description: string): void {
     this._toastQueue.push({ icon, title, description })
     if (!this._toastActive) this._showNextToast()
+  }
+
+  private _positionBoneIcon(): void {
+    this.boneIcon.x = this.scoreText.x - this.scoreText.width - 6
   }
 
   private _showNextToast(): void {
