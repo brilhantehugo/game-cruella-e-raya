@@ -18,7 +18,8 @@ export class GameState {
   checkpointY: number = 0
   currentLevel: string = '1-1'
   goldenBones: Record<string, boolean[]> = {}
-  muted: boolean = false
+  sfxMuted: boolean = false
+  musicMuted: boolean = false
   reducedMotion: boolean = false
   abilityUsedAt: number = 0      // timestamp do último uso da habilidade especial
   abilityCooldownMs: number = 800 // duração do cooldown em ms (800 Raya, 1500 Cruella)
@@ -26,6 +27,9 @@ export class GameState {
   sessionEnemiesKilled: number = 0
   sessionStartTime: number = 0
   introSeen: Set<string> = new Set()
+
+  /** Master mute derivado — true só quando ambos silenciados. Usado pela tecla M. */
+  get muted(): boolean { return this.sfxMuted && this.musicMuted }
 
   canSwap(now: number): boolean {
     return now >= this.swapBlockedUntil
@@ -132,7 +136,7 @@ export class GameState {
     this.sessionDeaths = 0
     this.sessionEnemiesKilled = 0
     this.sessionStartTime = 0
-    // muted é uma preferência de UI — persiste intencionalmente entre partidas
+    // sfxMuted/musicMuted são preferências de áudio — persistem entre partidas
     // reducedMotion é uma preferência de acessibilidade — persiste entre partidas
   }
 

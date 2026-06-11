@@ -164,11 +164,11 @@ describe('GameState', () => {
     expect(state.muted).toBe(false)
   })
 
-  it('muted pode ser alternado', () => {
-    state.muted = true
-    expect(state.muted).toBe(true)
-    state.muted = false
-    expect(state.muted).toBe(false)
+  it('muted é true só quando sfx e música silenciados', () => {
+    state.sfxMuted = true
+    expect(state.muted).toBe(false)   // música ainda ativa
+    state.musicMuted = true
+    expect(state.muted).toBe(true)    // ambos → master mutado
   })
 
   describe('resetLevel', () => {
