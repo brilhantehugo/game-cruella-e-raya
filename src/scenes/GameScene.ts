@@ -614,10 +614,10 @@ export class GameScene extends Phaser.Scene {
       }
     }
 
-    // Aura de power-up ativo
+    // Aura de power-up ativo (cor do mais recente quando há múltiplos)
     this._puAuraGfx.clear()
-    const puEntry = gameState.activePowerUp
-    if (puEntry && gameState.hasAnyPowerUp(this.time.now)) {
+    const auraActive = gameState.getActivePowerUps(this.time.now)
+    if (auraActive.length > 0) {
       const puColors: Record<string, number> = {
         petisco:   0xff8800,
         pipoca:    0xffff00,
@@ -625,7 +625,8 @@ export class GameScene extends Phaser.Scene {
         bola:      0x44ff88,
         frisbee:   0x44ff88,
       }
-      const puColor = puColors[puEntry.type] ?? 0x00ccff
+      const primary = auraActive[auraActive.length - 1].type
+      const puColor = puColors[primary] ?? 0x00ccff
       const alpha = 0.2 + 0.5 * (0.5 + 0.5 * Math.sin(this.time.now * 0.005))
       this._puAuraGfx.lineStyle(2, puColor, alpha)
       this._puAuraGfx.strokeCircle(this.player.active.x, this.player.active.y, 28)
