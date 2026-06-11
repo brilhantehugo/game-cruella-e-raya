@@ -61,12 +61,35 @@ describe('GameState', () => {
     state.applyPowerUp('petisco', 0)
     expect(state.hasPowerUp('petisco', 5000)).toBe(true)
     expect(state.hasPowerUp('petisco', 10001)).toBe(false)
-    expect(state.activePowerUp).toBeNull()
+    expect(state.hasAnyPowerUp(10001)).toBe(false)
   })
 
   it('hasPowerUp retorna false para tipo errado', () => {
     state.applyPowerUp('petisco', 0)
     expect(state.hasPowerUp('pipoca', 5000)).toBe(false)
+  })
+
+  it('múltiplos power-ups ficam ativos simultaneamente', () => {
+    state.applyPowerUp('petisco', 0)
+    state.applyPowerUp('pipoca', 0)
+    expect(state.hasPowerUp('petisco', 5000)).toBe(true)
+    expect(state.hasPowerUp('pipoca', 5000)).toBe(true)
+    expect(state.getActivePowerUps(5000).length).toBe(2)
+  })
+
+  it('aplicar o mesmo tipo renova a expiração, não duplica', () => {
+    state.applyPowerUp('petisco', 0)
+    state.applyPowerUp('petisco', 3000)
+    expect(state.getActivePowerUps(5000).length).toBe(1)
+    expect(state.hasPowerUp('petisco', 12000)).toBe(true)
+    expect(state.hasPowerUp('petisco', 13001)).toBe(false)
+  })
+
+  it('getActivePowerUps retorna ordem de inserção e exclui expirados', () => {
+    state.applyPowerUp('petisco', 0)
+    state.applyPowerUp('churrasco', 6000)
+    const active = state.getActivePowerUps(11000)
+    expect(active.map(p => p.type)).toEqual(['churrasco'])
   })
 
   it('coleta ossos dourados por fase', () => {
@@ -112,13 +135,13 @@ describe('GameState', () => {
     it('restaura corações para 3, limpa power-ups e acessório', () => {
       state.hearts = 0
       state.equippedAccessory = 'laco'
-      state.activePowerUp = { type: 'petisco', expiresAt: 99999 }
+      state.applyPowerUp('petisco', 90000)
       state.swapBlockedUntil = 5000
       state.lastHitAt = 1000
       state.resetAtCheckpoint()
       expect(state.hearts).toBe(3)
       expect(state.equippedAccessory).toBeNull()
-      expect(state.activePowerUp).toBeNull()
+      expect(state.hasAnyPowerUp(0)).toBe(false)
       expect(state.swapBlockedUntil).toBe(0)
       expect(state.lastHitAt).toBe(0)
     })
@@ -152,12 +175,12 @@ describe('GameState', () => {
     it('restaura corações, limpa checkpoint e power-ups', () => {
       state.hearts = 0
       state.equippedAccessory = 'bandana'
-      state.activePowerUp = { type: 'pipoca', expiresAt: 99999 }
+      state.applyPowerUp('pipoca', 90000)
       state.setCheckpoint(200, 100)
       state.resetLevel()
       expect(state.hearts).toBe(3)
       expect(state.equippedAccessory).toBeNull()
-      expect(state.activePowerUp).toBeNull()
+      expect(state.hasAnyPowerUp(0)).toBe(false)
       expect(state.checkpointReached).toBe(false)
       expect(state.checkpointX).toBe(0)
       expect(state.checkpointY).toBe(0)
@@ -241,10 +264,11 @@ describe('GameState', () => {
 })
 
 describe('applyPowerUp usa POWER_UP_DURATION', () => {
-  it('define expiresAt = now + POWER_UP_DURATION', () => {
+  it('define expiração = now + POWER_UP_DURATION', () => {
     const gs = new GameState()
     gs.applyPowerUp('petisco', 5000)
-    expect(gs.activePowerUp).not.toBeNull()
-    expect(gs.activePowerUp!.expiresAt).toBe(5000 + POWER_UP_DURATION)
+    expect(gs.getActivePowerUps(5001).length).toBe(1)
+    expect(gs.hasPowerUp('petisco', 5000 + POWER_UP_DURATION - 1)).toBe(true)
+    expect(gs.hasPowerUp('petisco', 5000 + POWER_UP_DURATION)).toBe(false)
   })
 })

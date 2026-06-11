@@ -3,11 +3,6 @@ import { PHYSICS, POWER_UP_DURATION } from './constants'
 export type DogType = 'raya' | 'cruella'
 export type AccessoryType = 'laco' | 'coleira' | 'chapeu' | 'bandana' | null
 
-export interface ActivePowerUp {
-  type: string
-  expiresAt: number
-}
-
 export class GameState {
   hearts: number = 3
   maxHearts: number = 3
@@ -16,7 +11,7 @@ export class GameState {
   swapBlockedUntil: number = 0
   lastHitAt: number = 0
   equippedAccessory: AccessoryType = null
-  activePowerUp: ActivePowerUp | null = null
+  activePowerUps: Map<string, number> = new Map()
   collarOfGold: boolean = false
   checkpointReached: boolean = false
   checkpointX: number = 0
@@ -77,26 +72,31 @@ export class GameState {
   }
 
   hasPowerUp(type: string, now: number): boolean {
-    if (!this.activePowerUp) return false
-    if (this.activePowerUp.type !== type) return false
-    if (now >= this.activePowerUp.expiresAt) {
-      this.activePowerUp = null
-      return false
-    }
+    const exp = this.activePowerUps.get(type)
+    if (exp === undefined) return false
+    if (now >= exp) { this.activePowerUps.delete(type); return false }
     return true
   }
 
   hasAnyPowerUp(now: number): boolean {
-    if (!this.activePowerUp) return false
-    if (now >= this.activePowerUp.expiresAt) {
-      this.activePowerUp = null
-      return false
+    for (const [type, exp] of this.activePowerUps) {
+      if (now >= exp) this.activePowerUps.delete(type)
     }
-    return true
+    return this.activePowerUps.size > 0
   }
 
   applyPowerUp(type: string, now: number): void {
-    this.activePowerUp = { type, expiresAt: now + POWER_UP_DURATION }
+    this.activePowerUps.set(type, now + POWER_UP_DURATION)
+  }
+
+  /** Power-ups ativos (não-expirados), em ordem de inserção. Para o HUD/aura. */
+  getActivePowerUps(now: number): Array<{ type: string; expiresAt: number }> {
+    const out: Array<{ type: string; expiresAt: number }> = []
+    for (const [type, exp] of this.activePowerUps) {
+      if (now < exp) out.push({ type, expiresAt: exp })
+      else this.activePowerUps.delete(type)
+    }
+    return out
   }
 
   restoreHeart(): void {
@@ -121,7 +121,7 @@ export class GameState {
     this.swapBlockedUntil = 0
     this.lastHitAt = 0
     this.equippedAccessory = null
-    this.activePowerUp = null
+    this.activePowerUps.clear()
     this.collarOfGold = false
     this.checkpointReached = false
     this.checkpointX = 0
@@ -139,7 +139,7 @@ export class GameState {
   resetAtCheckpoint(): void {
     this.hearts = this.maxHearts
     this.equippedAccessory = null
-    this.activePowerUp = null
+    this.activePowerUps.clear()
     this.swapBlockedUntil = 0
     this.lastHitAt = 0
     // keeps: score, goldenBones, collarOfGold, checkpointReached, checkpointX/Y, currentLevel
@@ -148,7 +148,7 @@ export class GameState {
   resetLevel(): void {
     this.hearts = this.maxHearts
     this.equippedAccessory = null
-    this.activePowerUp = null
+    this.activePowerUps.clear()
     this.swapBlockedUntil = 0
     this.lastHitAt = 0
     this.checkpointReached = false
