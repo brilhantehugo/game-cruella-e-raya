@@ -27,7 +27,7 @@ function playTone(
   durationMs: number,
   gainVal = 0.25
 ): void {
-  if (gameState.muted) return
+  if (gameState.sfxMuted) return
   const c = getCtx()
   const now = c.currentTime
   const dur = durationMs / 1000
@@ -45,7 +45,7 @@ function playTone(
 }
 
 function playArpeggio(freqs: number[], noteDurMs: number, gainVal = 0.22): void {
-  if (gameState.muted) return
+  if (gameState.sfxMuted) return
   const c = getCtx()
   freqs.forEach((freq, i) => {
     const t = c.currentTime + i * (noteDurMs / 1000)
@@ -64,7 +64,7 @@ function playArpeggio(freqs: number[], noteDurMs: number, gainVal = 0.22): void 
 }
 
 function playNoise(durationMs: number, gainVal = 0.15): void {
-  if (gameState.muted) return
+  if (gameState.sfxMuted) return
   const c = getCtx()
   const dur = durationMs / 1000
   const sampleCount = Math.ceil(c.sampleRate * dur)
@@ -369,7 +369,7 @@ function _playNoteAt(
 }
 
 function _runProc(mel: PBeat[], bass: PBeat[], bpm: number, loop: number): void {
-  if (!_procActive || gameState.muted) return
+  if (!_procActive || gameState.musicMuted) return
   const c    = getCtx()
   const beat = 60 / bpm
   const now  = c.currentTime + 0.05
@@ -409,14 +409,14 @@ export const SoundManager = {
       // ── Habilidades especiais ──────────────────────────────────────────────
       case 'dashAbility': {
         // Raya dash: impacto de ruído + whoosh descendente
-        if (gameState.muted) break
+        if (gameState.sfxMuted) break
         playNoise(70, 0.22)                               // punch de impacto
         playTone('sawtooth', 750, 140, 260, 0.35)        // whoosh descendente
         break
       }
       case 'barkAbility': {
         // Cruella bark: 3 camadas simultâneas — corpo grave + latido médio + yip agudo
-        if (gameState.muted) break
+        if (gameState.sfxMuted) break
         const c = getCtx()
         const now = c.currentTime
         // Camada 1: rumble grave
@@ -446,7 +446,7 @@ export const SoundManager = {
     _lastBgmKey = key; _lastBgmScene = scene; _lastBgmLoop = loop
     _stopProcLoop(); _procType = null
     if (_currentBgm) { _currentBgm.stop(); _currentBgm.destroy(); _currentBgm = null }
-    if (gameState.muted) return
+    if (gameState.musicMuted) return
     try {
       _currentBgm = scene.sound.add(key, { loop, volume: 0.5 })
       _currentBgm.play()
@@ -462,7 +462,7 @@ export const SoundManager = {
     _stopProcLoop()                    // silencia notas antigas imediatamente
     _procType   = type
     _procActive = true
-    if (gameState.muted) return
+    if (gameState.musicMuted) return
     // Cria nó mestre novo para esta sessão (notas antigas vão para o nó antigo que está em 0)
     const c = getCtx()
     _procGainNode = c.createGain()
@@ -490,7 +490,21 @@ export const SoundManager = {
   },
 
   setMuted(muted: boolean): void {
-    gameState.muted = muted
+    gameState.sfxMuted = muted
+    gameState.musicMuted = muted
+    this._applyMusicMute(muted)
+  },
+
+  setMusicMuted(muted: boolean): void {
+    gameState.musicMuted = muted
+    this._applyMusicMute(muted)
+  },
+
+  setSfxMuted(muted: boolean): void {
+    gameState.sfxMuted = muted   // SFX checam o flag em cada play; nada a parar/retomar
+  },
+
+  _applyMusicMute(muted: boolean): void {
     if (muted) {
       if (_currentBgm) { _currentBgm.stop(); _currentBgm.destroy(); _currentBgm = null }
       _stopProcLoop()
