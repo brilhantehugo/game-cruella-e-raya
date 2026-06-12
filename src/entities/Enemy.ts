@@ -105,5 +105,13 @@ export abstract class Enemy extends Phaser.Physics.Arcade.Sprite {
     return this.scene.time.now < this.stunUntil
   }
 
+  /**
+   * Contra-ataque: subclasses que reagem a bark/dash/jump sobrescrevem este método.
+   * Default retorna false (inimigo não tem janela de counter).
+   */
+  tryCounter(_character: 'raya' | 'cruella', _type: 'bark' | 'dash' | 'jump'): boolean {
+    return false
+  }
+
   abstract update(time: number, delta: number): void
 }

@@ -74,7 +74,7 @@ export class CollisionSetup {
         if (stompResult.action === 'stomp') {
           // Counter check is intentionally here (not in resolveStompHit): the resolver
           // only decides IF a stomp occurred; the counter reaction is a post-stomp effect.
-          const countered = (e as any).tryCounter?.('raya', 'jump') ?? false
+          const countered = e.tryCounter('raya', 'jump')
           e.takeDamage(999)
           SoundManager.play('stomp')
           if (countered) scene._spawnScorePopup(e.x, e.y - 28, 'COUNTER!', '#22ccff')
@@ -166,7 +166,7 @@ export class CollisionSetup {
           e.onBarkHeard(dist)
           return
         }
-        const countered = (e as any).tryCounter?.('cruella', 'bark') ?? false
+        const countered = e.tryCounter('cruella', 'bark')
         const result = resolveBarkHit({ hp: e.hp, dist, barkRadius: PHYSICS.BARK_RADIUS, countered, isNPC: e.isNPC })
         switch (result.action) {
           case 'counter':
@@ -208,7 +208,7 @@ export class CollisionSetup {
     scene.physics.add.overlap(scene.player.raya, scene.enemyGroup, (_r, enemy) => {
       const e = enemy as Enemy
       if (!scene.player.raya.getIsDashing()) return
-      const countered = (e as any).tryCounter?.('raya', 'dash') ?? false
+      const countered = e.tryCounter('raya', 'dash')
       e.takeDamage(1)
       const result = resolveDashHit({ hpAfterDamage: e.hp, countered })
       switch (result.action) {
