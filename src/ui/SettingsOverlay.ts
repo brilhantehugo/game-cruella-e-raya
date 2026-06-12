@@ -5,7 +5,8 @@ import { SoundManager } from '../audio/SoundManager'
 
 export class SettingsOverlay {
   private _container: Phaser.GameObjects.Container
-  private _muteBtn: Phaser.GameObjects.Text
+  private _musicBtn: Phaser.GameObjects.Text
+  private _sfxBtn: Phaser.GameObjects.Text
   private _reduceBtn: Phaser.GameObjects.Text
 
   constructor(scene: Phaser.Scene) {
@@ -25,18 +26,28 @@ export class SettingsOverlay {
       fontSize: '18px', color: '#ffffff', fontStyle: 'bold',
     }).setOrigin(0.5, 0)
 
-    // 3. Mute toggle button
-    this._muteBtn = scene.add.text(px + 20, py + 62, this._muteLabel(), {
-      fontSize: '15px', color: this._muteColor(),
+    // 3. Music toggle
+    this._musicBtn = scene.add.text(px + 20, py + 62, this._musicLabel(), {
+      fontSize: '15px', color: this._musicColor(),
     }).setInteractive({ useHandCursor: true })
-    this._muteBtn.on('pointerdown', () => {
-      SoundManager.setMuted(!gameState.muted)
-      this._muteBtn.setText(this._muteLabel())
-      this._muteBtn.setColor(this._muteColor())
+    this._musicBtn.on('pointerdown', () => {
+      SoundManager.setMusicMuted(!gameState.musicMuted)
+      this._musicBtn.setText(this._musicLabel())
+      this._musicBtn.setColor(this._musicColor())
     })
 
-    // 3b. Reduce-motion toggle
-    this._reduceBtn = scene.add.text(px + 20, py + 86, this._reduceLabel(), {
+    // 3b. SFX toggle
+    this._sfxBtn = scene.add.text(px + 20, py + 86, this._sfxLabel(), {
+      fontSize: '15px', color: this._sfxColor(),
+    }).setInteractive({ useHandCursor: true })
+    this._sfxBtn.on('pointerdown', () => {
+      SoundManager.setSfxMuted(!gameState.sfxMuted)
+      this._sfxBtn.setText(this._sfxLabel())
+      this._sfxBtn.setColor(this._sfxColor())
+    })
+
+    // 3c. Reduce-motion toggle
+    this._reduceBtn = scene.add.text(px + 20, py + 110, this._reduceLabel(), {
       fontSize: '15px', color: this._reduceColor(),
     }).setInteractive({ useHandCursor: true })
     this._reduceBtn.on('pointerdown', () => {
@@ -48,10 +59,10 @@ export class SettingsOverlay {
     // 4. Separator line
     const sep = scene.add.graphics()
     sep.lineStyle(1, 0x555555, 1)
-    sep.lineBetween(px + 20, py + 126, cx + w / 2 - 20, py + 126)
+    sep.lineBetween(px + 20, py + 150, cx + w / 2 - 20, py + 150)
 
     // 5. Controls section title
-    const ctrlTitle = scene.add.text(px + 20, py + 138, 'CONTROLES', {
+    const ctrlTitle = scene.add.text(px + 20, py + 162, 'CONTROLES', {
       fontSize: '13px', color: '#aaaaaa',
     })
 
@@ -62,10 +73,10 @@ export class SettingsOverlay {
       'SHIFT     Habilidade da Raya',
       'TAB       Trocar personagem',
       'ESC       Pausar / Fechar',
-      'M         Silenciar música',
+      'M         Silenciar tudo',
     ]
     const ctrlTexts = CONTROL_LINES.map((line, i) =>
-      scene.add.text(px + 20, py + 156 + i * 20, line, {
+      scene.add.text(px + 20, py + 180 + i * 20, line, {
         fontSize: '12px', color: '#cccccc',
       })
     )
@@ -78,7 +89,7 @@ export class SettingsOverlay {
 
     // Assemble container — hidden by default
     this._container = scene.add.container(0, 0, [
-      bg, title, this._muteBtn, this._reduceBtn, sep, ctrlTitle, ...ctrlTexts, closeBtn,
+      bg, title, this._musicBtn, this._sfxBtn, this._reduceBtn, sep, ctrlTitle, ...ctrlTexts, closeBtn,
     ])
     // Note: setScrollFactor(0) on a Container is a no-op in Phaser 3 — it does not
     // propagate to children. Both host scenes (MenuScene, PauseScene) use fixed cameras,
@@ -86,12 +97,20 @@ export class SettingsOverlay {
     this._container.setDepth(50).setScrollFactor(0).setVisible(false)
   }
 
-  private _muteLabel(): string {
-    return gameState.muted ? '🔇  Música: SILENCIADA' : '🔊  Música: ATIVADA'
+  private _musicLabel(): string {
+    return gameState.musicMuted ? '🔇  Música: SILENCIADA' : '🎵  Música: ATIVADA'
   }
 
-  private _muteColor(): string {
-    return gameState.muted ? '#ff6666' : '#88ffaa'
+  private _musicColor(): string {
+    return gameState.musicMuted ? '#ff6666' : '#88ffaa'
+  }
+
+  private _sfxLabel(): string {
+    return gameState.sfxMuted ? '🔇  Efeitos: SILENCIADOS' : '🔊  Efeitos: ATIVADOS'
+  }
+
+  private _sfxColor(): string {
+    return gameState.sfxMuted ? '#ff6666' : '#88ffaa'
   }
 
   private _reduceLabel(): string {
@@ -104,8 +123,10 @@ export class SettingsOverlay {
 
   /** Refreshes mute button text, then shows the overlay. */
   show(): void {
-    this._muteBtn.setText(this._muteLabel())
-    this._muteBtn.setColor(this._muteColor())
+    this._musicBtn.setText(this._musicLabel())
+    this._musicBtn.setColor(this._musicColor())
+    this._sfxBtn.setText(this._sfxLabel())
+    this._sfxBtn.setColor(this._sfxColor())
     this._reduceBtn.setText(this._reduceLabel())
     this._reduceBtn.setColor(this._reduceColor())
     this._container.setVisible(true)
