@@ -80,14 +80,17 @@ export class GameScene extends Phaser.Scene {
 
   create(): void {
     this._gameOverPending = false
-    if (!this._am) {
+    // Recria o gerenciador quando o perfil ativo muda (conquistas são por perfil)
+    const activeProfileId = profileManager.getActive()?.id ?? null
+    if (!this._am || this._am.profileId !== activeProfileId) {
       this._am = new AchievementManager((def) => {
         const ui = this.scene.get(KEYS.UI) as any
         ui?.showAchievementToast?.(def.icon, def.title, def.description)
-      })
+      }, activeProfileId)
     }
     this._killCountInLevel = 0
     this.currentLevel = ALL_LEVELS[gameState.currentLevel] ?? WORLD0_LEVELS['0-1']
+    gameState.ensureLevelBones(this.currentLevel.goldenBones.length)
 
     // Show level intro screen for non-boss levels that have intro data
     if (this.currentLevel.intro && !this.currentLevel.isBossLevel && !gameState.introSeen.has(this.currentLevel.id)) {
@@ -447,6 +450,7 @@ export class GameScene extends Phaser.Scene {
       this.itemGroup.add(item)
     })
     this.currentLevel.goldenBones.forEach((pos, i) => {
+      if (gameState.levelBones[i]) return // já coletado nesta tentativa
       this.itemGroup.add(new GoldenBone(this, pos.x, pos.y, i))
     })
   }
@@ -466,7 +470,6 @@ export class GameScene extends Phaser.Scene {
     this.scene.stop(KEYS.UI)
     const levelId = this.currentLevel.id
     const nextLevel = this.currentLevel.nextLevel
-    const goldenBones = (gameState.goldenBones as Record<string, boolean[]>)[levelId] ?? [false, false, false]
     const elapsedMs = gameState.sessionStartTime > 0
       ? Date.now() - gameState.sessionStartTime
       : 0
@@ -482,10 +485,11 @@ export class GameScene extends Phaser.Scene {
       this._am?.notify('world_complete', { world })
     }
 
+    gameState.commitLevelScore()
     this.scene.start(KEYS.LEVEL_COMPLETE, {
       score:         gameState.score,
       time:          elapsedMs,
-      goldenBones,
+      goldenBones:   [...gameState.levelBones],
       deaths:        gameState.sessionDeaths,
       enemiesKilled: gameState.sessionEnemiesKilled,
       levelId,

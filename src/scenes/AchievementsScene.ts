@@ -2,6 +2,7 @@
 import Phaser from 'phaser'
 import { ACHIEVEMENTS } from '../achievements/achievements'
 import { AchievementManager } from '../achievements/AchievementManager'
+import { profileManager } from '../storage/ProfileManager'
 import { AchievementDef, AchievementCategory } from '../achievements/AchievementDef'
 
 const GAME_WIDTH  = 800
@@ -24,7 +25,10 @@ export class AchievementsScene extends Phaser.Scene {
   create(): void {
     // Obter instância do AchievementManager via GameScene (ou criar temporário)
     const gs = this.scene.get('GameScene') as any
-    this._am = gs?._am ?? new AchievementManager(() => {})
+    const profileId = profileManager.getActive()?.id ?? null
+    this._am = gs?._am?.profileId === profileId
+      ? gs._am
+      : new AchievementManager(() => {}, profileId)
 
     this._drawBackground()
     this._drawHeader()

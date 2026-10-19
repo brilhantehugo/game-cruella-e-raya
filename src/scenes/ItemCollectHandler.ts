@@ -30,12 +30,13 @@ export class ItemCollectHandler {
         scene._am?.notify('item_collected', { type: 'bone' })
         break
       case 'golden_bone':
-        gameState.collectGoldenBone(gameState.currentLevel, (item as unknown as GoldenBone).boneIndex)
+        const boneIndex = (item as unknown as GoldenBone).boneIndex
+        gameState.collectLevelBone(boneIndex)
         gameState.addScore(500)
         SoundManager.play('collectGolden')
         scene._fx.goldenBoneBurst(item.x, item.y)
         scene._spawnScorePopup(item.x, item.y - 16, '+500', '#ffd700')
-        scene._am?.notify('golden_bone')
+        scene._am?.notify('golden_bone', { levelId: gameState.currentLevel, index: boneIndex })
         break
       case 'pizza':
         gameState.restoreHeart()
