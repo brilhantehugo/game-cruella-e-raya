@@ -40,6 +40,7 @@ export class GameScene extends Phaser.Scene {
   private escKey!: Phaser.Input.Keyboard.Key
   /*internal*/ currentLevel!: LevelData
   private _gameOverPending = false
+  private _levelCompletePending = false
   private _parallax!: ParallaxBackground
   private _mKey!: Phaser.Input.Keyboard.Key
   private _iKey!: Phaser.Input.Keyboard.Key
@@ -80,6 +81,7 @@ export class GameScene extends Phaser.Scene {
 
   create(): void {
     this._gameOverPending = false
+    this._levelCompletePending = false
     // Recria o gerenciador quando o perfil ativo muda (conquistas são por perfil)
     const activeProfileId = profileManager.getActive()?.id ?? null
     if (!this._am || this._am.profileId !== activeProfileId) {
@@ -467,6 +469,9 @@ export class GameScene extends Phaser.Scene {
   }
 
   /*internal*/ _levelComplete(): void {
+    // Guarda contra reentrada: commitLevelScore() não pode rodar duas vezes
+    if (this._levelCompletePending) return
+    this._levelCompletePending = true
     this.scene.stop(KEYS.UI)
     const levelId = this.currentLevel.id
     const nextLevel = this.currentLevel.nextLevel

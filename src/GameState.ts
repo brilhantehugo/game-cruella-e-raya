@@ -21,7 +21,6 @@ export class GameState {
   checkpointX: number = 0
   checkpointY: number = 0
   currentLevel: string = '1-1'
-  goldenBones: Record<string, boolean[]> = {}
   sfxMuted: boolean = false
   musicMuted: boolean = false
   reducedMotion: boolean = false
@@ -70,13 +69,6 @@ export class GameState {
 
   addScore(points: number): void {
     this.score += points
-  }
-
-  collectGoldenBone(level: string, index: number): void {
-    if (!this.goldenBones[level]) {
-      this.goldenBones[level] = [false, false, false]
-    }
-    this.goldenBones[level][index] = true
   }
 
   /** Inicializa os ossos da tentativa; idempotente se o tamanho já bate. */
@@ -175,7 +167,7 @@ export class GameState {
     this.lastHitAt = 0
     this.score = this.checkpointScore
     this.levelBones = [...this.checkpointBones]
-    // keeps: runScore, goldenBones, collarOfGold, checkpointReached, checkpointX/Y, currentLevel
+    // keeps: runScore, collarOfGold, checkpointReached, checkpointX/Y, currentLevel
   }
 
   resetLevel(): void {
@@ -194,7 +186,7 @@ export class GameState {
     this.levelBones = []
     this.checkpointScore = 0
     this.checkpointBones = []
-    // keeps: runScore, goldenBones, collarOfGold, currentLevel
+    // keeps: runScore, collarOfGold, currentLevel
   }
 }
 

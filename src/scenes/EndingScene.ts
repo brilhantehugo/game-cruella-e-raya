@@ -27,7 +27,7 @@ export class EndingScene extends Phaser.Scene {
     const gs = this.scene.get(KEYS.GAME) as any
     gs?._am?.notify('ending_seen')
 
-    const score         = data?.score         ?? gameState.score
+    const score         = data?.score         ?? gameState.runScore
     const deaths        = data?.deaths        ?? 0
     const enemiesKilled = data?.enemiesKilled ?? 0
 
@@ -72,8 +72,7 @@ export class EndingScene extends Phaser.Scene {
     const goldCount   = earnedMedals.filter(m => m === 'gold').length
     const silverCount = earnedMedals.filter(m => m === 'silver').length
     const bronzeCount = earnedMedals.filter(m => m === 'bronze').length
-    const totalGolden = Object.values(gameState.goldenBones)
-      .reduce((s, a) => s + a.filter(Boolean).length, 0)
+    const totalGolden = profileManager.getTotalGoldenBones()
 
     // ── Momentos ─────────────────────────────────────────────────────────
     let moment = 0
