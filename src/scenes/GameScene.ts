@@ -9,10 +9,8 @@ import { GoldenBone } from '../items/GoldenBone'
 import { PowerUp } from '../items/PowerUp'
 import { Accessory } from '../items/Accessory'
 import { LevelData, MiniBossConfig, MovingPlatformSpawn } from '../levels/LevelData'
-import { WORLD1_LEVELS } from '../levels/World1'
 import { WORLD0_LEVELS } from '../levels/World0'
-import { WORLD2_LEVELS } from '../levels/World2'
-import { WORLD3_LEVELS } from '../levels/World3'
+import { ALL_LEVELS } from '../levels'
 import { GatoSelvagem } from '../entities/enemies/GatoSelvagem'
 import { Seguranca }     from '../entities/enemies/Seguranca'
 import { Porteiro }      from '../entities/enemies/Porteiro'
@@ -89,7 +87,6 @@ export class GameScene extends Phaser.Scene {
       })
     }
     this._killCountInLevel = 0
-    const ALL_LEVELS = { ...WORLD0_LEVELS, ...WORLD1_LEVELS, ...WORLD2_LEVELS, ...WORLD3_LEVELS }
     this.currentLevel = ALL_LEVELS[gameState.currentLevel] ?? WORLD0_LEVELS['0-1']
 
     // Show level intro screen for non-boss levels that have intro data
