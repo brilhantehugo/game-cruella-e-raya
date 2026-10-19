@@ -137,11 +137,11 @@ describe('SAVE_VERSION migration', () => {
     expect(pm.getAll()[0].name).toBe('Valido')
   })
 
-  it('novo perfil gravado inclui version: 2', () => {
+  it('novo perfil gravado inclui version: 3', () => {
     const pm = new ProfileManager()
     pm.create('NovoPerfil', 'raya')
     const raw = JSON.parse(localStorage.getItem('rcgame_profiles') ?? '[]')
-    expect(raw[0].version).toBe(2)
+    expect(raw[0].version).toBe(3)
   })
 })
 
@@ -260,5 +260,73 @@ describe('ProfileManager upgrades', () => {
   it('novo perfil inicializa upgrades como objeto vazio', () => {
     const p = pm.create('Hugo', 'raya')
     expect(p.upgrades).toEqual({})
+  })
+})
+
+describe('ossos dourados completos + migração v2→v3', () => {
+  let pm: ProfileManager
+  const rec = (gb: boolean[]) => ({
+    completed: true, medal: 'bronze' as const, bestScore: 100, bestTime: 50,
+    goldenBones: gb, totalDeaths: 0, totalEnemiesKilled: 0, playCount: 1,
+  })
+
+  beforeEach(() => {
+    localStorageMock.clear()
+    pm = new ProfileManager()
+  })
+
+  it('create usa o tamanho real de ossos de cada fase', () => {
+    const p = pm.create('Hugo', 'raya')
+    expect(p.levels['0-1'].goldenBones.length).toBe(4)
+    expect(p.levels['1-1'].goldenBones.length).toBe(3)
+  })
+
+  it('saveLevel persiste o 4º osso', () => {
+    pm.create('Hugo', 'raya')
+    pm.saveLevel('0-1', rec([false, false, false, true]))
+    expect(pm.getActive()!.levels['0-1'].goldenBones).toEqual([false, false, false, true])
+  })
+
+  it('saveLevel faz união de ossos entre runs', () => {
+    pm.create('Hugo', 'raya')
+    pm.saveLevel('0-1', rec([true, false, false, false]))
+    pm.saveLevel('0-1', rec([false, false, false, true]))
+    expect(pm.getActive()!.levels['0-1'].goldenBones).toEqual([true, false, false, true])
+  })
+
+  it('migra perfil v2 estendendo ossos e persiste em v3', () => {
+    const v2 = {
+      id: 'p1', name: 'Velho', dog: 'raya', createdAt: 1, lastPlayedAt: 1,
+      currentLevel: '0-1', totalScore: 9999,
+      levels: { '0-1': { ...rec([true, true, true]), medal: 'silver', bestScore: 9999 } },
+      upgrades: { dash_fast: true }, version: 2,
+    }
+    localStorage.setItem('rcgame_profiles', JSON.stringify([v2]))
+    localStorage.setItem('rcgame_active_profile', 'p1')
+    const p = pm.getAll()[0]
+    expect(p.version).toBe(3)
+    expect(p.levels['0-1'].goldenBones).toEqual([true, true, true, false])
+    expect(p.levels['0-1'].medal).toBe('silver')
+    expect(p.levels['0-1'].bestScore).toBe(9999)
+    expect(p.upgrades.dash_fast).toBe(true)
+    expect(JSON.parse(localStorage.getItem('rcgame_profiles')!)[0].version).toBe(3)
+  })
+
+  it('não reescreve o storage quando nada foi migrado', () => {
+    pm.create('Hugo', 'raya')
+    const before = localStorage.getItem('rcgame_profiles')
+    pm.getAll()
+    expect(localStorage.getItem('rcgame_profiles')).toBe(before)
+  })
+
+  it('perfil version 1 continua filtrado', () => {
+    localStorage.setItem('rcgame_profiles', JSON.stringify([{ id: 'x', name: 'Antigo', levels: {}, version: 1 }]))
+    expect(pm.getAll()).toHaveLength(0)
+  })
+
+  it('getTotalGoldenBones conta o 4º osso', () => {
+    pm.create('Hugo', 'raya')
+    pm.saveLevel('0-1', rec([true, false, false, true]))
+    expect(pm.getTotalGoldenBones()).toBe(2)
   })
 })

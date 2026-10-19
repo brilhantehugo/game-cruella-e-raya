@@ -1,4 +1,5 @@
 import { DogType } from '../GameState'
+import { ALL_LEVELS } from '../levels'
 
 export type Medal = 'gold' | 'silver' | 'bronze'
 
@@ -7,7 +8,7 @@ export interface LevelRecord {
   medal: Medal | null
   bestScore: number
   bestTime: number          // segundos
-  goldenBones: boolean[]    // [bone0, bone1, bone2]
+  goldenBones: boolean[]    // um slot por osso dourado da fase
   totalDeaths: number
   totalEnemiesKilled: number
   playCount: number
@@ -31,7 +32,8 @@ const ACTIVE_KEY         = 'rcgame_active_profile'
 const MAX_PROFILES       = 3
 const DEFAULT_LEVEL      = '0-1'
 const STARTING_LEVELS    = ['0-1', '1-1']
-const SAVE_VERSION       = 2
+const SAVE_VERSION       = 3
+const MIN_SUPPORTED_VERSION = 2
 
 const UPGRADE_COSTS: Record<string, number> = {
   heart_plus: 8,
@@ -47,8 +49,17 @@ export class ProfileManager {
   getAll(): PlayerProfile[] {
     try {
       const raw = localStorage.getItem(STORAGE_KEY)
-      const profiles = raw ? (JSON.parse(raw) as PlayerProfile[]) : []
-      return profiles.filter(p => (p.version ?? 0) >= SAVE_VERSION)
+      const parsed = raw ? (JSON.parse(raw) as PlayerProfile[]) : []
+      const profiles = parsed.filter(p => (p.version ?? 0) >= MIN_SUPPORTED_VERSION)
+      let migrated = false
+      for (const p of profiles) {
+        if ((p.version ?? 0) < SAVE_VERSION) {
+          this._migrateToCurrent(p)
+          migrated = true
+        }
+      }
+      if (migrated) this._persist(profiles)
+      return profiles
     } catch {
       return []
     }
@@ -85,7 +96,7 @@ export class ProfileManager {
     }
     // Desbloqueia fases iniciais
     STARTING_LEVELS.forEach(lv => {
-      profile.levels[lv] = this._emptyRecord()
+      profile.levels[lv] = this._emptyRecord(lv)
     })
     all.push(profile)
     this._persist(all)
@@ -138,8 +149,10 @@ export class ProfileManager {
       bestTime:           existing?.bestTime
                             ? Math.min(existing.bestTime, record.bestTime)
                             : record.bestTime,
-      goldenBones:        (existing?.goldenBones ?? [false, false, false]).map(
-                            (prev, i) => prev || (record.goldenBones[i] ?? false)
+      goldenBones:        this._unionBones(
+                            existing?.goldenBones ?? [],
+                            record.goldenBones,
+                            this._boneCount(levelId),
                           ),
       totalDeaths:        (existing?.totalDeaths ?? 0) + record.totalDeaths,
       totalEnemiesKilled: (existing?.totalEnemiesKilled ?? 0) + record.totalEnemiesKilled,
@@ -159,7 +172,7 @@ export class ProfileManager {
     const idx = all.findIndex(p => p.id === active)
     if (idx === -1) return
     if (!all[idx].levels[levelId]) {
-      all[idx].levels[levelId] = this._emptyRecord()
+      all[idx].levels[levelId] = this._emptyRecord(levelId)
     }
     this._persist(all)
   }
@@ -237,10 +250,27 @@ export class ProfileManager {
 
   // ── Privados ─────────────────────────────────────────────────────────
 
-  private _emptyRecord(): LevelRecord {
+  private _boneCount(levelId: string): number {
+    return ALL_LEVELS[levelId]?.goldenBones.length ?? 0
+  }
+
+  // União de ossos: nunca encolhe; tamanho = max(existente, novo, tamanho real da fase)
+  private _unionBones(a: boolean[], b: boolean[], levelLen: number): boolean[] {
+    const len = Math.max(a.length, b.length, levelLen)
+    return Array.from({ length: len }, (_, i) => !!(a[i] || b[i]))
+  }
+
+  private _migrateToCurrent(p: PlayerProfile): void {
+    for (const [levelId, lvl] of Object.entries(p.levels ?? {})) {
+      lvl.goldenBones = this._unionBones(lvl.goldenBones ?? [], [], this._boneCount(levelId))
+    }
+    p.version = SAVE_VERSION
+  }
+
+  private _emptyRecord(levelId: string): LevelRecord {
     return {
       completed: false, medal: null, bestScore: 0, bestTime: 0,
-      goldenBones: [false, false, false],
+      goldenBones: new Array<boolean>(this._boneCount(levelId)).fill(false),
       totalDeaths: 0, totalEnemiesKilled: 0, playCount: 0,
     }
   }
