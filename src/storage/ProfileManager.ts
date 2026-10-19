@@ -215,18 +215,23 @@ export class ProfileManager {
 
   // ── Cálculo de medalha (estático, sem efeito colateral) ──────────────
 
+  // Ouro: todos os ossos da fase + score≥80% + 0 mortes (fase sem ossos conta como "todos")
+  // Prata: metade dos ossos da fase, ou score≥60% com ≤2 mortes
   static calcMedal(
     score: number,
-    bones: boolean[],
+    bonesCollected: number,
+    bonesTotal: number,
     deaths: number,
     maxScore: number,
-  ): Medal | null {
+  ): Medal {
     if (maxScore <= 0) return 'bronze'
-    const bonesCount = bones.filter(Boolean).length
-    const ratio      = score / maxScore
+    const ratio = score / maxScore
 
-    if (bonesCount === 3 && ratio >= 0.8 && deaths === 0) return 'gold'
-    if (bonesCount >= 2 || (ratio >= 0.6 && deaths <= 2))  return 'silver'
+    if (bonesCollected >= bonesTotal && ratio >= 0.8 && deaths === 0) return 'gold'
+    if (
+      (bonesTotal > 0 && bonesCollected >= Math.ceil(bonesTotal / 2)) ||
+      (ratio >= 0.6 && deaths <= 2)
+    ) return 'silver'
     return 'bronze'
   }
 

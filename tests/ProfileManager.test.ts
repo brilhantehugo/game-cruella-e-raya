@@ -146,28 +146,40 @@ describe('SAVE_VERSION migration', () => {
 })
 
 describe('ProfileManager.calcMedal', () => {
-  it('ouro: 3 bones + score≥80% + 0 mortes', () => {
-    expect(ProfileManager.calcMedal(1600, [true,true,true], 0, 2000)).toBe('gold')
+  it('ouro: todos os ossos da fase (2) + score≥80% + 0 mortes', () => {
+    expect(ProfileManager.calcMedal(1600, 2, 2, 0, 2000)).toBe('gold')
   })
 
-  it('não ouro se morreu mesmo com bones e score alto', () => {
-    expect(ProfileManager.calcMedal(1600, [true,true,true], 1, 2000)).toBe('silver')
+  it('ouro: fase com 4 ossos coletados todos', () => {
+    expect(ProfileManager.calcMedal(1600, 4, 4, 0, 2000)).toBe('gold')
   })
 
-  it('prata: 2 bones', () => {
-    expect(ProfileManager.calcMedal(400, [true,true,false], 5, 2000)).toBe('silver')
+  it('ouro: boss sem ossos (0/0) com score≥80% + 0 mortes', () => {
+    expect(ProfileManager.calcMedal(900, 0, 0, 0, 1000)).toBe('gold')
   })
 
-  it('prata: score≥60% e ≤2 mortes', () => {
-    expect(ProfileManager.calcMedal(1200, [false,false,false], 2, 2000)).toBe('silver')
+  it('prata (não ouro): faltou osso', () => {
+    expect(ProfileManager.calcMedal(1600, 3, 4, 0, 2000)).toBe('silver')
   })
 
-  it('não prata: score≥60% mas 3 mortes', () => {
-    expect(ProfileManager.calcMedal(1200, [false,false,false], 3, 2000)).toBe('bronze')
+  it('prata (não ouro): morreu mesmo com todos os ossos', () => {
+    expect(ProfileManager.calcMedal(1600, 3, 3, 1, 2000)).toBe('silver')
   })
 
-  it('bronze: qualquer conclusão', () => {
-    expect(ProfileManager.calcMedal(100, [false,false,false], 10, 2000)).toBe('bronze')
+  it('prata: metade dos ossos (2 de 4)', () => {
+    expect(ProfileManager.calcMedal(100, 2, 4, 9, 2000)).toBe('silver')
+  })
+
+  it('bronze: abaixo de metade dos ossos (1 de 3) e score baixo', () => {
+    expect(ProfileManager.calcMedal(100, 1, 3, 9, 2000)).toBe('bronze')
+  })
+
+  it('bronze: sem ossos na fase e score abaixo de 60%', () => {
+    expect(ProfileManager.calcMedal(500, 0, 0, 3, 1000)).toBe('bronze')
+  })
+
+  it('bronze: maxScore <= 0', () => {
+    expect(ProfileManager.calcMedal(500, 0, 0, 0, 0)).toBe('bronze')
   })
 })
 

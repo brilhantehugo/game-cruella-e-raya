@@ -39,7 +39,7 @@ export class LevelCompleteScene extends Phaser.Scene {
 
     const elapsedSec    = Math.floor(timeMs / 1000)
     const maxScore      = MEDAL_THRESHOLDS[levelId] ?? 2000
-    const medal         = ProfileManager.calcMedal(score, goldenBones, deaths, maxScore)
+    const medal         = ProfileManager.calcMedal(score, goldenBones.filter(Boolean).length, goldenBones.length, deaths, maxScore)
     const existing      = profileManager.getActive()?.levels[levelId]
     const isNewRecord   = score > (existing?.bestScore ?? 0)
 
