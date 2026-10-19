@@ -22,13 +22,14 @@ export class LevelCompleteScene extends Phaser.Scene {
   create(data: LevelCompleteData): void {
     const score         = data?.score         ?? gameState.score
     const timeMs        = data?.time          ?? 0
-    const goldenBones   = data?.goldenBones   ?? []
     const deaths        = data?.deaths        ?? 0
     const enemiesKilled = data?.enemiesKilled ?? 0
     const levelId       = data?.levelId       ?? gameState.currentLevel
     const nextLevel     = data?.nextLevel     ?? null
 
     const levelData       = ALL_LEVELS[levelId]
+    // Sem dados de ossos: slots false do tamanho da fase (nunca [] → ouro indevido)
+    const goldenBones   = data?.goldenBones   ?? new Array(levelData?.goldenBones.length ?? 0).fill(false)
     const worldTransition = levelData?.worldTransition ?? null
 
     const elapsedSec    = Math.floor(timeMs / 1000)
