@@ -184,17 +184,26 @@ describe('AchievementManager por perfil', () => {
 
   it('perfis distintos têm contadores isolados', () => {
     const a = new AchievementManager(cb, 'a')
-    const b = new AchievementManager(cb, 'b')
     a.notify('enemy_killed')
+    const b = new AchievementManager(cb, 'b')
     expect(a.getCounter('enemies_killed')).toBe(1)
     expect(b.getCounter('enemies_killed')).toBe(0)
+    expect(storage['cruella-achievements:a']).toBeDefined()
+    expect(storage['cruella-achievements']).toBeUndefined()
   })
 
-  it('copia o estado legado na primeira carga sem apagar a chave legada', () => {
-    storage['cruella-achievements'] = JSON.stringify({ unlocked: ['first_blood'], counters: {}, flags: {} })
+  it('copia o estado legado na primeira carga sem apagar nem alterar a chave legada', () => {
+    const legacy = JSON.stringify({ unlocked: ['first_blood'], counters: {}, flags: {} })
+    storage['cruella-achievements'] = legacy
     const a = new AchievementManager(cb, 'a')
     expect(a.isUnlocked('first_blood')).toBe(true)
-    expect(storage['cruella-achievements']).toBeDefined()
+    a.notify('enemy_killed')
+    a.notify('enemy_killed')
+    expect(storage['cruella-achievements:a']).toBeDefined()
+    expect(storage['cruella-achievements']).toBe(legacy)
+    const b = new AchievementManager(cb, 'b')
+    expect(b.isUnlocked('first_blood')).toBe(true)
+    expect(b.getCounter('enemies_killed')).toBe(0)
   })
 
   it('golden_bone com levelId+index conta só ossos distintos', () => {
