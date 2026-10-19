@@ -9,10 +9,8 @@ import { GoldenBone } from '../items/GoldenBone'
 import { PowerUp } from '../items/PowerUp'
 import { Accessory } from '../items/Accessory'
 import { LevelData, MiniBossConfig, MovingPlatformSpawn } from '../levels/LevelData'
-import { WORLD1_LEVELS } from '../levels/World1'
 import { WORLD0_LEVELS } from '../levels/World0'
-import { WORLD2_LEVELS } from '../levels/World2'
-import { WORLD3_LEVELS } from '../levels/World3'
+import { ALL_LEVELS } from '../levels'
 import { GatoSelvagem } from '../entities/enemies/GatoSelvagem'
 import { Seguranca }     from '../entities/enemies/Seguranca'
 import { Porteiro }      from '../entities/enemies/Porteiro'
@@ -42,6 +40,7 @@ export class GameScene extends Phaser.Scene {
   private escKey!: Phaser.Input.Keyboard.Key
   /*internal*/ currentLevel!: LevelData
   private _gameOverPending = false
+  private _levelCompletePending = false
   private _parallax!: ParallaxBackground
   private _mKey!: Phaser.Input.Keyboard.Key
   private _iKey!: Phaser.Input.Keyboard.Key
@@ -82,15 +81,18 @@ export class GameScene extends Phaser.Scene {
 
   create(): void {
     this._gameOverPending = false
-    if (!this._am) {
+    this._levelCompletePending = false
+    // Recria o gerenciador quando o perfil ativo muda (conquistas são por perfil)
+    const activeProfileId = profileManager.getActive()?.id ?? null
+    if (!this._am || this._am.profileId !== activeProfileId) {
       this._am = new AchievementManager((def) => {
         const ui = this.scene.get(KEYS.UI) as any
         ui?.showAchievementToast?.(def.icon, def.title, def.description)
-      })
+      }, activeProfileId)
     }
     this._killCountInLevel = 0
-    const ALL_LEVELS = { ...WORLD0_LEVELS, ...WORLD1_LEVELS, ...WORLD2_LEVELS, ...WORLD3_LEVELS }
     this.currentLevel = ALL_LEVELS[gameState.currentLevel] ?? WORLD0_LEVELS['0-1']
+    gameState.ensureLevelBones(this.currentLevel.goldenBones.length)
 
     // Show level intro screen for non-boss levels that have intro data
     if (this.currentLevel.intro && !this.currentLevel.isBossLevel && !gameState.introSeen.has(this.currentLevel.id)) {
@@ -450,6 +452,7 @@ export class GameScene extends Phaser.Scene {
       this.itemGroup.add(item)
     })
     this.currentLevel.goldenBones.forEach((pos, i) => {
+      if (gameState.levelBones[i]) return // já coletado nesta tentativa
       this.itemGroup.add(new GoldenBone(this, pos.x, pos.y, i))
     })
   }
@@ -466,10 +469,12 @@ export class GameScene extends Phaser.Scene {
   }
 
   /*internal*/ _levelComplete(): void {
+    // Guarda contra reentrada: commitLevelScore() não pode rodar duas vezes
+    if (this._levelCompletePending) return
+    this._levelCompletePending = true
     this.scene.stop(KEYS.UI)
     const levelId = this.currentLevel.id
     const nextLevel = this.currentLevel.nextLevel
-    const goldenBones = (gameState.goldenBones as Record<string, boolean[]>)[levelId] ?? [false, false, false]
     const elapsedMs = gameState.sessionStartTime > 0
       ? Date.now() - gameState.sessionStartTime
       : 0
@@ -485,10 +490,11 @@ export class GameScene extends Phaser.Scene {
       this._am?.notify('world_complete', { world })
     }
 
+    gameState.commitLevelScore()
     this.scene.start(KEYS.LEVEL_COMPLETE, {
       score:         gameState.score,
       time:          elapsedMs,
-      goldenBones,
+      goldenBones:   [...gameState.levelBones],
       deaths:        gameState.sessionDeaths,
       enemiesKilled: gameState.sessionEnemiesKilled,
       levelId,

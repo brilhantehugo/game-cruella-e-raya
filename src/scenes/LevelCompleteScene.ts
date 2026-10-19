@@ -1,27 +1,10 @@
 import Phaser from 'phaser'
-import { KEYS, GAME_WIDTH, GAME_HEIGHT, MEDAL_THRESHOLDS } from '../constants'
+import { KEYS, GAME_WIDTH, GAME_HEIGHT } from '../constants'
 import { gameState } from '../GameState'
 import { profileManager, LevelRecord, ProfileManager } from '../storage/ProfileManager'
 import { SoundManager } from '../audio/SoundManager'
-import { WORLD0_LEVELS } from '../levels/World0'
-import { WORLD1_LEVELS } from '../levels/World1'
-import { WORLD2_LEVELS } from '../levels/World2'
-import { WORLD3_LEVELS } from '../levels/World3'
-import { LevelData } from '../levels/LevelData'
-
-const ALL_LEVELS: Record<string, LevelData> = {
-  ...WORLD0_LEVELS,
-  ...WORLD1_LEVELS,
-  ...WORLD2_LEVELS,
-  ...WORLD3_LEVELS,
-}
-
-const WORLD_LEVELS_WITH_BONES: Record<string, string[]> = {
-  '0': ['0-1', '0-2', '0-4', '0-5'],
-  '1': ['1-1', '1-2', '1-3', '1-4', '1-5'],
-  '2': ['2-1', '2-2', '2-3', '2-5'],
-  '3': ['3-1', '3-2', '3-3', '3-4', '3-5'],
-}
+import { ALL_LEVELS } from '../levels'
+import { maxLevelScore, levelsWithGoldenBones } from '../systems/LevelScoring'
 
 interface LevelCompleteData {
   score:         number
@@ -39,18 +22,19 @@ export class LevelCompleteScene extends Phaser.Scene {
   create(data: LevelCompleteData): void {
     const score         = data?.score         ?? gameState.score
     const timeMs        = data?.time          ?? 0
-    const goldenBones   = data?.goldenBones   ?? [false, false, false]
     const deaths        = data?.deaths        ?? 0
     const enemiesKilled = data?.enemiesKilled ?? 0
     const levelId       = data?.levelId       ?? gameState.currentLevel
     const nextLevel     = data?.nextLevel     ?? null
 
     const levelData       = ALL_LEVELS[levelId]
+    // Sem dados de ossos: slots false do tamanho da fase (nunca [] → ouro indevido)
+    const goldenBones   = data?.goldenBones   ?? new Array(levelData?.goldenBones.length ?? 0).fill(false)
     const worldTransition = levelData?.worldTransition ?? null
 
     const elapsedSec    = Math.floor(timeMs / 1000)
-    const maxScore      = MEDAL_THRESHOLDS[levelId] ?? 2000
-    const medal         = ProfileManager.calcMedal(score, goldenBones, deaths, maxScore)
+    const maxScore      = levelData ? maxLevelScore(levelData) : 0
+    const medal         = ProfileManager.calcMedal(score, goldenBones.filter(Boolean).length, goldenBones.length, deaths, maxScore)
     const existing      = profileManager.getActive()?.levels[levelId]
     const isNewRecord   = score > (existing?.bestScore ?? 0)
 
@@ -133,8 +117,9 @@ export class LevelCompleteScene extends Phaser.Scene {
 
     // ── Golden Bones ──────────────────────────────────────────────────
     const boneY = 205
-    for (let b = 0; b < 3; b++) {
-      const bx = cx + (b - 1) * 50
+    // Um ícone por osso real da fase (0 em boss), centralizados
+    for (let b = 0; b < goldenBones.length; b++) {
+      const bx = cx + (b - (goldenBones.length - 1) / 2) * 50
       const collected = goldenBones[b] ?? false
       const boneTxt = this.add.text(bx, boneY, collected ? '⭐' : '☆', {
         fontSize: '28px', color: collected ? '#ffd700' : '#223322',
@@ -192,14 +177,30 @@ export class LevelCompleteScene extends Phaser.Scene {
     this.tweens.add({ targets: raya,    y: 358, duration: 450, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' })
     this.tweens.add({ targets: cruella, y: 362, duration: 550, yoyo: true, repeat: -1, ease: 'Sine.easeInOut', delay: 120 })
 
+    // ── Save no ProfileManager ────────────────────────────────────────
+    const record: LevelRecord = {
+      completed: true,
+      medal,
+      bestScore: score,
+      bestTime: elapsedSec,
+      goldenBones,
+      totalDeaths: deaths,
+      totalEnemiesKilled: enemiesKilled,
+      playCount: 1,
+    }
+    profileManager.saveLevel(levelId, record)
+    if (nextLevel) profileManager.unlockLevel(nextLevel)
+
     // ── Badge de 100% do mundo ao completar boss ──────────────────────
+    // Lido do perfil DEPOIS do saveLevel, para incluir os ossos desta tentativa
     const worldId = levelId.split('-')[0]
-    const worldLvls = WORLD_LEVELS_WITH_BONES[worldId] ?? []
+    const worldLvls = levelsWithGoldenBones(worldId)
     const isBoss = levelId.endsWith('boss')
 
     if (isBoss && worldLvls.length > 0) {
-      const allGolden = worldLvls.every(id => {
-        const bones = gameState.goldenBones[id]
+      const prof = profileManager.getActive()
+      const allGolden = !!prof && worldLvls.every(id => {
+        const bones = prof.levels[id]?.goldenBones
         return Array.isArray(bones) && bones.length > 0 && bones.every(Boolean)
       })
       if (allGolden) {
@@ -230,20 +231,6 @@ export class LevelCompleteScene extends Phaser.Scene {
       fontSize: '14px', color: '#ffffff', fontStyle: 'bold',
     }).setOrigin(0.5).setInteractive()
     this.tweens.add({ targets: nextBtn, alpha: 0.35, duration: 650, yoyo: true, repeat: -1, delay: 100 })
-
-    // ── Save no ProfileManager ────────────────────────────────────────
-    const record: LevelRecord = {
-      completed: true,
-      medal,
-      bestScore: score,
-      bestTime: elapsedSec,
-      goldenBones,
-      totalDeaths: deaths,
-      totalEnemiesKilled: enemiesKilled,
-      playCount: 1,
-    }
-    profileManager.saveLevel(levelId, record)
-    if (nextLevel) profileManager.unlockLevel(nextLevel)
 
     // ── Ações ─────────────────────────────────────────────────────────
     let _done = false
@@ -313,7 +300,7 @@ export class LevelCompleteScene extends Phaser.Scene {
       if (nextLevel) {
         this.scene.start(KEYS.GAME)
       } else {
-        this.scene.start(KEYS.ENDING, { score, deaths, enemiesKilled })
+        this.scene.start(KEYS.ENDING, { score: gameState.runScore, deaths, enemiesKilled })
       }
     }
 

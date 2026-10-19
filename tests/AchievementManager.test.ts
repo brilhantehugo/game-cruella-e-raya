@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { AchievementManager } from '../src/achievements/AchievementManager'
+import { AchievementManager, copyLegacyAchievementsTo } from '../src/achievements/AchievementManager'
 import { ACHIEVEMENTS } from '../src/achievements/achievements'
 
 // Mock localStorage
@@ -175,5 +175,86 @@ describe('AchievementManager', () => {
   it('getProgress retorna null para flag achievements', () => {
     const def = ACHIEVEMENTS.find((a: any) => a.id === 'true_ending')!
     expect(am.getProgress(def)).toBeNull()
+  })
+})
+
+describe('AchievementManager por perfil', () => {
+  const cb = vi.fn()
+  beforeEach(() => { localStorageMock.clear(); cb.mockClear() })
+
+  it('perfis distintos têm contadores isolados', () => {
+    const a = new AchievementManager(cb, 'a')
+    a.notify('enemy_killed')
+    const b = new AchievementManager(cb, 'b')
+    expect(a.getCounter('enemies_killed')).toBe(1)
+    expect(b.getCounter('enemies_killed')).toBe(0)
+    expect(storage['cruella-achievements:a']).toBeDefined()
+    expect(storage['cruella-achievements']).toBeUndefined()
+  })
+
+  it('copyLegacyAchievementsTo copia o estado legado sem apagar nem alterar a chave legada', () => {
+    const legacy = JSON.stringify({ unlocked: ['first_blood'], counters: {}, flags: {} })
+    storage['cruella-achievements'] = legacy
+    copyLegacyAchievementsTo('a')
+    const a = new AchievementManager(cb, 'a')
+    expect(a.isUnlocked('first_blood')).toBe(true)
+    a.notify('enemy_killed')
+    a.notify('enemy_killed')
+    expect(storage['cruella-achievements:a']).toBeDefined()
+    expect(storage['cruella-achievements']).toBe(legacy)
+    // cópia única: não sobrescreve o estado próprio já existente
+    copyLegacyAchievementsTo('a')
+    expect(new AchievementManager(cb, 'a').getCounter('enemies_killed')).toBe(2)
+  })
+
+  it('copyLegacyAchievementsTo sem chave legada não cria nada', () => {
+    copyLegacyAchievementsTo('a')
+    expect(storage['cruella-achievements:a']).toBeUndefined()
+  })
+
+  it('perfil novo (nunca migrado) começa sem conquistas mesmo com chave legada', () => {
+    storage['cruella-achievements'] = JSON.stringify({ unlocked: ['first_blood'], counters: { enemies_killed: 5 }, flags: {} })
+    const b = new AchievementManager(cb, 'b')
+    expect(b.isUnlocked('first_blood')).toBe(false)
+    expect(b.getCounter('enemies_killed')).toBe(0)
+  })
+
+  it('sem profileId continua lendo a chave legada', () => {
+    storage['cruella-achievements'] = JSON.stringify({ unlocked: ['first_blood'], counters: {}, flags: {} })
+    expect(new AchievementManager(cb).isUnlocked('first_blood')).toBe(true)
+  })
+
+  it('golden_bone com levelId+index conta só ossos distintos', () => {
+    const a = new AchievementManager(cb, 'a')
+    a.notify('golden_bone', { levelId: '1-1', index: 0 })
+    a.notify('golden_bone', { levelId: '1-1', index: 0 })
+    expect(a.getCounter('golden_bones')).toBe(1)
+    a.notify('golden_bone', { levelId: '1-1', index: 1 })
+    expect(a.getCounter('golden_bones')).toBe(2)
+  })
+
+  it('golden_bone sem levelId/index mantém comportamento antigo', () => {
+    const a = new AchievementManager(cb, 'a')
+    a.notify('golden_bone')
+    a.notify('golden_bone')
+    expect(a.getCounter('golden_bones')).toBe(2)
+  })
+
+  it('seenBones persiste entre instâncias', () => {
+    new AchievementManager(cb, 'a').notify('golden_bone', { levelId: '1-1', index: 0 })
+    const a2 = new AchievementManager(cb, 'a')
+    a2.notify('golden_bone', { levelId: '1-1', index: 0 })
+    expect(a2.getCounter('golden_bones')).toBe(1)
+  })
+
+  it('setItem lançando não quebra notify', () => {
+    const orig = localStorageMock.setItem
+    localStorageMock.setItem = () => { throw new Error('quota') }
+    try {
+      const a = new AchievementManager(cb, 'a')
+      expect(() => a.notify('enemy_killed')).not.toThrow()
+    } finally {
+      localStorageMock.setItem = orig
+    }
   })
 })

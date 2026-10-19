@@ -92,12 +92,6 @@ describe('GameState', () => {
     expect(active.map(p => p.type)).toEqual(['churrasco'])
   })
 
-  it('coleta ossos dourados por fase', () => {
-    state.collectGoldenBone('1-1', 0)
-    state.collectGoldenBone('1-1', 2)
-    expect(state.goldenBones['1-1']).toEqual([true, false, true])
-  })
-
   it('addScore acumula pontos', () => {
     state.addScore(10)
     state.addScore(50)
@@ -146,14 +140,13 @@ describe('GameState', () => {
       expect(state.lastHitAt).toBe(0)
     })
 
-    it('mantém score, goldenBones e checkpoint', () => {
+    it('restaura score do checkpoint e mantém checkpoint', () => {
       state.score = 999
-      state.goldenBones = { '1-1': [true, false, true] }
       state.setCheckpoint(400, 300)
+      state.score = 1500
       state.hearts = 0
       state.resetAtCheckpoint()
       expect(state.score).toBe(999)
-      expect(state.goldenBones['1-1']).toEqual([true, false, true])
       expect(state.checkpointReached).toBe(true)
       expect(state.checkpointX).toBe(400)
       expect(state.checkpointY).toBe(300)
@@ -171,6 +164,65 @@ describe('GameState', () => {
     expect(state.muted).toBe(true)    // ambos → master mutado
   })
 
+  describe('score por fase e ossos por tentativa', () => {
+    it('resetLevel zera score e levelBones, preserva runScore', () => {
+      state.runScore = 400
+      state.score = 300
+      state.ensureLevelBones(3)
+      state.collectLevelBone(0)
+      state.setCheckpoint(1, 2)
+      state.resetLevel()
+      expect(state.score).toBe(0)
+      expect(state.levelBones).toEqual([])
+      expect(state.checkpointScore).toBe(0)
+      expect(state.checkpointBones).toEqual([])
+      expect(state.runScore).toBe(400)
+    })
+
+    it('reset zera runScore', () => {
+      state.runScore = 400
+      state.reset()
+      expect(state.runScore).toBe(0)
+    })
+
+    it('ensureLevelBones é idempotente', () => {
+      state.ensureLevelBones(4)
+      state.collectLevelBone(1)
+      state.ensureLevelBones(4)
+      expect(state.levelBones).toEqual([false, true, false, false])
+    })
+
+    it('collectLevelBone ignora índices fora do intervalo', () => {
+      state.ensureLevelBones(2)
+      state.collectLevelBone(5)
+      state.collectLevelBone(-1)
+      expect(state.levelBones).toEqual([false, false])
+    })
+
+    it('resetAtCheckpoint restaura score e ossos do checkpoint (cópias)', () => {
+      state.score = 300
+      state.ensureLevelBones(3)
+      state.collectLevelBone(0)
+      state.setCheckpoint(10, 20)
+      state.score = 900
+      state.collectLevelBone(2)
+      state.resetAtCheckpoint()
+      expect(state.score).toBe(300)
+      expect(state.levelBones).toEqual([true, false, false])
+      state.collectLevelBone(1)
+      expect(state.checkpointBones).toEqual([true, false, false])
+    })
+
+    it('commitLevelScore acumula no runScore entre tentativas', () => {
+      state.score = 500
+      state.commitLevelScore()
+      state.resetLevel()
+      state.score = 200
+      state.commitLevelScore()
+      expect(state.runScore).toBe(700)
+    })
+  })
+
   describe('resetLevel', () => {
     it('restaura corações, limpa checkpoint e power-ups', () => {
       state.hearts = 0
@@ -186,14 +238,12 @@ describe('GameState', () => {
       expect(state.checkpointY).toBe(0)
     })
 
-    it('mantém score e goldenBones mas limpa checkpoint', () => {
+    it('zera score e limpa checkpoint', () => {
       state.score = 500
-      state.goldenBones = { '1-1': [true, true, false] }
       state.setCheckpoint(400, 300)
       state.hearts = 0
       state.resetLevel()
-      expect(state.score).toBe(500)
-      expect(state.goldenBones['1-1']).toEqual([true, true, false])
+      expect(state.score).toBe(0)
       expect(state.checkpointReached).toBe(false)
     })
   })

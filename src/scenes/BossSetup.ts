@@ -59,7 +59,7 @@ export class BossSetup {
     })
 
     boss.on('died', (b: Enemy) => {
-      gameState.addScore(1000)
+      gameState.addScore(SCORING.BOSS_KILL)
       gameState.sessionEnemiesKilled++
       scene._am?.notify('boss_defeated', {
         levelId: scene.currentLevel.id,
@@ -106,7 +106,7 @@ export class BossSetup {
     scene._mainBoss = boss
 
     boss.on('died', (b: Enemy) => {
-      gameState.addScore(1000)
+      gameState.addScore(SCORING.BOSS_KILL)
       gameState.sessionEnemiesKilled++
       scene._am?.notify('boss_defeated', {
         levelId: scene.currentLevel.id,
@@ -169,7 +169,7 @@ export class BossSetup {
     })
 
     boss.on('died', (b: Enemy) => {
-      gameState.addScore(500)
+      gameState.addScore(SCORING.BOSS_KILL)
       gameState.sessionEnemiesKilled++
       scene._am?.notify('boss_defeated', {
         levelId: scene.currentLevel.id,
@@ -178,7 +178,7 @@ export class BossSetup {
         playerHpFull: gameState.hearts >= 3,
       })
       scene._fx.enemyDeathBurst(b.x, b.y)
-      scene._spawnScorePopup(b.x, b.y - 30, '+500', '#ff4444')
+      scene._spawnScorePopup(b.x, b.y - 30, `+${SCORING.BOSS_KILL}`, '#ff4444')
       scene._levelComplete()
     })
 
@@ -203,7 +203,7 @@ export class BossSetup {
     if (!scene._bossProjectileGroup) scene._bossProjectileGroup = scene.physics.add.group()
 
     boss.on('died', (b: Enemy) => {
-      gameState.addScore(1000)
+      gameState.addScore(SCORING.BOSS_KILL)
       gameState.sessionEnemiesKilled++
       scene._am?.notify('boss_defeated', {
         levelId: scene.currentLevel.id,

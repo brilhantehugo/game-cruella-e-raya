@@ -1,4 +1,6 @@
 import { DogType } from '../GameState'
+import { ALL_LEVELS } from '../levels'
+import { copyLegacyAchievementsTo } from '../achievements/AchievementManager'
 
 export type Medal = 'gold' | 'silver' | 'bronze'
 
@@ -7,7 +9,7 @@ export interface LevelRecord {
   medal: Medal | null
   bestScore: number
   bestTime: number          // segundos
-  goldenBones: boolean[]    // [bone0, bone1, bone2]
+  goldenBones: boolean[]    // um slot por osso dourado da fase
   totalDeaths: number
   totalEnemiesKilled: number
   playCount: number
@@ -31,7 +33,8 @@ const ACTIVE_KEY         = 'rcgame_active_profile'
 const MAX_PROFILES       = 3
 const DEFAULT_LEVEL      = '0-1'
 const STARTING_LEVELS    = ['0-1', '1-1']
-const SAVE_VERSION       = 2
+const SAVE_VERSION       = 3
+const MIN_SUPPORTED_VERSION = 2
 
 const UPGRADE_COSTS: Record<string, number> = {
   heart_plus: 8,
@@ -47,8 +50,17 @@ export class ProfileManager {
   getAll(): PlayerProfile[] {
     try {
       const raw = localStorage.getItem(STORAGE_KEY)
-      const profiles = raw ? (JSON.parse(raw) as PlayerProfile[]) : []
-      return profiles.filter(p => (p.version ?? 0) >= SAVE_VERSION)
+      const parsed = raw ? (JSON.parse(raw) as PlayerProfile[]) : []
+      const profiles = parsed.filter(p => (p.version ?? 0) >= MIN_SUPPORTED_VERSION)
+      let migrated = false
+      for (const p of profiles) {
+        if ((p.version ?? 0) < SAVE_VERSION) {
+          this._migrateToCurrent(p)
+          migrated = true
+        }
+      }
+      if (migrated) this._persist(profiles)
+      return profiles
     } catch {
       return []
     }
@@ -85,7 +97,7 @@ export class ProfileManager {
     }
     // Desbloqueia fases iniciais
     STARTING_LEVELS.forEach(lv => {
-      profile.levels[lv] = this._emptyRecord()
+      profile.levels[lv] = this._emptyRecord(lv)
     })
     all.push(profile)
     this._persist(all)
@@ -138,8 +150,10 @@ export class ProfileManager {
       bestTime:           existing?.bestTime
                             ? Math.min(existing.bestTime, record.bestTime)
                             : record.bestTime,
-      goldenBones:        (existing?.goldenBones ?? [false, false, false]).map(
-                            (prev, i) => prev || (record.goldenBones[i] ?? false)
+      goldenBones:        this._unionBones(
+                            existing?.goldenBones ?? [],
+                            record.goldenBones,
+                            ALL_LEVELS[levelId]?.goldenBones.length,
                           ),
       totalDeaths:        (existing?.totalDeaths ?? 0) + record.totalDeaths,
       totalEnemiesKilled: (existing?.totalEnemiesKilled ?? 0) + record.totalEnemiesKilled,
@@ -159,7 +173,7 @@ export class ProfileManager {
     const idx = all.findIndex(p => p.id === active)
     if (idx === -1) return
     if (!all[idx].levels[levelId]) {
-      all[idx].levels[levelId] = this._emptyRecord()
+      all[idx].levels[levelId] = this._emptyRecord(levelId)
     }
     this._persist(all)
   }
@@ -215,27 +229,59 @@ export class ProfileManager {
 
   // ── Cálculo de medalha (estático, sem efeito colateral) ──────────────
 
+  // Ouro: todos os ossos da fase + score≥80% + 0 mortes (fase sem ossos conta como "todos")
+  // Prata: metade dos ossos da fase, ou score≥60% com ≤2 mortes
   static calcMedal(
     score: number,
-    bones: boolean[],
+    bonesCollected: number,
+    bonesTotal: number,
     deaths: number,
     maxScore: number,
-  ): Medal | null {
+  ): Medal {
     if (maxScore <= 0) return 'bronze'
-    const bonesCount = bones.filter(Boolean).length
-    const ratio      = score / maxScore
+    const ratio = score / maxScore
 
-    if (bonesCount === 3 && ratio >= 0.8 && deaths === 0) return 'gold'
-    if (bonesCount >= 2 || (ratio >= 0.6 && deaths <= 2))  return 'silver'
+    if (bonesCollected >= bonesTotal && ratio >= 0.8 && deaths === 0) return 'gold'
+    if (
+      (bonesTotal > 0 && bonesCollected >= Math.ceil(bonesTotal / 2)) ||
+      (ratio >= 0.6 && deaths <= 2)
+    ) return 'silver'
     return 'bronze'
   }
 
   // ── Privados ─────────────────────────────────────────────────────────
 
-  private _emptyRecord(): LevelRecord {
+  private _boneCount(levelId: string): number {
+    return ALL_LEVELS[levelId]?.goldenBones.length ?? 0
+  }
+
+  // União de ossos: nunca perde um true; tamanho = max(existente, novo, tamanho real da fase).
+  // Com a fase conhecida, apara slots além do tamanho real se forem todos false
+  // (o v2 gravava 3 slots em fases de 2 ossos e nunca podia marcá-los).
+  private _unionBones(a: unknown, b: unknown, levelLen: number | undefined): boolean[] {
+    const x = Array.isArray(a) ? a : []
+    const y = Array.isArray(b) ? b : []
+    const len = Math.max(x.length, y.length, levelLen ?? 0)
+    const out = Array.from({ length: len }, (_, i) => !!(x[i] || y[i]))
+    if (levelLen !== undefined && out.slice(levelLen).every(v => !v)) out.length = levelLen
+    return out
+  }
+
+  private _migrateToCurrent(p: PlayerProfile): void {
+    for (const [levelId, lvl] of Object.entries(p.levels ?? {})) {
+      // Entrada inválida (null/primitivo/array): deixa como está em vez de derrubar o getAll
+      if (!lvl || typeof lvl !== 'object' || Array.isArray(lvl)) continue
+      lvl.goldenBones = this._unionBones(lvl.goldenBones, [], ALL_LEVELS[levelId]?.goldenBones.length)
+    }
+    // Cópia única das conquistas compartilhadas antigas para o perfil migrado
+    if (p.id) copyLegacyAchievementsTo(p.id)
+    p.version = SAVE_VERSION
+  }
+
+  private _emptyRecord(levelId: string): LevelRecord {
     return {
       completed: false, medal: null, bestScore: 0, bestTime: 0,
-      goldenBones: [false, false, false],
+      goldenBones: new Array<boolean>(this._boneCount(levelId)).fill(false),
       totalDeaths: 0, totalEnemiesKilled: 0, playCount: 0,
     }
   }

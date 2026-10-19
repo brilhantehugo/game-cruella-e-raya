@@ -6,7 +6,11 @@ export type AccessoryType = 'laco' | 'coleira' | 'chapeu' | 'bandana' | null
 export class GameState {
   hearts: number = 3
   maxHearts: number = 3
-  score: number = 0
+  score: number = 0              // pontos da fase atual (zera a cada tentativa/fase)
+  runScore: number = 0           // total acumulado da corrida (fases concluídas)
+  checkpointScore: number = 0    // score gravado no último checkpoint
+  levelBones: boolean[] = []     // ossos dourados coletados nesta tentativa
+  checkpointBones: boolean[] = [] // ossos gravados no último checkpoint
   activeDog: DogType = 'raya'
   swapBlockedUntil: number = 0
   lastHitAt: number = 0
@@ -17,7 +21,6 @@ export class GameState {
   checkpointX: number = 0
   checkpointY: number = 0
   currentLevel: string = '1-1'
-  goldenBones: Record<string, boolean[]> = {}
   sfxMuted: boolean = false
   musicMuted: boolean = false
   reducedMotion: boolean = false
@@ -68,11 +71,21 @@ export class GameState {
     this.score += points
   }
 
-  collectGoldenBone(level: string, index: number): void {
-    if (!this.goldenBones[level]) {
-      this.goldenBones[level] = [false, false, false]
+  /** Inicializa os ossos da tentativa; idempotente se o tamanho já bate. */
+  ensureLevelBones(count: number): void {
+    if (this.levelBones.length !== count) {
+      this.levelBones = new Array<boolean>(count).fill(false)
     }
-    this.goldenBones[level][index] = true
+  }
+
+  collectLevelBone(index: number): void {
+    if (index < 0 || index >= this.levelBones.length) return
+    this.levelBones[index] = true
+  }
+
+  /** Soma o score da fase ao total da corrida. */
+  commitLevelScore(): void {
+    this.runScore += this.score
   }
 
   hasPowerUp(type: string, now: number): boolean {
@@ -115,12 +128,18 @@ export class GameState {
     this.checkpointReached = true
     this.checkpointX = x
     this.checkpointY = y
+    this.checkpointScore = this.score
+    this.checkpointBones = [...this.levelBones]
   }
 
   reset(): void {
     this.hearts = 3
     this.maxHearts = 3
     this.score = 0
+    this.runScore = 0
+    this.checkpointScore = 0
+    this.levelBones = []
+    this.checkpointBones = []
     this.activeDog = 'raya'
     this.swapBlockedUntil = 0
     this.lastHitAt = 0
@@ -146,7 +165,9 @@ export class GameState {
     this.activePowerUps.clear()
     this.swapBlockedUntil = 0
     this.lastHitAt = 0
-    // keeps: score, goldenBones, collarOfGold, checkpointReached, checkpointX/Y, currentLevel
+    this.score = this.checkpointScore
+    this.levelBones = [...this.checkpointBones]
+    // keeps: runScore, collarOfGold, checkpointReached, checkpointX/Y, currentLevel
   }
 
   resetLevel(): void {
@@ -161,7 +182,11 @@ export class GameState {
     this.sessionDeaths = 0
     this.sessionEnemiesKilled = 0
     this.sessionStartTime = Date.now()
-    // keeps: score, goldenBones, collarOfGold, currentLevel
+    this.score = 0
+    this.levelBones = []
+    this.checkpointScore = 0
+    this.checkpointBones = []
+    // keeps: runScore, collarOfGold, currentLevel
   }
 }
 

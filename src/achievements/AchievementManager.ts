@@ -1,12 +1,23 @@
 import { AchievementDef } from './AchievementDef'
 import { ACHIEVEMENTS } from './achievements'
 
-const STORAGE_KEY = 'cruella-achievements'
+const LEGACY_KEY = 'cruella-achievements'
+
+// Cópia única (migração v2→v3) do estado compartilhado antigo para a chave do perfil.
+// Não sobrescreve estado próprio já existente e nunca altera a chave legada.
+export function copyLegacyAchievementsTo(profileId: string): void {
+  try {
+    const legacy = localStorage.getItem(LEGACY_KEY)
+    const key = `${LEGACY_KEY}:${profileId}`
+    if (legacy !== null && localStorage.getItem(key) === null) localStorage.setItem(key, legacy)
+  } catch { /* storage indisponível */ }
+}
 
 interface AchievementState {
   unlocked: string[]
   counters: Record<string, number>
   flags: Record<string, boolean>
+  seenBones: string[]
 }
 
 export type NotifyEvent =
@@ -22,6 +33,7 @@ export type NotifyEvent =
 export type NotifyPayload = {
   type?: string
   levelId?: string
+  index?: number
   fightDurationMs?: number
   damageTaken?: number
   playerHpFull?: boolean
@@ -35,8 +47,13 @@ export class AchievementManager {
   private _state: AchievementState
   private readonly _onUnlock: (def: AchievementDef) => void
 
-  constructor(onUnlock: (def: AchievementDef) => void) {
+  readonly profileId: string | null
+  private readonly _key: string
+
+  constructor(onUnlock: (def: AchievementDef) => void, profileId: string | null = null) {
     this._onUnlock = onUnlock
+    this.profileId = profileId
+    this._key = profileId ? `${LEGACY_KEY}:${profileId}` : LEGACY_KEY
     this._state = this._load()
   }
 
@@ -76,6 +93,11 @@ export class AchievementManager {
         inc('enemies_killed')
         break
       case 'golden_bone':
+        if (payload.levelId !== undefined && payload.index !== undefined) {
+          const id = `${payload.levelId}:${payload.index}`
+          if (s.seenBones.includes(id)) break
+          s.seenBones.push(id)
+        }
         inc('golden_bones')
         break
       case 'item_collected':
@@ -130,13 +152,15 @@ export class AchievementManager {
 
   private _load(): AchievementState {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY)
+      // Perfil sem chave própria começa do zero (a cópia legada ocorre só na migração)
+      const raw = localStorage.getItem(this._key)
       if (raw) {
         const parsed = JSON.parse(raw) as Partial<AchievementState>
         const state = {
           unlocked: parsed.unlocked ?? [],
           counters: parsed.counters ?? {},
           flags:    parsed.flags    ?? {},
+          seenBones: parsed.seenBones ?? [],
         }
         // Initialize tracking flag to true if not previously set
         if (state.flags['no_death_current_run'] === undefined) {
@@ -145,10 +169,12 @@ export class AchievementManager {
         return state
       }
     } catch { /* ignore corrupt data */ }
-    return { unlocked: [], counters: {}, flags: { no_death_current_run: true } }
+    return { unlocked: [], counters: {}, flags: { no_death_current_run: true }, seenBones: [] }
   }
 
   private _save(): void {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(this._state))
+    try {
+      localStorage.setItem(this._key, JSON.stringify(this._state))
+    } catch { /* storage unavailable or full */ }
   }
 }

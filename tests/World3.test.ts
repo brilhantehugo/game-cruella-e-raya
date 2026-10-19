@@ -1,11 +1,12 @@
 import { describe, it, expect } from 'vitest'
-import { MEDAL_THRESHOLDS } from '../src/constants'
+import { ALL_LEVELS } from '../src/levels'
+import { maxLevelScore } from '../src/systems/LevelScoring'
 import type { LevelData } from '../src/levels/LevelData'
 
-describe('MEDAL_THRESHOLDS World 3', () => {
-  it('has a positive threshold for every World 3 level', () => {
+describe('maxLevelScore World 3', () => {
+  it('has a positive max score for every World 3 level', () => {
     for (const id of ['3-1', '3-2', '3-3', '3-4', '3-5', '3-boss']) {
-      expect(MEDAL_THRESHOLDS[id]).toBeGreaterThan(0)
+      expect(maxLevelScore(ALL_LEVELS[id])).toBeGreaterThan(0)
     }
   })
 })

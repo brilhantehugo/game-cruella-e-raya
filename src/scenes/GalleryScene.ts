@@ -1,6 +1,8 @@
 import Phaser from 'phaser'
 import { KEYS, GAME_WIDTH, GAME_HEIGHT } from '../constants'
-import { gameState } from '../GameState'
+import { profileManager } from '../storage/ProfileManager'
+import { ALL_LEVELS } from '../levels'
+import { levelsWithGoldenBones } from '../systems/LevelScoring'
 
 export class GalleryScene extends Phaser.Scene {
   constructor() { super(KEYS.GALLERY) }
@@ -17,43 +19,41 @@ export class GalleryScene extends Phaser.Scene {
 
     this.add.rectangle(cx, 52, GAME_WIDTH - 60, 1, 0x443300)
 
-    // ── Golden bones per level ──────────────────────────────────────────────────
-    const levels = ['1-1', '1-2', '1-3']
+    // ── Ossos dourados por mundo (lidos do perfil ativo) ───────────────────────
+    const profile = profileManager.getActive()
     let totalCollected = 0
     let totalBones = 0
 
-    levels.forEach((level, li) => {
-      const y = 90 + li * 70
-      const bones = gameState.goldenBones[level] ?? [false, false, false]
-      const count = bones.filter(Boolean).length
-      totalCollected += count
-      totalBones += 3
-
-      this.add.text(80, y, `Fase ${level}`, {
-        fontSize: '18px', color: '#ffffff', fontStyle: 'bold'
-      })
-      this.add.text(80, y + 22, `${count}/3 ossos`, {
-        fontSize: '13px', color: count === 3 ? '#ffd700' : '#888888'
+    ;['0', '1', '2', '3'].forEach((worldId, wi) => {
+      const y = 64 + wi * 24
+      this.add.text(40, y, `Mundo ${worldId}`, {
+        fontSize: '14px', color: '#ffffff', fontStyle: 'bold'
       })
 
-      bones.forEach((collected, bi) => {
-        const bx = 300 + bi * 70
-        const icon = this.add.image(bx, y + 14, KEYS.GOLDEN_BONE).setScale(1.8)
-        if (!collected) icon.setTint(0x333333)
+      levelsWithGoldenBones(worldId).forEach((levelId, li) => {
+        const size = ALL_LEVELS[levelId].goldenBones.length
+        const saved = profile?.levels[levelId]?.goldenBones ?? []
+        const slots = Array.from({ length: size }, (_, i) => saved[i] === true)
+        const count = slots.filter(Boolean).length
+        totalCollected += count
+        totalBones += size
+
+        this.add.text(130 + li * 125, y, `${levelId} ${slots.map(c => c ? '●' : '○').join('')}`, {
+          fontSize: '13px', color: count === size ? '#ffd700' : '#888888'
+        })
       })
     })
 
     // Total
-    const totalY = 90 + levels.length * 70 + 8
-    const pct = totalBones > 0 ? Math.round((totalCollected / totalBones) * 100) : 0
-    this.add.text(cx, totalY, `Total: ${totalCollected}/${totalBones}  (${pct}%)`, {
+    const totalY = 64 + 4 * 24 + 8
+    this.add.text(cx, totalY, `Total: ${totalCollected}/${totalBones}`, {
       fontSize: '15px', color: totalCollected === totalBones ? '#ffd700' : '#aaaaaa'
     }).setOrigin(0.5)
 
-    this.add.rectangle(cx, totalY + 20, GAME_WIDTH - 60, 1, 0x333333)
+    this.add.rectangle(cx, totalY + 18, GAME_WIDTH - 60, 1, 0x333333)
 
     // ── Item codex ──────────────────────────────────────────────────────────────
-    const codexY = totalY + 36
+    const codexY = totalY + 30
     this.add.text(cx, codexY, 'ITENS DO JOGO', {
       fontSize: '16px', color: '#ffff88', fontStyle: 'bold'
     }).setOrigin(0.5)
@@ -80,7 +80,7 @@ export class GalleryScene extends Phaser.Scene {
       const col = i % cols
       const row = Math.floor(i / cols)
       const ix = 60 + col * colW
-      const iy = codexY + 24 + row * 42
+      const iy = codexY + 22 + row * 40
 
       this.add.image(ix + 12, iy + 12, item.key).setScale(1.4).setOrigin(0.5)
       this.add.text(ix + 28, iy, item.label, { fontSize: '12px', color: '#ffffff' })
