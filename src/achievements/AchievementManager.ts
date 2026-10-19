@@ -3,6 +3,16 @@ import { ACHIEVEMENTS } from './achievements'
 
 const LEGACY_KEY = 'cruella-achievements'
 
+// Cópia única (migração v2→v3) do estado compartilhado antigo para a chave do perfil.
+// Não sobrescreve estado próprio já existente e nunca altera a chave legada.
+export function copyLegacyAchievementsTo(profileId: string): void {
+  try {
+    const legacy = localStorage.getItem(LEGACY_KEY)
+    const key = `${LEGACY_KEY}:${profileId}`
+    if (legacy !== null && localStorage.getItem(key) === null) localStorage.setItem(key, legacy)
+  } catch { /* storage indisponível */ }
+}
+
 interface AchievementState {
   unlocked: string[]
   counters: Record<string, number>
@@ -142,8 +152,8 @@ export class AchievementManager {
 
   private _load(): AchievementState {
     try {
-      let raw = localStorage.getItem(this._key)
-      if (!raw && this.profileId) raw = localStorage.getItem(LEGACY_KEY)
+      // Perfil sem chave própria começa do zero (a cópia legada ocorre só na migração)
+      const raw = localStorage.getItem(this._key)
       if (raw) {
         const parsed = JSON.parse(raw) as Partial<AchievementState>
         const state = {

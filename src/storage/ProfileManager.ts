@@ -1,5 +1,6 @@
 import { DogType } from '../GameState'
 import { ALL_LEVELS } from '../levels'
+import { copyLegacyAchievementsTo } from '../achievements/AchievementManager'
 
 export type Medal = 'gold' | 'silver' | 'bronze'
 
@@ -152,7 +153,7 @@ export class ProfileManager {
       goldenBones:        this._unionBones(
                             existing?.goldenBones ?? [],
                             record.goldenBones,
-                            this._boneCount(levelId),
+                            ALL_LEVELS[levelId]?.goldenBones.length,
                           ),
       totalDeaths:        (existing?.totalDeaths ?? 0) + record.totalDeaths,
       totalEnemiesKilled: (existing?.totalEnemiesKilled ?? 0) + record.totalEnemiesKilled,
@@ -254,16 +255,26 @@ export class ProfileManager {
     return ALL_LEVELS[levelId]?.goldenBones.length ?? 0
   }
 
-  // União de ossos: nunca encolhe; tamanho = max(existente, novo, tamanho real da fase)
-  private _unionBones(a: boolean[], b: boolean[], levelLen: number): boolean[] {
-    const len = Math.max(a.length, b.length, levelLen)
-    return Array.from({ length: len }, (_, i) => !!(a[i] || b[i]))
+  // União de ossos: nunca perde um true; tamanho = max(existente, novo, tamanho real da fase).
+  // Com a fase conhecida, apara slots além do tamanho real se forem todos false
+  // (o v2 gravava 3 slots em fases de 2 ossos e nunca podia marcá-los).
+  private _unionBones(a: unknown, b: unknown, levelLen: number | undefined): boolean[] {
+    const x = Array.isArray(a) ? a : []
+    const y = Array.isArray(b) ? b : []
+    const len = Math.max(x.length, y.length, levelLen ?? 0)
+    const out = Array.from({ length: len }, (_, i) => !!(x[i] || y[i]))
+    if (levelLen !== undefined && out.slice(levelLen).every(v => !v)) out.length = levelLen
+    return out
   }
 
   private _migrateToCurrent(p: PlayerProfile): void {
     for (const [levelId, lvl] of Object.entries(p.levels ?? {})) {
-      lvl.goldenBones = this._unionBones(lvl.goldenBones ?? [], [], this._boneCount(levelId))
+      // Entrada inválida (null/primitivo/array): deixa como está em vez de derrubar o getAll
+      if (!lvl || typeof lvl !== 'object' || Array.isArray(lvl)) continue
+      lvl.goldenBones = this._unionBones(lvl.goldenBones, [], ALL_LEVELS[levelId]?.goldenBones.length)
     }
+    // Cópia única das conquistas compartilhadas antigas para o perfil migrado
+    if (p.id) copyLegacyAchievementsTo(p.id)
     p.version = SAVE_VERSION
   }
 

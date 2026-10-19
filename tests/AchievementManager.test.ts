@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { AchievementManager } from '../src/achievements/AchievementManager'
+import { AchievementManager, copyLegacyAchievementsTo } from '../src/achievements/AchievementManager'
 import { ACHIEVEMENTS } from '../src/achievements/achievements'
 
 // Mock localStorage
@@ -192,18 +192,36 @@ describe('AchievementManager por perfil', () => {
     expect(storage['cruella-achievements']).toBeUndefined()
   })
 
-  it('copia o estado legado na primeira carga sem apagar nem alterar a chave legada', () => {
+  it('copyLegacyAchievementsTo copia o estado legado sem apagar nem alterar a chave legada', () => {
     const legacy = JSON.stringify({ unlocked: ['first_blood'], counters: {}, flags: {} })
     storage['cruella-achievements'] = legacy
+    copyLegacyAchievementsTo('a')
     const a = new AchievementManager(cb, 'a')
     expect(a.isUnlocked('first_blood')).toBe(true)
     a.notify('enemy_killed')
     a.notify('enemy_killed')
     expect(storage['cruella-achievements:a']).toBeDefined()
     expect(storage['cruella-achievements']).toBe(legacy)
+    // cópia única: não sobrescreve o estado próprio já existente
+    copyLegacyAchievementsTo('a')
+    expect(new AchievementManager(cb, 'a').getCounter('enemies_killed')).toBe(2)
+  })
+
+  it('copyLegacyAchievementsTo sem chave legada não cria nada', () => {
+    copyLegacyAchievementsTo('a')
+    expect(storage['cruella-achievements:a']).toBeUndefined()
+  })
+
+  it('perfil novo (nunca migrado) começa sem conquistas mesmo com chave legada', () => {
+    storage['cruella-achievements'] = JSON.stringify({ unlocked: ['first_blood'], counters: { enemies_killed: 5 }, flags: {} })
     const b = new AchievementManager(cb, 'b')
-    expect(b.isUnlocked('first_blood')).toBe(true)
+    expect(b.isUnlocked('first_blood')).toBe(false)
     expect(b.getCounter('enemies_killed')).toBe(0)
+  })
+
+  it('sem profileId continua lendo a chave legada', () => {
+    storage['cruella-achievements'] = JSON.stringify({ unlocked: ['first_blood'], counters: {}, flags: {} })
+    expect(new AchievementManager(cb).isUnlocked('first_blood')).toBe(true)
   })
 
   it('golden_bone com levelId+index conta só ossos distintos', () => {
