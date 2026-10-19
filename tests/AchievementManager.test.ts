@@ -177,3 +177,57 @@ describe('AchievementManager', () => {
     expect(am.getProgress(def)).toBeNull()
   })
 })
+
+describe('AchievementManager por perfil', () => {
+  const cb = vi.fn()
+  beforeEach(() => { localStorageMock.clear(); cb.mockClear() })
+
+  it('perfis distintos têm contadores isolados', () => {
+    const a = new AchievementManager(cb, 'a')
+    const b = new AchievementManager(cb, 'b')
+    a.notify('enemy_killed')
+    expect(a.getCounter('enemies_killed')).toBe(1)
+    expect(b.getCounter('enemies_killed')).toBe(0)
+  })
+
+  it('copia o estado legado na primeira carga sem apagar a chave legada', () => {
+    storage['cruella-achievements'] = JSON.stringify({ unlocked: ['first_blood'], counters: {}, flags: {} })
+    const a = new AchievementManager(cb, 'a')
+    expect(a.isUnlocked('first_blood')).toBe(true)
+    expect(storage['cruella-achievements']).toBeDefined()
+  })
+
+  it('golden_bone com levelId+index conta só ossos distintos', () => {
+    const a = new AchievementManager(cb, 'a')
+    a.notify('golden_bone', { levelId: '1-1', index: 0 })
+    a.notify('golden_bone', { levelId: '1-1', index: 0 })
+    expect(a.getCounter('golden_bones')).toBe(1)
+    a.notify('golden_bone', { levelId: '1-1', index: 1 })
+    expect(a.getCounter('golden_bones')).toBe(2)
+  })
+
+  it('golden_bone sem levelId/index mantém comportamento antigo', () => {
+    const a = new AchievementManager(cb, 'a')
+    a.notify('golden_bone')
+    a.notify('golden_bone')
+    expect(a.getCounter('golden_bones')).toBe(2)
+  })
+
+  it('seenBones persiste entre instâncias', () => {
+    new AchievementManager(cb, 'a').notify('golden_bone', { levelId: '1-1', index: 0 })
+    const a2 = new AchievementManager(cb, 'a')
+    a2.notify('golden_bone', { levelId: '1-1', index: 0 })
+    expect(a2.getCounter('golden_bones')).toBe(1)
+  })
+
+  it('setItem lançando não quebra notify', () => {
+    const orig = localStorageMock.setItem
+    localStorageMock.setItem = () => { throw new Error('quota') }
+    try {
+      const a = new AchievementManager(cb, 'a')
+      expect(() => a.notify('enemy_killed')).not.toThrow()
+    } finally {
+      localStorageMock.setItem = orig
+    }
+  })
+})
